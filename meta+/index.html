@@ -7,70 +7,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #ca2a45 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 20px;
         }
         .container {
-            background: rgb(255, 255, 255);
+            background: white;
             border-radius: 12px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             padding: 20px;
             max-width: 1400px;
             margin: 0 auto;
         }
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        #mynetwork {
-            width: 100%;
-            height: 700px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: #f9f9f9;
-        }
+        h1 { text-align: center; color: #333; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 14px; }
+        #mynetwork { width: 100%; height: 700px; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; margin-bottom: 30px; }
         .legend {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
-            margin-top: 20px;
-            padding-top: 20px;
+            margin: 20px 0;
+            padding: 20px 0;
             border-top: 2px solid #eee;
+            border-bottom: 2px solid #eee;
         }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background 0.3s;
-        }
-        .legend-item:hover {
-            background: #f5f5f5;
-        }
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid #333;
-            flex-shrink: 0;
-        }
+        .legend-item { display: flex; align-items: center; gap: 10px; padding: 8px; }
+        .legend-color { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #333; flex-shrink: 0; }
         .info-panel {
-            margin-top: 20px;
+            margin: 20px 0;
             padding: 15px;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
             border-radius: 8px;
             border-left: 4px solid #667eea;
         }
@@ -78,410 +47,82 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
-            margin-top: 10px;
-        }
-        .stat-card {
-            background: white;
-            padding: 12px;
-            border-radius: 6px;
-            text-align: center;
-            border: 1px solid #ddd;
-        }
-        .stat-number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .stat-label {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-        }
-        .metrics-section {
-            margin-top: 30px;
-            border-top: 2px solid #eee;
-            padding-top: 20px;
-        }
-        .metrics-title {
-            font-size: 18px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .metric-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .metric-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 8px;
-            padding: 15px;
-            border-left: 4px solid #667eea;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .metric-card.operacional {
-            border-left-color: #667eea;
-            background: linear-gradient(135deg, #667eea15 0%, #667eea08 100%);
-        }
-        .metric-card.financeiro {
-            border-left-color: #43e97b;
-            background: linear-gradient(135deg, #43e97b15 0%, #43e97b08 100%);
-        }
-        .metric-card.recursos {
-            border-left-color: #f093fb;
-            background: linear-gradient(135deg, #f093fb15 0%, #f093fb08 100%);
-        }
-        .metric-name {
-            font-weight: bold;
-            color: #333;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-        .metric-rule {
-            font-size: 12px;
-            color: #555;
-            line-height: 1.5;
-            background: white;
-            padding: 10px;
-            border-radius: 4px;
-            border-left: 2px solid #667eea;
-        }
-        .metric-rule.operacional {
-            border-left-color: #667eea;
-        }
-        .metric-rule.financeiro {
-            border-left-color: #43e97b;
-        }
-        .metric-rule.recursos {
-            border-left-color: #f093fb;
-        }
-        .rule-label {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 5px;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease-in;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 30px;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 800px;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideIn 0.3s ease-out;
-        }
-        @keyframes slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .close-modal {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .close-modal:hover,
-        .close-modal:focus {
-            color: #000;
-        }
-        .modal-title {
-            color: #333;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-            font-size: 24px;
-        }
-        .dax-explanation {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #667eea;
-        }
-        .explanation-title {
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .explanation-text {
-            color: #555;
-            line-height: 1.6;
-            font-size: 14px;
-        }
-        .dax-code {
-            background: #1e1e1e;
-            color: #d4d4d4;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            overflow-x: auto;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            border: 1px solid #333;
-        }
-        .dax-code-title {
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 13px;
-        }
-        .step-by-step {
-            background: #e3f2fd;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #4facfe;
-        }
-        .step-title {
-            font-weight: bold;
-            color: #1976d2;
-            margin-bottom: 12px;
-            font-size: 14px;
-        }
-        .step {
-            margin-bottom: 10px;
-            padding-left: 25px;
-            position: relative;
-            color: #333;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-        .step:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 2px;
-            width: 16px;
-            height: 16px;
-            background: #4facfe;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: bold;
-        }
-        .step:nth-child(1):before { content: '1'; }
-        .step:nth-child(2):before { content: '2'; }
-        .step:nth-child(3):before { content: '3'; }
-        .step:nth-child(4):before { content: '4'; }
-        .step:nth-child(5):before { content: '5'; }
-        .step:nth-child(6):before { content: '6'; }
-        .example {
-            background: #fff9c4;
-            padding: 12px;
-            border-radius: 6px;
-            border-left: 4px solid #feca57;
             margin-top: 15px;
         }
-        .example-title {
-            font-weight: bold;
-            color: #f57f17;
-            margin-bottom: 8px;
-        }
-        .example-text {
-            color: #555;
-            font-size: 12px;
-            line-height: 1.5;
-        }
+        .stat-card { background: white; padding: 12px; border-radius: 6px; text-align: center; border: 1px solid #ddd; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #667eea; }
+        .stat-label { font-size: 12px; color: #666; margin-top: 5px; }
+        .hierarchy-section { margin-top: 40px; padding-top: 30px; border-top: 2px solid #eee; }
+        .hierarchy-title { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 15px; }
+        .hierarchy-table { width: 100%; border-collapse: collapse; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; }
+        .hierarchy-table thead { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .hierarchy-table th { padding: 15px; text-align: left; font-weight: bold; font-size: 13px; }
+        .hierarchy-table td { padding: 12px 15px; border-bottom: 1px solid #eee; font-size: 12px; }
+        .hierarchy-table tbody tr:hover { background-color: #f5f5f5; }
+        .role-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; }
+        .role-gerente { background: #667eea; color: white; }
+        .role-lider { background: #f093fb; color: white; }
+        .role-operador { background: #4facfe; color: white; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background: white; margin: 5% auto; padding: 30px; border-radius: 12px; width: 90%; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .close-modal { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
+        .close-modal:hover { color: #000; }
+        .modal-title { color: #333; margin-bottom: 20px; border-bottom: 3px solid #667eea; padding-bottom: 10px; font-size: 24px; }
+        .dax-explanation { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea; }
+        .explanation-title { font-weight: bold; color: #333; margin-bottom: 10px; font-size: 16px; }
+        .explanation-text { color: #555; line-height: 1.6; font-size: 14px; }
+        .dax-code { background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; margin-bottom: 20px; overflow-x: auto; font-family: 'Courier New', monospace; font-size: 12px; border: 1px solid #333; }
+        .step-by-step { background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #4facfe; }
+        .step { margin-bottom: 10px; padding-left: 20px; color: #333; font-size: 13px; line-height: 1.5; }
+        .example { background: #fff9c4; padding: 12px; border-radius: 6px; border-left: 4px solid #feca57; margin-top: 15px; }
+        .example-title { font-weight: bold; color: #f57f17; margin-bottom: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Mapa Mental - Meta+</h1>
+        <h1>🎯 Mapa Mental - Power BI Model</h1>
         <p class="subtitle">Estrutura Completa do Modelo: Fontes de Dados, Regras de Negócio e Métricas</p>
-        
+
+        <div id="mynetwork"></div>
+
         <div class="info-panel">
-            <strong>💡 Como usar este Mindmap:</strong>
-            <div style="margin-top: 10px; color: #555; font-size: 14px; line-height: 1.6;">
-                <p>✨ <strong>Clique em qualquer elipse em <span style="color: #fa709a; font-weight: bold;">rosa (Métricas)</span> ou <span style="color: #feca57; font-weight: bold;">amarela (Resultados)</span></strong> para ver uma explicação detalhada de como a medida funciona, incluindo:</p>
-                <ul style="margin: 10px 0 0 20px; padding-left: 15px;">
-                    <li>📋 Explicação clara do que a medida faz</li>
-                    <li>🔧 Passos de funcionamento passo a passo</li>
-                    <li>💻 Código DAX (para referência técnica)</li>
-                    <li>💡 Exemplo prático com números reais</li>
-                </ul>
-                <p style="margin-top: 10px;">🔍 Use o <strong>scroll do mouse para zoom</strong> e <strong>arraste para navegar</strong> no mindmap. As outras elipses são apenas informativas.</p>
-            </div>
+            <strong>💡 Como usar:</strong> Clique em elipses <span style="color: #fa709a; font-weight: bold;">rosa</span> ou <span style="color: #feca57; font-weight: bold;">amarela</span> para ver explicações. Use scroll para zoom e arraste para navegar.
         </div>
 
         <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: #667eea;"></div>
-                <span><strong>Fontes de Dados</strong> - Tabelas principais</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #f093fb;"></div>
-                <span><strong>Dimensões</strong> - Contexto e hierarquias</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #4facfe;"></div>
-                <span><strong>Fatos</strong> - Dados transacionais</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #43e97b;"></div>
-                <span><strong>Calendário</strong> - Análise temporal</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #fa709a;"></div>
-                <span><strong>Métricas Clicáveis</strong> - KPIs com explicação detalhada 🖱️</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #feca57;"></div>
-                <span><strong>Resultado Final Clicável</strong> - Métricas consolidadas 🖱️</span>
-            </div>
+            <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div><span><strong>Fontes de Dados</strong></span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #f093fb;"></div><span><strong>Dimensões</strong></span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #4facfe;"></div><span><strong>Fatos</strong></span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #43e97b;"></div><span><strong>Calendário</strong></span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #fa709a;"></div><span><strong>Métricas Clicáveis</strong> 🖱️</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: #feca57;"></div><span><strong>Resultados Clicáveis</strong> 🖱️</span></div>
         </div>
-        
-        <div id="mynetwork"></div>
-        
+
         <div class="info-panel">
-            <strong>📊 Resumo do Modelo:</strong>
+            <strong>📊 Resumo:</strong>
             <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number">48</div>
-                    <div class="stat-label">Tabelas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">80</div>
-                    <div class="stat-label">Medidas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">41</div>
-                    <div class="stat-label">Relacionamentos</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">3</div>
-                    <div class="stat-label">Áreas Principais</div>
-                </div>
+                <div class="stat-card"><div class="stat-number">48</div><div class="stat-label">Tabelas</div></div>
+                <div class="stat-card"><div class="stat-number">80</div><div class="stat-label">Medidas</div></div>
+                <div class="stat-card"><div class="stat-number">41</div><div class="stat-label">Relacionamentos</div></div>
             </div>
         </div>
 
-        <div class="metrics-section">
-            <div class="metrics-title">📈 Métricas de Custos Operacionais</div>
-            <div class="metric-group">
-                <div class="metric-card operacional">
-                    <div class="metric-name">💰 Custo Total Operador</div>
-                    <div class="metric-rule operacional">
-                        <div class="rule-label">Regra:</div>
-                        Soma dos custos de todos os operadores ativos no período, incluindo salários base e encargos sociais. Exclui custos de supervisão e gestão.
-                    </div>
-                </div>
-                <div class="metric-card operacional">
-                    <div class="metric-name">👔 Custo Total Líder</div>
-                    <div class="metric-rule operacional">
-                        <div class="rule-label">Regra:</div>
-                        Soma dos custos de líderes de núcleo. Inclui salário, encargos e benefícios específicos de liderança. Exclui custos de supervisores e gerentes.
-                    </div>
-                </div>
-                <div class="metric-card operacional">
-                    <div class="metric-name">🎯 Custo Gestão Setor</div>
-                    <div class="metric-rule operacional">
-                        <div class="rule-label">Regra:</div>
-                        Soma dos custos de supervisores e gerentes por setor. Inclui estrutura de gestão completa. Calculado por agregação de núcleos.
-                    </div>
-                </div>
-                <div class="metric-card operacional">
-                    <div class="metric-name">🏢 Custo Apoio</div>
-                    <div class="metric-rule operacional">
-                        <div class="rule-label">Regra:</div>
-                        Custos de departamentos de suporte (RH, Financeiro, TI). Alocado proporcionalmente ao número de colaboradores por setor.
-                    </div>
-                </div>
-                <div class="metric-card operacional">
-                    <div class="metric-name">📊 Despesa Operacional</div>
-                    <div class="metric-rule operacional">
-                        <div class="rule-label">Regra:</div>
-                        Custos operacionais fixos e variáveis: aluguel, água, energia, internet, etc. Alocado por departamento conforme rateio.
-                    </div>
-                </div>
-            </div>
-
-            <div class="metrics-title">💵 Métricas Financeiras</div>
-            <div class="metric-group">
-                <div class="metric-card financeiro">
-                    <div class="metric-name">📈 Receitas</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        Soma de todas as receitas de serviços prestados. Considera faturamento de CTB, DP e FIS. Não inclui devoluções não contabilizadas.
-                    </div>
-                </div>
-                <div class="metric-card financeiro">
-                    <div class="metric-name">💸 Custo Total</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        Custo Operador + Custo Líder + Custo Gestão + Custo Apoio + Despesa Operacional. Sem incluir impostos sobre receita.
-                    </div>
-                </div>
-                <div class="metric-card financeiro">
-                    <div class="metric-name">🔴 Impostos sobre Receita</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        ISS, IRRF e outros impostos incidentes sobre receita bruta. Calculado conforme alíquota e regime tributário de cada cliente.
-                    </div>
-                </div>
-                <div class="metric-card financeiro">
-                    <div class="metric-name">⏳ Receita Retida</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        Receitas faturadas mas não recebidas no período. Considera vencimento futuro e atrasos em contas a receber.
-                    </div>
-                </div>
-                <div class="metric-card financeiro">
-                    <div class="metric-name">✅ Resultado Líquido</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        Receitas - Custo Total - Impostos sobre Receita. Representa o lucro operacional do período.
-                    </div>
-                </div>
-                <div class="metric-card financeiro">
-                    <div class="metric-name">🔀 Resultado a Distribuir</div>
-                    <div class="metric-rule financeiro">
-                        <div class="rule-label">Regra:</div>
-                        Resultado Líquido após ajustes contábeis. Base para cálculo de comissões, bônus e distribuição de lucros.
-                    </div>
-                </div>
-            </div>
-
-            <div class="metrics-title">👥 Métricas de Recursos Humanos</div>
-            <div class="metric-group">
-                <div class="metric-card recursos">
-                    <div class="metric-name">🏢 Contagem Colaboradores por Departamento</div>
-                    <div class="metric-rule recursos">
-                        <div class="rule-label">Regra:</div>
-                        Contagem de colaboradores ativos por departamento. Exclui desligados e afastados. Considera status ativo na data de análise.
-                    </div>
-                </div>
-                <div class="metric-card recursos">
-                    <div class="metric-name">🔗 Contagem Colaboradores por Núcleo</div>
-                    <div class="metric-rule recursos">
-                        <div class="rule-label">Regra:</div>
-                        Contagem de colaboradores por núcleo de trabalho. Agrupa equipes operacionais. Útil para cálculo de custo per capita.
-                    </div>
-                </div>
-            </div>
+        <div class="hierarchy-section">
+            <div class="hierarchy-title">👥 Hierarquia Organizacional por Núcleo</div>
+            <p style="color: #555; font-size: 13px; margin-bottom: 15px;">Dados obtidos do Power BI - Tabela Colaboradores</p>
+            <table class="hierarchy-table">
+                <thead>
+                    <tr>
+                        <th>🏢 Núcleo</th>
+                        <th>👔 Gerente</th>
+                        <th>📍 Líder</th>
+                        <th>⚙️ Operadores</th>
+                    </tr>
+                </thead>
+                <tbody id="hierarchyTableBody">
+                    <tr><td colspan="4" style="text-align: center; padding: 20px;">Carregando dados...</td></tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -493,354 +134,141 @@
         </div>
     </div>
 
-    <script type="text/javascript">
+    <script>
+        // Dados das métricas
+        const metricasExplicacoes = {
+            40: { nome: '💰 Custo Total Operador', explicacao: 'Soma dos custos de todos os operadores ativos, incluindo salários base e encargos sociais.', passos: ['Busca colaboradores com cargo = Operador', 'Filtra status Ativo', 'Soma salário mensal', 'Adiciona encargos sociais (FGTS, contribuições)', 'Exclui custos de supervisão e gestão'], dax: '[CustoTotalOperador]', exemplo: '10 operadores × R$2.000 × 1.30 = R$26.000' },
+            41: { nome: '👔 Custo Total Líder', explicacao: 'Soma dos custos de líderes de núcleo incluindo salário, encargos e benefícios.', passos: ['Identifica colaboradores com cargo = Líder', 'Verifica status Ativo', 'Soma salário + benefícios', 'Inclui encargos sociais', 'Exclui supervisores e gerentes'], dax: '[CustoTotalLider]', exemplo: '5 líderes × R$3.500 × 1.30 = R$22.750' },
+            42: { nome: '🎯 Custo Gestão Setor', explicacao: 'Soma dos custos de supervisores e gerentes por setor.', passos: ['Busca supervisores e gerentes', 'Filtra por setor', 'Soma salários + benefícios', 'Aplica encargos (35%)', 'Agrupa por núcleo'], dax: '[CustoGestaoSetor]', exemplo: '2 supervisores + 1 gerente = R$16.200' },
+            43: { nome: '🏢 Custo Apoio', explicacao: 'Custos de RH, Financeiro, TI distribuídos proporcionalmente.', passos: ['Soma RH, Financeiro, TI', 'Aplica encargos', 'Distribui proporcionalmente', 'Aloca por setor'], dax: '[CustoApoio]', exemplo: 'R$30.000 / 100 pessoas × 20 pessoas setor = R$6.000' },
+            44: { nome: '📊 Despesa Operacional', explicacao: 'Aluguel, água, energia, internet distribuídos proporcionalmente.', passos: ['Custos fixos + variáveis', 'Aluguel, manutenção', 'Água, energia, internet', 'Distribui por setor'], dax: '[DespesaOperacional]', exemplo: 'R$55.000 × 20% setor = R$11.000' },
+            45: { nome: '🔴 Impostos Receita', explicacao: 'ISS, IRRF e outros impostos sobre receita bruta.', passos: ['Receita bruta', 'ISS (5%)', 'IRRF (1,5%)', 'Soma impostos'], dax: '[ImpostosReceita]', exemplo: 'R$100.000 × 6,5% = R$6.500' },
+            46: { nome: '📈 Receitas', explicacao: 'Total de receitas de serviços: CTB, DP, FIS.', passos: ['Notas fiscais emitidas', 'Consultoria + Due Diligence + Fiscal', 'Filtra período'], dax: '[Receitas]', exemplo: 'R$50k + R$30k + R$20k = R$100k' },
+            47: { nome: '💸 Custo Total', explicacao: 'Operadores + Líderes + Gestão + Apoio + Despesas.', passos: ['Somando todos custos', 'Sem impostos'], dax: '[CustoTotal(SemImpostos)]', exemplo: 'R$26k + R$23k + R$16k + R$6k + R$11k = R$82k' },
+            48: { nome: '⏳ Receita Retida', explicacao: 'Faturado mas não recebido ainda.', passos: ['Contas a receber', 'Status não pago'], dax: '[ReceitaRetida]', exemplo: 'R$35.000 pendentes' },
+            49: { nome: '✅ Resultado Líquido', explicacao: 'Receitas - Custos - Impostos.', passos: ['Receita', 'Menos custo total', 'Menos impostos'], dax: '[ResultadoLiquido]', exemplo: 'R$100k - R$82k - R$6.5k = R$11.5k' },
+            50: { nome: '🔀 Resultado Distribuir', explicacao: 'Após reserva legal e provisões.', passos: ['Resultado líquido', 'Menos reserva (5%)', 'Menos provisões'], dax: '[ResultadoAdistribuir]', exemplo: 'R$11.5k - reserva - prov = R$10.5k' },
+            51: { nome: '🏢 Contagem Colabs Departamento', explicacao: 'Quantidade de pessoas ativas por departamento.', passos: ['Filtra ativos', 'Agrupa por depto', 'Conta pessoas'], dax: '[ContagemSetor]', exemplo: 'RH: 3 | Fin: 5 | TI: 2' },
+            52: { nome: '🔗 Contagem Colabs Núcleo', explicacao: 'Quantidade de pessoas ativas por núcleo.', passos: ['Filtra ativos', 'Agrupa por núcleo', 'Conta pessoas'], dax: '[ContagemNucleosSetor]', exemplo: 'Núcleo 1: 10 | Núcleo 2: 9' }
+        };
+
+        // Mindmap nodes
         var nodes = new vis.DataSet([
-            // CENTRO - MODELO
-            { id: 0, label: 'Meta+', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff', border: '#667eea' } }, font: { size: 50, bold: true, color: '#fff' }, size: 45, shape: 'ellipse', borderWidth: 3 },
-            
-            // CAMADA 1 - ÁREAS PRINCIPAIS
-            { id: 1, label: 'FONTES\nDE DADOS', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff', border: '#667eea' } }, font: { size: 13, bold: true, color: '#fff' }, size: 35, shape: 'ellipse', borderWidth: 2 },
-            { id: 2, label: 'DIMENSÕES', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe', border: '#f093fb' } }, font: { size: 13, bold: true, color: '#fff' }, size: 35, shape: 'ellipse', borderWidth: 2 },
-            { id: 3, label: 'FATOS &\nMÉTRICAS', color: { background: '#4facfe', border: '#3a8dd9', highlight: { background: '#7ec8ff', border: '#4facfe' } }, font: { size: 13, bold: true, color: '#fff' }, size: 35, shape: 'ellipse', borderWidth: 2 },
-            
-            // FONTES DE DADOS
-            { id: 10, label: 'Colaboradores', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 11, label: 'Tarefas', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 12, label: 'Contas a\nReceber', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 13, label: 'Contas a\nPagar', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 14, label: 'G-Click', color: { background: '#667eea', border: '#4a5cc4', highlight: { background: '#8a9fff' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            
-            // DIMENSÕES
-            { id: 20, label: 'Clientes', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 21, label: 'Categorias', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 22, label: 'Produtos', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 23, label: 'Hierarquias', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 24, label: 'E-mail', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 25, label: 'Funções', color: { background: '#f093fb', border: '#d967e5', highlight: { background: '#f5affe' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            { id: 26, label: 'Calendários', color: { background: '#43e97b', border: '#30b85f', highlight: { background: '#6ff299' } }, font: { size: 11, color: '#fff' }, size: 22, shape: 'ellipse', borderWidth: 2 },
-            
-            // MÉTRICAS PRINCIPAIS
-            { id: 40, label: 'Custo Total\nOperador', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 41, label: 'Custo Total\nLíder', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 42, label: 'Custo\nGestão', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 43, label: 'Custo\nApoio', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 44, label: 'Despesa\nOperacional', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 45, label: 'Impostos\nReceita', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 46, label: 'Receitas', color: { background: '#43e97b', border: '#30b85f', highlight: { background: '#6ff299' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 47, label: 'Custo Total', color: { background: '#43e97b', border: '#30b85f', highlight: { background: '#6ff299' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 48, label: 'Receita Retida', color: { background: '#43e97b', border: '#30b85f', highlight: { background: '#6ff299' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 49, label: 'Resultado\nLíquido', color: { background: '#feca57', border: '#e6b833', highlight: { background: '#fed875' } }, font: { size: 10, bold: true, color: '#333' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 50, label: 'Resultado a\nDistribuir', color: { background: '#feca57', border: '#e6b833', highlight: { background: '#fed875' } }, font: { size: 10, bold: true, color: '#333' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 51, label: 'Cont. Colabs\nDepartamento', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
-            { id: 52, label: 'Cont. Colabs\nNúcleo', color: { background: '#fa709a', border: '#f04470', highlight: { background: '#fb97b5' } }, font: { size: 10, bold: true, color: '#fff' }, size: 20, shape: 'ellipse', borderWidth: 2 },
+            {id: 0, label: 'Power BI\nModel', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 18, bold: true, color: '#fff'}, size: 45, shape: 'ellipse', borderWidth: 3},
+            {id: 1, label: 'FONTES\nDE DADOS', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 2, label: 'DIMENSÕES', color: {background: '#f093fb', border: '#d967e5'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 3, label: 'FATOS &\nMÉTRICAS', color: {background: '#4facfe', border: '#3a8dd9'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 10, label: 'Colaboradores', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 11, label: 'Tarefas', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 12, label: 'Contas a\nReceber', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 13, label: 'Contas a\nPagar', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 14, label: 'G-Click', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 20, label: 'Clientes', color: {background: '#f093fb', border: '#d967e5'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
+            {id: 40, label: 'Custo Total\nOperador', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 41, label: 'Custo Total\nLíder', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 42, label: 'Custo\nGestão', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 43, label: 'Custo\nApoio', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 44, label: 'Despesa\nOperacional', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 45, label: 'Impostos\nReceita', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 46, label: 'Receitas', color: {background: '#43e97b', border: '#30b85f'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 47, label: 'Custo Total', color: {background: '#43e97b', border: '#30b85f'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 48, label: 'Receita Retida', color: {background: '#43e97b', border: '#30b85f'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 49, label: 'Resultado\nLíquido', color: {background: '#feca57', border: '#e6b833'}, font: {size: 10, bold: true, color: '#333'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 50, label: 'Resultado a\nDistribuir', color: {background: '#feca57', border: '#e6b833'}, font: {size: 10, bold: true, color: '#333'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 51, label: 'Cont. Colabs\nDepartamento', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
+            {id: 52, label: 'Cont. Colabs\nNúcleo', color: {background: '#fa709a', border: '#f04470'}, font: {size: 10, bold: true, color: '#fff'}, size: 20, shape: 'ellipse', borderWidth: 2},
         ]);
 
         var edges = new vis.DataSet([
-            // Centro para camadas principais
-            { from: 0, to: 1, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: { color: '#ccc', highlight: '#999' } },
-            { from: 0, to: 2, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: { color: '#ccc', highlight: '#999' } },
-            { from: 0, to: 3, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: { color: '#ccc', highlight: '#999' } },
-            
-            // FONTES DE DADOS
-            { from: 1, to: 10, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 1, to: 11, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 1, to: 12, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 1, to: 13, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 1, to: 14, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            
-            // DIMENSÕES
-            { from: 2, to: 20, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 21, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 22, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 23, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 24, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 25, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            { from: 2, to: 26, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5 },
-            
-            // MÉTRICAS PRINCIPAIS
-            { from: 3, to: 40, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 41, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 42, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 43, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 44, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 45, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#fa709a' },
-            { from: 3, to: 46, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#43e97b' },
-            { from: 3, to: 47, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#43e97b' },
-            { from: 3, to: 48, arrows: 'to', smooth: { type: 'continuous' }, width: 2, color: '#43e97b' },
-            { from: 46, to: 49, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: '#feca57' },
-            { from: 47, to: 49, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: '#feca57' },
-            { from: 45, to: 49, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: '#feca57' },
-            { from: 49, to: 50, arrows: 'to', smooth: { type: 'continuous' }, width: 2.5, color: '#feca57' },
-            { from: 10, to: 51, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5, dashes: true },
-            { from: 10, to: 52, arrows: 'to', smooth: { type: 'continuous' }, width: 1.5, dashes: true },
+            {from: 0, to: 1, arrows: 'to', smooth: {type: 'continuous'}, width: 2.5, color: '#ccc'},
+            {from: 0, to: 2, arrows: 'to', smooth: {type: 'continuous'}, width: 2.5, color: '#ccc'},
+            {from: 0, to: 3, arrows: 'to', smooth: {type: 'continuous'}, width: 2.5, color: '#ccc'},
+            {from: 1, to: 10, arrows: 'to'}, {from: 1, to: 11, arrows: 'to'}, {from: 1, to: 12, arrows: 'to'}, {from: 1, to: 13, arrows: 'to'}, {from: 1, to: 14, arrows: 'to'},
+            {from: 2, to: 20, arrows: 'to'},
+            {from: 3, to: 40, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 41, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 42, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 43, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 44, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 45, arrows: 'to', width: 2, color: '#fa709a'}, {from: 3, to: 46, arrows: 'to', width: 2, color: '#43e97b'}, {from: 3, to: 47, arrows: 'to', width: 2, color: '#43e97b'}, {from: 3, to: 48, arrows: 'to', width: 2, color: '#43e97b'}, {from: 46, to: 49, arrows: 'to', width: 2.5, color: '#feca57'}, {from: 47, to: 49, arrows: 'to', width: 2.5, color: '#feca57'}, {from: 45, to: 49, arrows: 'to', width: 2.5, color: '#feca57'}, {from: 49, to: 50, arrows: 'to', width: 2.5, color: '#feca57'}, {from: 10, to: 51, arrows: 'to', width: 1.5}, {from: 10, to: 52, arrows: 'to', width: 1.5},
         ]);
 
-        var container = document.getElementById('mynetwork');
-        var data = { nodes: nodes, edges: edges };
-        var options = {
-            physics: {
-                enabled: true,
-                stabilization: {
-                    iterations: 300,
-                    fit: true
-                },
-                barnesHut: {
-                    gravitationalConstant: -35000,
-                    centralGravity: 0.4,
-                    springLength: 320,
-                    springConstant: 0.08
-                }
-            },
-            interaction: {
-                navigationButtons: true,
-                keyboard: true,
-                zoomView: true,
-                dragView: true,
-                hover: true
-            }
-        };
-        var network = new vis.Network(container, data, options);
+        var network = new vis.Network(document.getElementById('mynetwork'), {nodes, edges}, {
+            physics: {enabled: true, stabilization: {iterations: 300}, barnesHut: {gravitationalConstant: -35000, centralGravity: 0.4, springLength: 320, springConstant: 0.08}},
+            interaction: {navigationButtons: true, keyboard: true, zoomView: true, dragView: true, hover: true}
+        });
 
-        // Definições das métricas com explicações
-        const metricasExplicacoes = {
-            40: {
-                nome: '💰 Custo Total Operador',
-                explicacao: 'Esta medida calcula o custo total de todos os operadores que trabalham na empresa. Um operador é o profissional que executa as tarefas operacionais diretas.',
-                passos: [
-                    'Busca todos os colaboradores com cargo = "Operador"',
-                    'Filtra apenas aqueles com status "Ativo"',
-                    'Soma o salário mensal de cada operador',
-                    'Adiciona encargos sociais (FGTS, contribuições)',
-                    'Agrupa pelo período/departamento conforme necessário',
-                    'Exclui qualquer custo de supervisão ou gestão'
-                ],
-                dax: 'SUMPRODUCT(\n  (Colaboradores[Cargo] = "Operador") * \n  (Colaboradores[Status] = "Ativo") * \n  Colaboradores[Salario_Mensal] * \n  (1 + Colaboradores[Encargos%])\n)',
-                exemplo: 'Se você tem 10 operadores ganhando R$ 2.000 cada com 30% de encargos, o resultado será: 10 × 2.000 × 1.30 = R$ 26.000'
-            },
-            41: {
-                nome: '👔 Custo Total Líder',
-                explicacao: 'Calcula o custo total de todos os líderes de núcleo. Líderes são profissionais que coordenam pequenas equipes operacionais.',
-                passos: [
-                    'Identifica colaboradores com cargo = "Líder de Núcleo"',
-                    'Verifica status "Ativo"',
-                    'Soma salário + benefícios de liderança',
-                    'Inclui encargos sociais aplicáveis',
-                    'Agrupa por núcleo ou período',
-                    'Não inclui custo de supervisores ou gerentes'
-                ],
-                dax: 'SUMPRODUCT(\n  (Colaboradores[Cargo] = "Líder") * \n  (Colaboradores[Status] = "Ativo") * \n  (Colaboradores[Salario_Mensal] + Colaboradores[Beneficios]) * \n  (1 + Colaboradores[Encargos%])\n)',
-                exemplo: 'Se você tem 5 líderes ganhando R$ 3.500 cada com benefícios de R$ 500, o custo será: 5 × (3.500 + 500) × 1.30 = R$ 26.000'
-            },
-            42: {
-                nome: '🎯 Custo Gestão Setor',
-                explicacao: 'Representa o custo total de gestão (supervisores e gerentes) por setor. Inclui toda estrutura de supervisão e gerenciamento.',
-                passos: [
-                    'Busca colaboradores com cargo "Supervisor" ou "Gerente"',
-                    'Filtra por setor específico',
-                    'Soma salários + benefícios executivos',
-                    'Aplica encargos sociais',
-                    'Calcula per núcleo dentro do setor',
-                    'Retorna custo total de gestão por setor'
-                ],
-                dax: 'SUMPRODUCT(\n  ((Colaboradores[Cargo] = "Supervisor") + (Colaboradores[Cargo] = "Gerente")) * \n  (Colaboradores[Setor] = SELECTEDVALUE(Setores[Setor])) * \n  (Colaboradores[Salario_Mensal] + Colaboradores[Beneficios]) * \n  (1 + 0.35)\n)',
-                exemplo: 'Um setor com 2 supervisores (R$ 4.000) + 1 gerente (R$ 6.000), com 35% de encargos: (2×4.000 + 6.000) × 1.35 = R$ 16.200'
-            },
-            43: {
-                nome: '🏢 Custo Apoio',
-                explicacao: 'Custo dos departamentos de suporte (RH, Financeiro, TI, etc). Este custo é distribuído proporcionalmente entre setores/núcleos.',
-                passos: [
-                    'Soma salários de RH, Financeiro, TI, Administrativo',
-                    'Aplica encargos sociais',
-                    'Calcula o total de apoio',
-                    'Identifica número total de colaboradores produtivos',
-                    'Distribui o custo proporcionalmente',
-                    'Aloca ao departamento/setor conforme número de pessoas'
-                ],
-                dax: 'VAR TotalApoio = SUMPRODUCT(\n  (Colaboradores[Departamento] IN {"RH","Financeiro","TI","Admin"}) * \n  Colaboradores[Salario_Mensal] * 1.30\n) \nVAR TotalColaboradores = COUNTA(Colaboradores[ID])\nRETURN TotalApoio / TotalColaboradores * SELECTEDVALUE(Setores[Contagem_Colabs])',
-                exemplo: 'Custo de apoio total = R$ 30.000. Você tem 100 colaboradores. Seu setor tem 20 pessoas. Custo alocado: 30.000 × (20/100) = R$ 6.000'
-            },
-            44: {
-                nome: '📊 Despesa Operacional',
-                explicacao: 'Custos operacionais fixos e variáveis como aluguel, água, energia, internet, telefone, etc. Também distribuído proporcionalmente.',
-                passos: [
-                    'Soma todas as despesas fixas (aluguel, manutenção)',
-                    'Adiciona despesas variáveis por quantidade de pessoas',
-                    'Inclui água, energia, internet, telefone',
-                    'Soma material de expediente',
-                    'Distribui proporcionalmente ao número de colaboradores',
-                    'Aloca valor final ao período/setor'
-                ],
-                dax: 'VAR DespesaFixa = 50000\nVAR DespesaVariavel = SELECTEDVALUE(Setores[Contagem_Colabs]) * 250\nRETURN (DespesaFixa + DespesaVariavel) * SELECTEDVALUE(Setores[Proporcao_Alocacao])',
-                exemplo: 'Despesa fixa = R$ 50.000 (aluguel, manutenção). Despesa variável = 20 pessoas × R$ 250 = R$ 5.000. Total = R$ 55.000. Se seu setor é 20% = R$ 11.000'
-            },
-            45: {
-                nome: '🔴 Impostos sobre Receita',
-                explicacao: 'Impostos que incidem sobre a receita bruta: ISS (Imposto sobre Serviços), IRRF (Imposto Retido na Fonte) e outros.',
-                passos: [
-                    'Identifica a receita bruta do período',
-                    'Aplica alíquota de ISS conforme tipo de serviço',
-                    'Calcula IRRF com base em clientes específicos',
-                    'Soma outros impostos municipais/estaduais',
-                    'Retorna o valor total de impostos',
-                    'Não inclui na receita final'
-                ],
-                dax: 'VAR Receita = [Receitas]\nVAR ISS = Receita * 0.05\nVAR IRRF = Receita * 0.015\nRETURN ISS + IRRF',
-                exemplo: 'Se receita foi R$ 100.000, ISS (5%) = R$ 5.000 e IRRF (1,5%) = R$ 1.500. Total de impostos = R$ 6.500'
-            },
-            46: {
-                nome: '📈 Receitas',
-                explicacao: 'Soma total de todas as receitas de serviços prestados no período. Inclui CTB, DP e FIS (diferentes linhas de negócio).',
-                passos: [
-                    'Busca todas as notas fiscais emitidas',
-                    'Soma valores de serviços prestados',
-                    'Inclui CTB (Consultoria), DP (Due Diligence), FIS (Fiscal)',
-                    'Filtra pelo período selecionado',
-                    'Exclui devoluções não contabilizadas',
-                    'Retorna total em reais'
-                ],
-                dax: 'SUMPRODUCT(\n  (Tarefas[Status] = "Concluído") * \n  (Tarefas[Data_Conclusao] >= MIN(dCalendário[Data])) * \n  (Tarefas[Data_Conclusao] <= MAX(dCalendário[Data])) * \n  Tarefas[Valor_Faturado]\n)',
-                exemplo: 'Se faturou R$ 50.000 em CTB, R$ 30.000 em DP e R$ 20.000 em FIS, o total será R$ 100.000'
-            },
-            47: {
-                nome: '💸 Custo Total',
-                explicacao: 'Soma de TODOS os custos operacionais da empresa. É a fórmula: Operadores + Líderes + Gestão + Apoio + Despesas.',
-                passos: [
-                    'Pega Custo Total Operador',
-                    'Soma Custo Total Líder',
-                    'Adiciona Custo Gestão Setor',
-                    'Soma Custo Apoio',
-                    'Adiciona Despesa Operacional',
-                    'Retorna o valor total'
-                ],
-                dax: '[CustoTotalOperador] + \n[CustoTotalLider] + \n[CustoGestaoSetor] + \n[CustoApoio] + \n[DespesaOperacional]',
-                exemplo: 'Op: R$ 26.000 + Líderes: R$ 26.000 + Gestão: R$ 16.200 + Apoio: R$ 6.000 + Despesa: R$ 11.000 = R$ 85.200'
-            },
-            48: {
-                nome: '⏳ Receita Retida',
-                explicacao: 'Receitas que foram faturadas mas ainda NÃO foram recebidas. Representa valores pendentes em contas a receber.',
-                passos: [
-                    'Busca todas as notas fiscais emitidas',
-                    'Filtra pela data de vencimento futura (ainda não vencidas) ou atrasadas',
-                    'Verifica status de pagamento "Não Recebido"',
-                    'Soma os valores',
-                    'Exclui valores já recebidos',
-                    'Retorna valor total não recebido'
-                ],
-                dax: 'SUMPRODUCT(\n  (ContasAReceber[Status] <> "Pago") * \n  (ContasAReceber[Data_Vencimento] <= TODAY()) * \n  ContasAReceber[Valor]\n)',
-                exemplo: 'Se você tem R$ 15.000 vencido e R$ 20.000 a vencer, sua receita retida é R$ 35.000 (não recebeu ainda)'
-            },
-            49: {
-                nome: '✅ Resultado Líquido',
-                explicacao: 'O lucro operacional da empresa. É calculado por: Receitas - Custos Totais - Impostos sobre Receita.',
-                passos: [
-                    'Pega o valor total de Receitas',
-                    'Subtrai o Custo Total',
-                    'Subtrai os Impostos sobre Receita',
-                    'O resultado pode ser positivo (lucro) ou negativo (prejuízo)',
-                    'Representa a saúde financeira do negócio',
-                    'Base para distribuição de lucros'
-                ],
-                dax: '[Receitas] - [CustoTotal] - [ImpostosReceita]',
-                exemplo: 'Receita: R$ 100.000 - Custo: R$ 85.200 - Impostos: R$ 6.500 = R$ 8.300 de lucro'
-            },
-            50: {
-                nome: '🔀 Resultado a Distribuir',
-                explicacao: 'Resultado Líquido após ajustes contábeis finais. Esta é a base para cálculo de comissões, bônus e dividendos.',
-                passos: [
-                    'Pega o Resultado Líquido',
-                    'Aplica ajustes contábeis (deduções, provisões)',
-                    'Considera obrigações legais',
-                    'Calcula margem para reserva legal',
-                    'Define montante disponível para distribuição',
-                    'Gera base para comissões de vendas'
-                ],
-                dax: 'VAR ResultadoBruto = [ResultadoLiquido]\nVAR ReservaLegal = ResultadoBruto * 0.05\nVAR Provisoes = SUM(Ajustes[Valor])\nRETURN ResultadoBruto - ReservaLegal - Provisoes',
-                exemplo: 'Resultado Líquido: R$ 8.300 - Reserva Legal (5%): R$ 415 - Provisões: R$ 100 = R$ 7.785 para distribuir'
-            },
-            51: {
-                nome: '🏢 Contagem Colaboradores Departamento',
-                explicacao: 'Conta quantos colaboradores ativos existem em cada departamento. Simples contagem de pessoas.',
-                passos: [
-                    'Filtra colaboradores com Status = "Ativo"',
-                    'Agrupa por Departamento',
-                    'Conta quantidade de IDs únicos',
-                    'Exclui desligados e afastados',
-                    'Retorna número inteiro',
-                    'Útil para análises de efetivo'
-                ],
-                dax: 'CALCULATE(\n  DISTINCTCOUNT(Colaboradores[ID]),\n  Colaboradores[Status] = "Ativo",\n  Colaboradores[Departamento] = SELECTEDVALUE(Departamentos[Departamento])\n)',
-                exemplo: 'Se você tem Departamento de RH com 3 ativos, Financeiro com 5 ativos e TI com 2 ativos, cada um terá sua contagem'
-            },
-            52: {
-                nome: '🔗 Contagem Colaboradores Núcleo',
-                explicacao: 'Conta quantos colaboradores ativos trabalham em cada núcleo de trabalho. Núcleos são agrupamentos operacionais menores.',
-                passos: [
-                    'Filtra apenas colaboradores com Status = "Ativo"',
-                    'Agrupa por Núcleo',
-                    'Conta quantidade de pessoas',
-                    'Exclui desligados',
-                    'Retorna total por núcleo',
-                    'Usado para cálculo de custo per capita'
-                ],
-                dax: 'CALCULATE(\n  DISTINCTCOUNT(Colaboradores[ID]),\n  Colaboradores[Status] = "Ativo",\n  Colaboradores[Nucleo] = SELECTEDVALUE(Nucleos[Nucleo])\n)',
-                exemplo: 'Núcleo 1 tem 8 colaboradores, Núcleo 2 tem 7, Núcleo 3 tem 5. Total: 20 pessoas ativas'
-            }
-        };
-
-        // Função para abrir modal
-        network.on('click', function(params) {
-            if (params.nodes.length > 0) {
-                const nodeId = params.nodes[0];
-                const node = nodes.get(nodeId);
-                
-                // Verifica se é uma métrica
-                if (metricasExplicacoes[nodeId]) {
-                    const metrica = metricasExplicacoes[nodeId];
-                    const modal = document.getElementById('metricModal');
-                    const modalTitle = document.getElementById('modalTitle');
-                    const modalBody = document.getElementById('modalBody');
-                    
-                    let html = `
-                        <div class="dax-explanation">
-                            <div class="explanation-title">📋 O que faz esta medida?</div>
-                            <div class="explanation-text">${metrica.explicacao}</div>
-                        </div>
-                        
-                        <div class="step-by-step">
-                            <div class="step-title">🔧 Como funciona (Passo a Passo):</div>
-                            ${metrica.passos.map(p => `<div class="step">${p}</div>`).join('')}
-                        </div>
-                        
-                        <div class="dax-code">
-                            <div class="dax-code-title">💻 Código DAX (para referência técnica):</div>
-                            <pre>${metrica.dax}</pre>
-                        </div>
-                        
-                        <div class="example">
-                            <div class="example-title">💡 Exemplo Prático:</div>
-                            <div class="example-text">${metrica.exemplo}</div>
-                        </div>
-                    `;
-                    
-                    modalTitle.textContent = metrica.nome;
-                    modalBody.innerHTML = html;
-                    modal.style.display = 'block';
-                }
+        network.on('click', params => {
+            if (params.nodes.length > 0 && metricasExplicacoes[params.nodes[0]]) {
+                const m = metricasExplicacoes[params.nodes[0]];
+                document.getElementById('modalTitle').textContent = m.nome;
+                document.getElementById('modalBody').innerHTML = `
+                    <div class="dax-explanation">
+                        <div class="explanation-title">📋 O que faz?</div>
+                        <div class="explanation-text">${m.explicacao}</div>
+                    </div>
+                    <div class="step-by-step">
+                        <div style="font-weight: bold; color: #1976d2; margin-bottom: 10px;">🔧 Passos:</div>
+                        ${m.passos.map(p => `<div class="step">• ${p}</div>`).join('')}
+                    </div>
+                    <div class="dax-code">
+                        <div style="font-weight: bold; color: #667eea; margin-bottom: 8px;">💻 Código DAX:</div>
+                        <pre>${m.dax}</pre>
+                    </div>
+                    <div class="example">
+                        <div class="example-title">💡 Exemplo:</div>
+                        <div style="color: #555; font-size: 12px;">${m.exemplo}</div>
+                    </div>`;
+                document.getElementById('metricModal').style.display = 'block';
             }
         });
 
-        // Fechar modal ao clicar no X
-        document.querySelector('.close-modal').onclick = function() {
-            document.getElementById('metricModal').style.display = 'none';
-        }
+        document.querySelector('.close-modal').onclick = () => document.getElementById('metricModal').style.display = 'none';
+        window.onclick = e => { if (e.target.id === 'metricModal') e.target.style.display = 'none'; };
 
-        // Fechar modal ao clicar fora
-        window.onclick = function(event) {
-            const modal = document.getElementById('metricModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
-            }
-        }
+        // Dados reais do Power BI
+        const colaboradoresData = {
+            "Onboarding": {"gerentes": [], "lideres": ["MONICA RODRIGUES"], "operadores": ["ADMES COSTA", "BRUNA ROATTI DE LIMA", "JANAINA TEIXEIRA", "JAQUELINE OLIVEIRA", "LUAN SANTOS"]},
+            "Apoio": {"gerentes": ["UILIAN MARTINS"], "lideres": ["CAREN MENDES", "JULIANA PRADO DELFINO", "LETICIA CARDOSO DE OLIVEIRA"], "operadores": ["ALEXANDRE COSTA", "ANDRESSA OLIVEIRA", "BIANCA SILVA", "CAROLINE DA SILVA GODOY", "CAROLINE SILVEIRA", "DIENIFER MUNHOZ", "FERNANDA SOARES", "GIOVANA DONATO", "GLORIA FLORES", "GUILHERME CARDOSO", "IGOR VERDUM", "JEAN LARREA", "LAURA PEREIRA COSTA", "LEONARDO GOMES DOS SANTOS", "MANOELA FÃO", "PRISCILA LIMA", "THOMAS RAULIN", "HELENA SETTI"]},
+            "Societ├írio": {"gerentes": ["GABRIELA AMORIM"], "lideres": [], "operadores": ["DAIANA ALVES", "JESSICA DUARTE", "JO├ûO ARA├║JO", "KATIA BICA", "WESLLEY WITER"]},
+            "FIS - ELISEU": {"gerentes": [], "lideres": ["ELISEU SILVEIRA DE ABREU"], "operadores": ["CLOVIS ROBERTO GUTIERRES", "JEANILCE GONCALVES", "THOMAS PAZ DOS SANTOS"]},
+            "Comercial": {"gerentes": [], "lideres": [], "operadores": ["FELIPE SCHENKEL"]},
+            "CTB - PASSO FUNDO": {"gerentes": ["TAIS CERON"], "lideres": [], "operadores": ["DOUGLAS DA CRUZ SILVA", "LARISSA MACIEL VALENDORF", "NICOLY MONTEIRO VIEIRA", "SUELEN DILLY"]},
+            "DP - PASSO FUNDO": {"gerentes": ["TAIS CERON"], "lideres": ["ANA LETICIA NUNES BIGATAO"], "operadores": ["NAIARA ROOS MENTZ"]},
+            "FIS - PASSO FUNDO": {"gerentes": ["TAIS CERON"], "lideres": ["CASSIO SCHALLENBERG ANHAIA"], "operadores": ["ANTONIA ALAINE", "LUCILEIA ALMEIDA", "MICHELE ROSSI", "L├CDVIA LAURINDO"]},
+            "DP - BRUNA": {"gerentes": ["JONATHAN HENRIQUE DOS SANTOS"], "lideres": ["BRUNA SCHWARZER BRENTANO"], "operadores": ["ANDERSON DA SILVA FALEIRO", "HELEN DOS SANTOS KRUGER", "NAT├LS CONCEI├º├ûO", "TANISE BRITO", "EVELYN VICTORIA DA ROSA MONTEIRO"]},
+            "DP - DAIANY": {"gerentes": ["JONATHAN HENRIQUE DOS SANTOS"], "lideres": ["DAIANY ARAUJO"], "operadores": ["SABRINA UTZ", "ANDRIUS DA SILVA FALEIRO", "CAMILA BUENO TAROCO", "EORIDES DE ALENCASTRO PIRES", "GRAZIELLE LOBATO FLORES"]},
+            "CTB - DANIEL": {"gerentes": ["UILIAN MARTINS"], "lideres": ["DANIEL ANDERSON DA SILVA CHAVES"], "operadores": ["GABRIEL MACHADO", "ALICE WENDT", "DANIEL ANDERSON DA SILVA CHAVES", "GABRIELLA MACEDO LONGARAY", "GLAUCIUS BANDEIRA", "LISLAINE VELOSO", "MONICA STROSSI NUNES", "PETER BERNARDI VASQUES", "VINICIO TEIXEIRA FONTOURA", "YAGO MOREIRA MARTINS"]},
+            "FIS - RAQUEL LEOTTE": {"gerentes": ["RAQUEL LEOTTE"], "lideres": [], "operadores": ["DOUGLAS ANTONIO ANTUNES MACHADO", "JANINE DE SOUZA CARVALHO", "KEOMA ALEXSANDER DA ROCHA", "LIDIA MARGANE DE OLIVEIRA GUTERRES", "LISIAN MACHADO DOS SANTOS", "ROSEMERI FERNANDES DA SILVA"]},
+            "DP - JULIANA": {"gerentes": ["JONATHAN HENRIQUE DOS SANTOS"], "lideres": ["DAIANY ARAUJO"], "operadores": ["ANA PAULA LESSING VIEIRA", "ANDRESSA SANTOS", "CAMILA COSTA SANTOS", "GABRIELA QUINTANA"]},
+            "CTB - KATIRA": {"gerentes": ["UILIAN MARTINS"], "lideres": ["KATIRA ESPINDOLA MAGALHAES"], "operadores": ["ANDERSON OLIVEIRA DORNELES", "ANIELLY CRISTY RODRIGUES DE OLIVEIRA", "BRUNA OLIVEIRA DA SILVA", "JECKSON LUIZ MESSIAS DE ANDRADE", "LEANDRO BRUM TOEBE", "LIANET MIRAVET CABRERA", "MARCELO DOS SANTOS", "RAFAEL DA SILVA SANTOS"]},
+            "FIS - EVELIN": {"gerentes": ["RAQUEL LEOTTE"], "lideres": ["EVELIN MACHADO DE LIMA"], "operadores": ["CLAUDIA DE OLIVEIRA PONS", "JESSICA ROBERTA VIEIRA OLIVEIRA", "KARINA RIBEIRO LEITES"]},
+            "FIS - Iago": {"gerentes": ["RAQUEL LEOTTE"], "lideres": ["IAGO DA SILVA LEHN"], "operadores": ["DARLISE DA SILVA VARGAS ROQUE", "LEANDRA MARIA DE AZAMBUJA PEREIRA", "LIRIEL XAVIER", "PEDRO OLIVEIRA SALERNO"]},
+            "FIS - JESSICA SUANE": {"gerentes": ["RAQUEL LEOTTE"], "lideres": ["JESSICA SUANE DA SILVA"], "operadores": ["LUCIANA SCHUTZ DE OLIVEIRA", "LUISA SOARES PEREIRA"]},
+            "CTB - PRISCILLA": {"gerentes": ["UILIAN MARTINS"], "lideres": ["DANIEL ANDERSON DA SILVA CHAVES"], "operadores": ["ALESSANDRA DIAS RODRIGUES", "ANA PAULA DIAS GULMINI", "ANA PAULA RIBEIRO DA SILVA", "CLARISSA MELO SOARES", "ESTHER CAMARA DA SILVA", "GABRIELLE DIAS HALLOUCHE", "JESSICA DA SILVA PEIXOTO", "THAINA MEDEIROS DA SILVA"]},
+            "DP - LAURA ASSIS": {"gerentes": ["JONATHAN HENRIQUE DOS SANTOS"], "lideres": ["LAURA ASSIS"], "operadores": ["ANA CAROLINA DE SOUZA SILVEIRA", "JANICE SCHNEIDER", "NATHALIA TESSARO DA SILVA", "NOE DA SILVEIRA MAIA", "RAFAELLA VARGAS SILVA"]},
+            "CTB SAP - Bianca": {"gerentes": [], "lideres": ["BIANCA DAPPER"], "operadores": ["ALINE DIETRICH", "FABRICIO DE SOUZA GONCALVES VIVAN", "GUSTAVO DA CUNHA", "NATALIA KICH", "PEDRO BORSATTO", "RENAN JUNGES"]},
+            "DP SAP - Ana": {"gerentes": ["DALILA BERNARDI"], "lideres": ["EVA CAROLINE"], "operadores": ["ANA WAGNER", "EDUARDA KOLLER", "GIOVANA LUDWIG", "INGRID DORNELES", "JULIA MENDES", "MARINALVA HAGMANN", "NATALHA PAZ", "PAMELA ROSA"]},
+            "CTB SAP - Josiane": {"gerentes": [], "lideres": ["JOSIANE SANTOS"], "operadores": ["ELUANA MARCON", "JANAINA DA FONSECA CASSERE", "JAQUELINE WEYERMULLER", "LISANDRA GOMES", "LUIZA SOUZA", "MAIARA BEAL", "MICAELA CIGERZA"]},
+            "FIS SAP - Tamires": {"gerentes": ["DALILA BERNARDI"], "lideres": ["TAMIRES POSSER"], "operadores": ["BRUNA VEBER", "DANIELI ZIMMERMANN", "FRANCIELI PIOVESAN", "GABRIEL DA SILVA VILA REAL DA ROSA", "KETLYN RAMOS", "LUANA BUENO", "LUANA SORIA", "RAISSA BUENO", "THONNY GOES"]},
+            "FIS SAP - Raquel": {"gerentes": ["DALILA BERNARDI"], "lideres": ["RAQUEL GUSE"], "operadores": ["ANNA CAROLINA FRONER ALBARELLO", "CLAIR MARCO", "DENISE DE FATIMA LENZ", "HELLEN CASAGRANDE DA VEIGA", "JANAINA BUENO", "KAUANA OLIVEIRA", "MARIANA FELIX", "MATEUS SANTOS"]}
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tbody = document.getElementById('hierarchyTableBody');
+            tbody.innerHTML = '';
+            
+            Object.entries(colaboradoresData).forEach(([nucleo, data]) => {
+                const gerentes = data.gerentes.length > 0 ? data.gerentes.map(g => `<span class="role-badge role-gerente">${g}</span>`).join('<br>') : '-';
+                const lideres = data.lideres.length > 0 ? data.lideres.map(l => `<span class="role-badge role-lider">${l}</span>`).join('<br>') : '-';
+                const operadores = data.operadores.length > 0 ? `${data.operadores.length} operadores` : '-';
+                const total = (data.gerentes.length + data.lideres.length + data.operadores.length);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${nucleo}</strong></td>
+                    <td>${gerentes}</td>
+                    <td>${lideres}</td>
+                    <td>${operadores}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
     </script>
 </body>
 </html>
