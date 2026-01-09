@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MindMap - Power BI Model</title>
+    <title>Documentação Meta+</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #eb1b7c 0%, #af51bb 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -80,14 +80,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎯 Mapa Mental - Power BI Model</h1>
-        <p class="subtitle">Estrutura Completa do Modelo: Fontes de Dados, Regras de Negócio e Métricas</p>
-
-        <div id="mynetwork"></div>
-
+        <h1>🎯 Mapa Mental - Meta+</h1>
+        <p class="subtitle">Análise Completa da Estrutura de Dados</p>
+        
         <div class="info-panel">
-            <strong>💡 Como usar:</strong> Clique em elipses <span style="color: #fa709a; font-weight: bold;">rosa</span> ou <span style="color: #feca57; font-weight: bold;">amarela</span> para ver explicações. Use scroll para zoom e arraste para navegar.
+            <strong>💡 Como usar:</strong> Clique nas elipses <span style="color: #fa709a; font-weight: bold;">rosa</span> ou <span style="color: #feca57; font-weight: bold;">amarela</span> para ver explicações. Use scroll para zoom e arraste para navegar.
         </div>
+        
+        <div id="mynetwork"></div>
 
         <div class="legend">
             <div class="legend-item"><div class="legend-color" style="background: #667eea;"></div><span><strong>Fontes de Dados</strong></span></div>
@@ -154,10 +154,10 @@
 
         // Mindmap nodes
         var nodes = new vis.DataSet([
-            {id: 0, label: 'Power BI\nModel', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 18, bold: true, color: '#fff'}, size: 45, shape: 'ellipse', borderWidth: 3},
-            {id: 1, label: 'FONTES\nDE DADOS', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
-            {id: 2, label: 'DIMENSÕES', color: {background: '#f093fb', border: '#d967e5'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
-            {id: 3, label: 'FATOS &\nMÉTRICAS', color: {background: '#4facfe', border: '#3a8dd9'}, font: {size: 13, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 0, label: 'Meta+', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 50, bold: true, color: '#fff'}, size: 45, shape: 'ellipse', borderWidth: 3},
+            {id: 1, label: 'FONTES\nDE DADOS', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 50, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 2, label: 'DIMENSÕES', color: {background: '#f093fb', border: '#d967e5'}, font: {size: 50, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
+            {id: 3, label: 'FATOS &\nMÉTRICAS', color: {background: '#4facfe', border: '#3a8dd9'}, font: {size: 50, bold: true, color: '#fff'}, size: 35, shape: 'ellipse', borderWidth: 2},
             {id: 10, label: 'Colaboradores', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
             {id: 11, label: 'Tarefas', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
             {id: 12, label: 'Contas a\nReceber', color: {background: '#667eea', border: '#4a5cc4'}, font: {size: 11, color: '#fff'}, size: 22, shape: 'ellipse', borderWidth: 2},
