@@ -1,1 +1,598 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação Técnica - IntegraDP</title>
+    <link rel="stylesheet" href="style-tecnico.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h1>IntegraDP</h1>
+                <p>Documentação Técnica</p>
+            </div>
+            
+            <div class="nav-section">
+                <h3>📋 Índice</h3>
+                <ul class="nav-links">
+                    <li><a href="#arquitetura"><span class="icon">🏗️</span> Arquitetura</a></li>
+                    <li><a href="#tecnologias"><span class="icon">⚙️</span> Tecnologias</a></li>
+                    <li><a href="#banco-dados"><span class="icon">🗃️</span> Banco de Dados</a></li>
+                    <li><a href="#api"><span class="icon">🔌</span> API</a></li>
+                    <li><a href="#modulos"><span class="icon">📦</span> Módulos</a></li>
+                    <li><a href="#configuracao"><span class="icon">🔧</span> Configuração</a></li>
+                    <li><a href="#deploy"><span class="icon">🚀</span> Deploy</a></li>
+                    <li><a href="#seguranca"><span class="icon">🔐</span> Segurança</a></li>
+                    <li><a href="#logs"><span class="icon">📊</span> Logs & Monitoramento</a></li>
+                    <li><a href="#manutencao"><span class="icon">🛠️</span> Manutenção</a></li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <h3>🔗 Links Úteis</h3>
+                <ul class="nav-links">
+                    <li><a href="https://github.com/IntegraDP" target="_blank"><span class="icon">🐙</span> GitHub</a></li>
+                    <li><a href="#"><span class="icon">📚</span> Documentação</a></li>
+                    <li><a href="#"><span class="icon">🐛</span> Bug Tracker</a></li>
+                    <li><a href="#"><span class="icon">📦</span> Repositório</a></li>
+                </ul>
+            </div>
+            
+            <div class="version-info">
+                <p><strong>Versão:</strong> 2.1.0</p>
+                <p><strong>Última atualização:</strong> <span id="currentDate"></span></p>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Header -->
+            <header class="page-header">
+                <div class="header-content">
+                    <h1>Documentação Técnica</h1>
+                    <p>Sistema IntegraDP - Arquitetura, Configuração e Desenvolvimento</p>
+                    <div class="header-badges">
+                        <span class="badge badge-primary">Backend: Node.js</span>
+                        <span class="badge badge-secondary">Frontend: React</span>
+                        <span class="badge badge-success">Database: PostgreSQL</span>
+                        <span class="badge badge-warning">API: REST</span>
+                    </div>
+                </div>
+                
+                <div class="quick-actions">
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <span class="icon">🖨️</span> Imprimir
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadPDF()">
+                        <span class="icon">📥</span> Baixar PDF
+                    </button>
+                </div>
+            </header>
+
+            <!-- Arquitetura -->
+            <section id="arquitetura" class="doc-section">
+                <h2><span class="section-icon">🏗️</span> Arquitetura do Sistema</h2>
+                
+                <div class="architecture-diagram">
+                    <div class="arch-layer">
+                        <h4>🎨 Camada de Apresentação (Frontend)</h4>
+                        <ul>
+                            <li><strong>React 18+</strong> com TypeScript</li>
+                            <li><strong>Material-UI</strong> para componentes</li>
+                            <li><strong>React Router</strong> para navegação</li>
+                            <li><strong>Axios</strong> para requisições HTTP</li>
+                            <li><strong>Redux Toolkit</strong> para gerenciamento de estado</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="arch-layer">
+                        <h4>⚙️ Camada de Aplicação (Backend)</h4>
+                        <ul>
+                            <li><strong>Node.js</strong> com Express.js</li>
+                            <li><strong>TypeScript</strong> para tipagem estática</li>
+                            <li><strong>JWT</strong> para autenticação</li>
+                            <li><strong>Bcrypt</strong> para hash de senhas</li>
+                            <li><strong>Multer</strong> para upload de arquivos</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="arch-layer">
+                        <h4>🗃️ Camada de Dados</h4>
+                        <ul>
+                            <li><strong>PostgreSQL 14+</strong> como banco principal</li>
+                            <li><strong>Redis</strong> para cache e sessões</li>
+                            <li><strong>Sequelize ORM</strong> para mapeamento objeto-relacional</li>
+                            <li><strong>Migrations</strong> para controle de versão do banco</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tecnologias -->
+            <section id="tecnologias" class="doc-section">
+                <h2><span class="section-icon">⚙️</span> Stack Tecnológica</h2>
+                
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>🖥️ Frontend</h4>
+                        <ul class="tech-list">
+                            <li>React 18.2.0</li>
+                            <li>TypeScript 4.9.5</li>
+                            <li>Material-UI 5.11.10</li>
+                            <li>Redux Toolkit 1.9.3</li>
+                            <li>React Router 6.8.1</li>
+                            <li>Axios 1.3.4</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-card">
+                        <h4>⚡ Backend</h4>
+                        <ul class="tech-list">
+                            <li>Node.js 18.15.0</li>
+                            <li>Express 4.18.2</li>
+                            <li>TypeScript 4.9.5</li>
+                            <li>Sequelize 6.29.0</li>
+                            <li>JWT 9.0.0</li>
+                            <li>Bcrypt 5.1.0</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-card">
+                        <h4>🗄️ Banco de Dados</h4>
+                        <ul class="tech-list">
+                            <li>PostgreSQL 14.7</li>
+                            <li>Redis 7.0.11</li>
+                            <li>Sequelize ORM</li>
+                            <li>pg (driver) 8.9.0</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="tech-card">
+                        <h4>🛠️ Dev Tools</h4>
+                        <ul class="tech-list">
+                            <li>Git 2.39.2</li>
+                            <li>Docker 23.0.1</li>
+                            <li>ESLint 8.36.0</li>
+                            <li>Jest 29.5.0</li>
+                            <li>Swagger 4.6.2</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Banco de Dados -->
+            <section id="banco-dados" class="doc-section">
+                <h2><span class="section-icon">🗃️</span> Modelo de Banco de Dados</h2>
+                
+                <h3>Principais Tabelas</h3>
+                <div class="table-schema">
+                    <h4>📋 Tabela: usuarios</h4>
+                    <pre><code>CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha_hash VARCHAR(255) NOT NULL,
+    tipo ENUM('admin', 'lider', 'operador') DEFAULT 'operador',
+    lider_id INTEGER REFERENCES usuarios(id),
+    ativo BOOLEAN DEFAULT true,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_usuarios_lider ON usuarios(lider_id);
+CREATE INDEX idx_usuarios_email ON usuarios(email);</code></pre>
+                </div>
+                
+                <div class="table-schema">
+                    <h4>🏢 Tabela: empresas</h4>
+                    <pre><code>CREATE TABLE empresas (
+    id SERIAL PRIMARY KEY,
+    cnpj VARCHAR(18) UNIQUE NOT NULL,
+    razao_social VARCHAR(200) NOT NULL,
+    nome_fantasia VARCHAR(200),
+    endereco JSONB,
+    contatos JSONB,
+    status ENUM('ativo', 'inativo', 'pendente') DEFAULT 'ativo',
+    operador_id INTEGER REFERENCES usuarios(id),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_empresas_cnpj ON empresas(cnpj);
+CREATE INDEX idx_empresas_operador ON empresas(operador_id);</code></pre>
+                </div>
+                
+                <div class="table-schema">
+                    <h4>📞 Tabela: atendimentos</h4>
+                    <pre><code>CREATE TABLE atendimentos (
+    id SERIAL PRIMARY KEY,
+    codigo VARCHAR(50) NOT NULL,
+    empresa_id INTEGER REFERENCES empresas(id),
+    descricao TEXT,
+    prioridade ENUM('baixa', 'media', 'alta') DEFAULT 'media',
+    status ENUM('pendente', 'em_andamento', 'concluido', 'cancelado') DEFAULT 'pendente',
+    responsavel_id INTEGER REFERENCES usuarios(id),
+    data_criacao DATE DEFAULT CURRENT_DATE,
+    data_vencimento DATE NOT NULL,
+    data_conclusao DATE,
+    cor_status VARCHAR(20),
+    metadata JSONB,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_atendimentos_status ON atendimentos(status);
+CREATE INDEX idx_atendimentos_responsavel ON atendimentos(responsavel_id);
+CREATE INDEX idx_atendimentos_vencimento ON atendimentos(data_vencimento);</code></pre>
+                </div>
+            </section>
+
+            <!-- API -->
+            <section id="api" class="doc-section">
+                <h2><span class="section-icon">🔌</span> API REST</h2>
+                
+                <h3>Endpoints Principais</h3>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <span class="url">/api/atendimentos</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <p><strong>Descrição:</strong> Lista atendimentos com filtros</p>
+                        <p><strong>Query Parameters:</strong></p>
+                        <ul>
+                            <li><code>status</code>: Filtro por status</li>
+                            <li><code>responsavel</code>: ID do responsável</li>
+                            <li><code>data_inicio</code>: Data inicial (YYYY-MM-DD)</li>
+                            <li><code>data_fim</code>: Data final (YYYY-MM-DD)</li>
+                        </ul>
+                        <p><strong>Response (200):</strong></p>
+                        <pre><code>{
+    "success": true,
+    "data": [
+        {
+            "id": 1,
+            "codigo": "ATD-2023-001",
+            "descricao": "Processamento de folha",
+            "status": "pendente",
+            "data_vencimento": "2023-12-20",
+            "cor_status": "amarelo"
+        }
+    ],
+    "total": 1,
+    "page": 1,
+    "limit": 20
+}</code></pre>
+                    </div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <span class="url">/api/atendimentos/importar-csv</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <p><strong>Descrição:</strong> Importa atendimentos via arquivo CSV</p>
+                        <p><strong>Headers:</strong></p>
+                        <ul>
+                            <li><code>Content-Type: multipart/form-data</code></li>
+                            <li><code>Authorization: Bearer {token}</code></li>
+                        </ul>
+                        <p><strong>Body:</strong></p>
+                        <ul>
+                            <li><code>arquivo</code>: Arquivo CSV (max 10MB)</li>
+                            <li><code>delimitador</code>: Delimitador (padrão: ";")</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="endpoint">
+                    <div class="endpoint-header">
+                        <span class="method put">PUT</span>
+                        <span class="url">/api/atendimentos/{id}/status</span>
+                    </div>
+                    <div class="endpoint-body">
+                        <p><strong>Descrição:</strong> Atualiza status do atendimento</p>
+                        <p><strong>Body:</strong></p>
+                        <pre><code>{
+    "status": "concluido",
+    "observacao": "Processo finalizado com sucesso"
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuração -->
+            <section id="configuracao" class="doc-section">
+                <h2><span class="section-icon">🔧</span> Configuração do Ambiente</h2>
+                
+                <h3>1. Pré-requisitos</h3>
+                <div class="code-block">
+                    <h4>🎯 Instalação de Dependências</h4>
+                    <pre><code># Node.js (versão 18 ou superior)
+node --version
+
+# PostgreSQL
+psql --version
+
+# Redis
+redis-server --version
+
+# Git
+git --version</code></pre>
+                </div>
+                
+                <h3>2. Variáveis de Ambiente</h3>
+                <div class="code-block">
+                    <h4>📁 Arquivo .env</h4>
+                    <pre><code># Configurações da Aplicação
+NODE_ENV=development
+PORT=3000
+APP_URL=http://localhost:3000
+
+# Banco de Dados
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=integradp
+DB_USER=postgres
+DB_PASSWORD=suasenha
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# JWT
+JWT_SECRET=seu_segredo_jwt_aqui
+JWT_EXPIRES_IN=24h
+
+# Upload
+MAX_FILE_SIZE=10485760
+ALLOWED_FILE_TYPES=pdf,doc,docx,xls,xlsx,jpg,png
+
+# Email (opcional)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=seuemail@gmail.com
+SMTP_PASS=suasenha</code></pre>
+                </div>
+                
+                <h3>3. Configuração do Banco</h3>
+                <div class="code-block">
+                    <pre><code># Criar banco de dados
+createdb integradp
+
+# Executar migrations
+npm run migrate
+
+# Popular dados iniciais
+npm run seed
+
+# Executar testes
+npm test</code></pre>
+                </div>
+            </section>
+
+            <!-- Deploy -->
+            <section id="deploy" class="doc-section">
+                <h2><span class="section-icon">🚀</span> Deploy e Produção</h2>
+                
+                <h3>Docker Compose</h3>
+                <div class="code-block">
+                    <h4>🐳 docker-compose.yml</h4>
+                    <pre><code>version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_DB: integradp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: sua_senha_segura
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      REDIS_HOST: redis
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:</code></pre>
+                </div>
+                
+                <h3>Configuração de Produção</h3>
+                <div class="warning-box">
+                    <h4>⚠️ Importante para Produção</h4>
+                    <ul>
+                        <li>Usar SSL/TLS para todas as conexões</li>
+                        <li>Configurar firewall adequadamente</li>
+                        <li>Implementar rate limiting</li>
+                        <li>Configurar backup automático</li>
+                        <li>Monitorar logs e métricas</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Segurança -->
+            <section id="seguranca" class="doc-section">
+                <h2><span class="section-icon">🔐</span> Segurança</h2>
+                
+                <h3>1. Autenticação e Autorização</h3>
+                <div class="code-block">
+                    <h4>🔑 Middleware de Autenticação</h4>
+                    <pre><code>const jwt = require('jsonwebtoken');
+
+const authMiddleware = (requiredRoles = []) => {
+    return (req, res, next) => {
+        try {
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+            
+            if (!token) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Token não fornecido'
+                });
+            }
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            req.user = decoded;
+
+            // Verifica se o usuário tem a role necessária
+            if (requiredRoles.length > 0 && 
+                !requiredRoles.includes(req.user.tipo)) {
+                return res.status(403).json({
+                    success: false,
+                    error: 'Permissão negada'
+                });
+            }
+
+            next();
+        } catch (error) {
+            return res.status(401).json({
+                success: false,
+                error: 'Token inválido'
+            });
+        }
+    };
+};</code></pre>
+                </div>
+                
+                <h3>2. Validação de Entrada</h3>
+                <div class="code-block">
+                    <h4>✅ Schema de Validação com Joi</h4>
+                    <pre><code>const Joi = require('joi');
+
+const atendimentoSchema = Joi.object({
+    codigo: Joi.string().max(50).required(),
+    empresa_id: Joi.number().integer().positive().required(),
+    descricao: Joi.string().max(1000).required(),
+    prioridade: Joi.string().valid('baixa', 'media', 'alta'),
+    data_vencimento: Joi.date().min('now').required(),
+    responsavel_id: Joi.number().integer().positive()
+});
+
+// Middleware de validação
+const validateAtendimento = (req, res, next) => {
+    const { error } = atendimentoSchema.validate(req.body);
+    
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            error: error.details[0].message
+        });
+    }
+    
+    next();
+};</code></pre>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="doc-footer">
+                <div class="footer-content">
+                    <p>© 2024 Sistema IntegraDP - Documentação Técnica</p>
+                    <p>Versão 2.1.0 | Última atualização: <span id="currentDateFooter"></span></p>
+                    <div class="footer-links">
+                        <a href="#">Política de Segurança</a>
+                        <a href="#">Changelog</a>
+                        <a href="#">Contato</a>
+                    </div>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Data atual
+        const now = new Date();
+        const formattedDate = now.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+        
+        document.getElementById('currentDate').textContent = formattedDate;
+        document.getElementById('currentDateFooter').textContent = formattedDate;
+        
+        // Download PDF
+        function downloadPDF() {
+            alert('Para gerar PDF:\n\n1. Pressione Ctrl+P\n2. Selecione "Salvar como PDF"\n3. Configure margens: Mínimo\n4. Marque "Cabeçalhos e rodapés"\n5. Clique em Salvar');
+        }
+        
+        // Scroll suave para âncoras
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Highlight section na sidebar
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.doc-section');
+            const scrollPosition = window.pageYOffset + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    // Remove active class from all links
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    
+                    // Add active class to current link
+                    const currentLink = document.querySelector(`.nav-links a[href="#${sectionId}"]`);
+                    if (currentLink) {
+                        currentLink.classList.add('active');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
