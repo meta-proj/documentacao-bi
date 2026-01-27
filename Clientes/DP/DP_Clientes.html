@@ -2,7 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#7e1a47">
     <title>Documentação BI Cliente - Departamento Pessoal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -25,12 +26,18 @@
             --white: #ffffff;
         }
 
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.7;
             color: var(--text-dark);
             background: linear-gradient(135deg, #faf8fb 0%, #f3e8f3 100%);
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         /* Layout principal */
@@ -47,9 +54,12 @@
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             padding: 30px 0;
             box-shadow: 3px 0 20px rgba(126, 26, 71, 0.3);
             z-index: 1000;
+            top: 0;
+            left: 0;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -100,27 +110,31 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 25px;
+            padding: 12px 20px;
             user-select: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-weight: 600;
             font-size: 13px;
             color: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            border: none;
+            background: none;
         }
 
-        /* Cursor pointer apenas para tópicos com filhos */
         .toc-section-header:not(.no-children) {
             cursor: pointer;
         }
 
-        /* Hover para TODOS os tópicos - com ou sem filhos */
         .toc-section-header:hover {
             background: rgba(255, 255, 255, 0.15);
             transform: translateY(-2px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
-        /* Sem filhos - sem cursor pointer */
+        .toc-section-header:active {
+            transform: translateY(0);
+        }
+
         .toc-section-header.no-children {
             cursor: default;
         }
@@ -134,6 +148,7 @@
             transition: transform 0.3s ease;
             font-size: 12px;
             min-width: 20px;
+            flex-shrink: 0;
         }
 
         .toc-section-header .toggle-icon.hidden {
@@ -154,17 +169,6 @@
             max-height: 0;
         }
 
-        .toc-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent-lighter);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 0;
-            padding: 0;
-            display: none;
-        }
-
         .toc-list {
             list-style: none;
             margin: 0;
@@ -181,19 +185,25 @@
             text-decoration: none;
             font-size: 13px;
             display: block;
-            padding: 10px 25px;
+            padding: 10px 20px;
             border-radius: 0;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-left: 4px solid transparent;
             position: relative;
             font-weight: 500;
             cursor: pointer;
+            -webkit-touch-callout: none;
+        }
+
+        .toc-list a:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: none;
         }
 
         .toc-list a:hover {
             background: rgba(255, 255, 255, 0.15);
             border-left-color: var(--accent-lighter);
-            padding-left: 28px;
+            padding-left: 23px;
             transform: translateY(-2px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
@@ -205,7 +215,6 @@
             color: var(--white);
         }
 
-        /* Sublistas */
         .toc-list.nested {
             margin: 0;
             padding: 0;
@@ -214,13 +223,13 @@
 
         .toc-list.nested a {
             font-size: 12px;
-            padding: 8px 25px 8px 45px;
+            padding: 8px 20px 8px 40px;
             color: rgba(255, 255, 255, 0.85);
             font-weight: 400;
         }
 
         .toc-list.nested a:hover {
-            padding-left: 48px;
+            padding-left: 43px;
             color: var(--white);
         }
 
@@ -257,6 +266,7 @@
             margin-bottom: 15px;
             font-weight: 900;
             letter-spacing: -0.5px;
+            word-break: break-word;
         }
 
         header .meta {
@@ -278,6 +288,7 @@
         header .meta-item i {
             color: var(--secondary-color);
             font-size: 14px;
+            flex-shrink: 0;
         }
 
         /* HEADINGS */
@@ -294,6 +305,11 @@
             gap: 12px;
             scroll-margin-top: 100px;
             letter-spacing: -0.3px;
+            word-break: break-word;
+        }
+
+        h2 i {
+            flex-shrink: 0;
         }
 
         h3 {
@@ -303,6 +319,7 @@
             font-size: 22px;
             font-weight: 700;
             scroll-margin-top: 100px;
+            word-break: break-word;
         }
 
         h4 {
@@ -311,6 +328,7 @@
             margin-bottom: 12px;
             font-size: 16px;
             font-weight: 600;
+            word-break: break-word;
         }
 
         /* PARAGRAPHS */
@@ -320,6 +338,8 @@
             color: var(--text-dark);
             font-size: 14.5px;
             line-height: 1.75;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* LISTS */
@@ -331,6 +351,8 @@
             margin-bottom: 10px;
             color: var(--text-dark);
             font-size: 14.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /* STRONG */
@@ -347,6 +369,7 @@
             font-family: 'Courier New', monospace;
             color: var(--primary-color);
             font-size: 13px;
+            word-break: break-all;
         }
 
         /* TABLES */
@@ -369,6 +392,7 @@
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.8px;
+            word-break: break-word;
         }
 
         table td {
@@ -376,6 +400,7 @@
             padding: 14px 18px;
             font-size: 13.5px;
             color: var(--text-dark);
+            word-break: break-word;
         }
 
         table tr:hover {
@@ -395,6 +420,7 @@
             border-radius: 6px;
             font-size: 14px;
             color: var(--text-dark);
+            word-break: break-word;
         }
 
         .info-box strong {
@@ -410,6 +436,7 @@
             border-radius: 6px;
             font-size: 14px;
             color: var(--text-dark);
+            word-break: break-word;
         }
 
         .warning-box strong {
@@ -431,7 +458,49 @@
             color: var(--secondary-color);
         }
 
-        /* RESPONSIVO */
+        /* DESKTOP - Acima de 1024px */
+        @media (min-width: 1025px) {
+            .main-content {
+                margin-left: 300px;
+                width: calc(100% - 300px);
+                padding: 40px 60px;
+            }
+
+            .container {
+                max-width: 950px;
+                padding: 50px 60px;
+            }
+
+            h1 {
+                font-size: 42px;
+            }
+
+            h2 {
+                font-size: 30px;
+            }
+
+            h3 {
+                font-size: 22px;
+            }
+
+            p, li {
+                font-size: 14.5px;
+            }
+
+            .sidebar-header {
+                padding: 0 25px 25px 25px;
+            }
+
+            .toc-section-header {
+                padding: 12px 20px;
+            }
+
+            .toc-list a {
+                padding: 10px 20px;
+            }
+        }
+
+        /* TABLET - Entre 768px e 1024px */
         @media (max-width: 1024px) {
             .sidebar {
                 width: 250px;
@@ -444,65 +513,309 @@
             }
 
             .container {
+                max-width: 100%;
                 padding: 40px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            h2 {
+                font-size: 24px;
+                padding-left: 15px;
+                gap: 10px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p, li {
+                font-size: 14px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 15px;
+                gap: 6px;
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+
+            .toc-list.nested a {
+                padding: 7px 15px 7px 35px;
+            }
+
+            table th, table td {
+                padding: 12px 12px;
+                font-size: 12px;
             }
         }
 
-        @media (max-width: 768px) {
+        /* MOBILE - Até 767px */
+        @media (max-width: 767px) {
             .wrapper {
-                flex-direction: column;
+                flex-direction: column-reverse;
             }
 
             .sidebar {
                 width: 100%;
                 height: auto;
                 position: relative;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                max-height: 500px;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px 0;
+                max-height: none;
+            }
+
+            .sidebar-header {
+                padding: 0 20px 15px 20px;
+                margin-bottom: 15px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
             }
 
             .main-content {
                 margin-left: 0;
                 width: 100%;
-                padding: 20px;
+                padding: 20px 16px;
             }
 
             .container {
-                padding: 30px 25px;
+                max-width: 100%;
+                padding: 25px 20px;
                 border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(126, 26, 71, 0.08);
             }
 
-            h1 {
-                font-size: 28px;
+            header {
+                margin-bottom: 30px;
+                padding-bottom: 20px;
             }
 
-            h2 {
-                font-size: 22px;
+            header h1 {
+                font-size: 24px;
+                margin-bottom: 12px;
             }
 
-            table {
+            header .meta {
+                flex-direction: column;
+                gap: 10px;
                 font-size: 12px;
             }
 
-            table th,
-            table td {
-                padding: 10px;
-            }
-        }
-
-        @media print {
-            .sidebar {
-                display: none;
+            h2 {
+                font-size: 20px;
+                margin-top: 30px;
+                margin-bottom: 15px;
+                padding-left: 15px;
+                border-left-width: 4px;
+                gap: 8px;
             }
 
-            .main-content {
-                margin-left: 0;
-                width: 100%;
+            h3 {
+                font-size: 16px;
+                margin-top: 20px;
+                margin-bottom: 12px;
+            }
+
+            h4 {
+                font-size: 14px;
+                margin-top: 12px;
+                margin-bottom: 8px;
+            }
+
+            p {
+                font-size: 13px;
+                line-height: 1.65;
+                text-align: left;
+                margin-bottom: 12px;
+            }
+
+            ul, ol {
+                margin: 15px 0 15px 25px;
                 padding: 0;
             }
 
-            .container {
+            li {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            code {
+                font-size: 12px;
+                padding: 2px 6px;
+            }
+
+            table {
+                margin: 20px 0;
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table th {
+                padding: 12px 8px;
+                font-size: 11px;
+                letter-spacing: 0.5px;
+            }
+
+            table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .info-box, .warning-box {
+                padding: 15px 16px;
+                margin: 20px 0;
+                font-size: 13px;
+                border-left-width: 4px;
+            }
+
+            footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                font-size: 11px;
+            }
+
+            /* Índice Mobile */
+            .toc-section {
+                margin-bottom: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .toc-section-header {
+                font-size: 13px;
+                padding: 12px 16px;
+                gap: 8px;
+            }
+
+            .toc-section-header:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
                 box-shadow: none;
+            }
+
+            .toc-section-header:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 13px;
+                padding: 10px 16px;
+                border-left-width: 3px;
+            }
+
+            .toc-list a:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
+                box-shadow: none;
+                padding-left: 16px;
+            }
+
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-list.nested a {
+                font-size: 12px;
+                padding: 8px 16px 8px 35px;
+            }
+
+            .toc-list.nested a:hover {
+                padding-left: 35px;
+            }
+        }
+
+        /* SMALL PHONE - Até 480px */
+        @media (max-width: 480px) {
+            .main-content, .container {
+                padding: 16px;
+            }
+
+            header h1 {
+                font-size: 20px;
+                gap: 6px;
+            }
+
+            header .meta-item {
+                gap: 6px;
+            }
+
+            h2 {
+                font-size: 18px;
+                padding-left: 12px;
+                gap: 6px;
+            }
+
+            h3 {
+                font-size: 14px;
+            }
+
+            h4 {
+                font-size: 13px;
+            }
+
+            p, li {
+                font-size: 12px;
+            }
+
+            ul, ol {
+                margin: 12px 0 12px 20px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .toc-list.nested a {
+                padding: 6px 12px 6px 30px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            table th, table td {
+                padding: 8px 6px;
             }
         }
 
@@ -520,6 +833,20 @@
 
         .container {
             animation: slideIn 0.5s ease-out;
+        }
+
+        /* Prevent flickering on mobile */
+        @media (hover: none) {
+            .toc-section-header:hover,
+            .toc-list a:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .toc-section-header:active,
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
         }
     </style>
 </head>
@@ -550,7 +877,7 @@
                 </header>
 
                 <section id="introducao">
-                    <h2><i class="fas fa-info-circle"></i> Introdução ao Modelo de Dados do BI de Departamento Pessoal</h2>
+                    <h2><i class="fas fa-info-circle"></i> Introdução</h2>
                     <p>Este documento apresenta a estrutura atualizada do modelo de Business Intelligence (BI) para a área de Departamento Pessoal. O modelo foi redesenhado para fornecer uma visão integrada das operações de Recursos Humanos, com foco em análises de pessoal, folha de pagamento, rescisões, afastamentos, admissões e transferências de colaboradores.</p>
                     <p>A arquitetura utiliza um esquema estrela com tabelas de fato (Folha, Admissão, Rescisão, Afastamento, Transferidos, etc.) que se conectam a tabelas de dimensão (dCalendario, Empresas, Verbas, etc.).</p>
                 </section>
@@ -1064,10 +1391,8 @@
     </div>
 
     <script>
-        // Estado de expansão das seções
         const sectionStates = {};
 
-        // Gerar índice automaticamente
         function generateTableOfContents() {
             const toc = document.getElementById('tableOfContents');
             const container = document.querySelector('.container');
@@ -1081,7 +1406,6 @@
                 heading.parentElement.id = id;
 
                 if (heading.tagName === 'H2') {
-                    // Criar seção principal com expandir/recolher
                     const section = document.createElement('div');
                     section.className = 'toc-section';
                     section.id = `section-${id}`;
@@ -1111,7 +1435,6 @@
 
                     sectionContent.appendChild(currentList);
 
-                    // Adicionar evento de clique para expandir/recolher
                     sectionHeader.addEventListener('click', function(e) {
                         if (e.target.closest('a')) return;
                         
@@ -1132,7 +1455,6 @@
                     currentSection = { section, header: sectionHeader, content: sectionContent, id };
 
                 } else if (heading.tagName === 'H3' && currentList) {
-                    // Adicionar como subitem
                     const link = document.createElement('a');
                     link.href = `#${id}`;
                     link.textContent = heading.textContent;
@@ -1151,14 +1473,12 @@
                 }
             });
 
-            // Segunda passada: marcar tópicos sem filhos
             document.querySelectorAll('.toc-section').forEach(section => {
                 const content = section.querySelector('.toc-section-content');
                 const nestedList = content.querySelector('.toc-list.nested');
                 const header = section.querySelector('.toc-section-header');
                 const toggleIcon = header.querySelector('.toggle-icon');
 
-                // Se não tem sublista (nested), é um tópico sem filhos
                 if (!nestedList) {
                     header.classList.add('no-children');
                     toggleIcon.classList.add('hidden');
@@ -1166,7 +1486,6 @@
             });
         }
 
-        // Destacar link ativo ao rolar
         function highlightActiveLink() {
             const sections = document.querySelectorAll('h2, h3');
             const links = document.querySelectorAll('#tableOfContents a');
@@ -1190,7 +1509,6 @@
             });
         }
 
-        // Smooth scroll
         document.addEventListener('click', (e) => {
             if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
                 if (e.target.closest('#tableOfContents')) {
@@ -1203,7 +1521,6 @@
             }
         });
 
-        // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             generateTableOfContents();
             highlightActiveLink();
