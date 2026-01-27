@@ -4,570 +4,1210 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentação BI Cliente - Departamento Pessoal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
+        :root {
+            --primary-color: #7e1a47;
+            --secondary-color: #921e52;
+            --accent-light: #c94a6d;
+            --accent-lighter: #e8b4cc;
+            --light-bg: #faf8fb;
+            --border-color: #e8d9e8;
+            --text-dark: #2d1b2e;
+            --text-light: #6b5b6b;
+            --hover-bg: #f3e8f3;
+            --white: #ffffff;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-            padding: 20px;
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #faf8fb 0%, #f3e8f3 100%);
+            min-height: 100vh;
         }
-        
+
+        /* Layout principal */
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR - ÍNDICE */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 30px 0;
+            box-shadow: 3px 0 20px rgba(126, 26, 71, 0.3);
+            z-index: 1000;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 25px 25px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .toc-section {
+            margin-bottom: 5px;
+            padding: 0;
+        }
+
+        .toc-section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            user-select: none;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* Cursor pointer apenas para tópicos com filhos */
+        .toc-section-header:not(.no-children) {
+            cursor: pointer;
+        }
+
+        /* Hover para TODOS os tópicos - com ou sem filhos */
+        .toc-section-header:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sem filhos - sem cursor pointer */
+        .toc-section-header.no-children {
+            cursor: default;
+        }
+
+        .toc-section-header .toggle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            min-width: 20px;
+        }
+
+        .toc-section-header .toggle-icon.hidden {
+            display: none;
+        }
+
+        .toc-section-header .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .toc-section-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .toc-section-content.collapsed {
+            max-height: 0;
+        }
+
+        .toc-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-lighter);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 0;
+            padding: 0;
+            display: none;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: 13px;
+            display: block;
+            padding: 10px 25px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .toc-list a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-lighter);
+            padding-left: 28px;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-list a.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-left-color: var(--accent-lighter);
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        /* Sublistas */
+        .toc-list.nested {
+            margin: 0;
+            padding: 0;
+            border-left: none;
+        }
+
+        .toc-list.nested a {
+            font-size: 12px;
+            padding: 8px 25px 8px 45px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+
+        .toc-list.nested a:hover {
+            padding-left: 48px;
+            color: var(--white);
+        }
+
+        .toc-list.nested a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 300px;
+            width: calc(100% - 300px);
+            padding: 40px 60px;
+        }
+
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 950px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(126, 26, 71, 0.12);
+            padding: 50px 60px;
         }
-        
-        h1 {
-            color: #1f77b4;
-            border-bottom: 3px solid #1f77b4;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
+
+        /* HEADER */
+        header {
+            margin-bottom: 45px;
+            padding-bottom: 30px;
+            border-bottom: 4px solid var(--primary-color);
         }
-        
-        h2 {
-            color: #2ca02c;
-            margin-top: 30px;
+
+        header h1 {
+            font-size: 42px;
+            color: var(--primary-color);
             margin-bottom: 15px;
-            border-left: 5px solid #2ca02c;
-            padding-left: 15px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
         }
-        
-        h3 {
-            color: #ff7f0e;
+
+        header .meta {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--text-light);
             margin-top: 20px;
-            margin-bottom: 10px;
         }
-        
+
+        header .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        header .meta-item i {
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+
+        /* HEADINGS */
+        h2 {
+            color: var(--primary-color);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            font-size: 30px;
+            font-weight: 800;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            scroll-margin-top: 100px;
+            letter-spacing: -0.3px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            scroll-margin-top: 100px;
+        }
+
+        h4 {
+            color: var(--accent-light);
+            margin-top: 18px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        /* PARAGRAPHS */
         p {
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             text-align: justify;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            line-height: 1.75;
         }
-        
+
+        /* LISTS */
+        ul, ol {
+            margin: 20px 0 20px 35px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 14.5px;
+        }
+
+        /* STRONG */
+        strong {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* CODE */
+        code {
+            background: var(--hover-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            font-size: 13px;
+        }
+
+        /* TABLES */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background: #fafafa;
+            margin: 30px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(146, 30, 82, 0.1);
+            border: 1px solid var(--border-color);
         }
-        
+
         table th {
-            background: #2ca02c;
-            color: white;
-            padding: 12px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 16px 18px;
             text-align: left;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
         }
-        
+
         table td {
-            border: 1px solid #ddd;
-            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 18px;
+            font-size: 13.5px;
+            color: var(--text-dark);
         }
-        
-        table tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-        
+
         table tr:hover {
-            background: #f0f0f0;
+            background: var(--light-bg);
         }
-        
-        ul, ol {
-            margin-left: 30px;
-            margin-bottom: 15px;
+
+        table tr:last-child td {
+            border-bottom: none;
         }
-        
-        li {
-            margin-bottom: 8px;
-        }
-        
-        strong {
-            color: #d62728;
-            font-weight: bold;
-        }
-        
-        code {
-            background: #f4f4f4;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-        
+
+        /* INFO BOX */
         .info-box {
-            background: #e7f3ff;
-            border-left: 4px solid #2196F3;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #f0d9f0 0%, #e8c9e8 100%);
+            border-left: 5px solid var(--secondary-color);
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
         }
-        
+
+        .info-box strong {
+            color: var(--primary-color);
+        }
+
+        /* WARNING BOX */
         .warning-box {
-            background: #fff3cd;
-            border-left: 4px solid #ff9800;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            border-left: 5px solid #d94a38;
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
         }
-        
+
+        .warning-box strong {
+            color: #d94a38;
+        }
+
+        /* FOOTER */
         footer {
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #666;
-            font-size: 0.9em;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
         }
-        
-        @media print {
-            body {
-                background: white;
+
+        footer strong {
+            color: var(--secondary-color);
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
             }
+
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                padding: 30px 40px;
+            }
+
             .container {
-                box-shadow: none;
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                max-height: 500px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .container {
+                padding: 30px 25px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th,
+            table td {
+                padding: 10px;
+            }
+        }
+
+        @media print {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
                 padding: 0;
             }
+
+            .container {
+                box-shadow: none;
+            }
+        }
+
+        /* Animações */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: slideIn 0.5s ease-out;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="documentacao-bi-cliente-departamento-pessoal">Documentação BI Cliente - Departamento Pessoal</h1>
-<h2 id="versao-atualizada-janeiro-2026">Versão Atualizada - Janeiro 2026</h2>
-<p><strong>Documento Anterior (Desatualizado):</strong> 05/09/2025
-<strong>Documento Atualizado:</strong> 27/01/2026
-<strong>Responsável:</strong> Análise Automatizada via Power BI Modeling</p>
-<hr />
-<h2 id="introducao-ao-modelo-de-dados-do-bi-de-departamento-pessoal">📋 Introdução ao Modelo de Dados do BI de Departamento Pessoal</h2>
-<p>Este documento apresenta a estrutura atualizada do modelo de Business Intelligence (BI) para a área de Departamento Pessoal. O modelo foi redesenhado para fornecer uma visão integrada das operações de Recursos Humanos, com foco em análises de pessoal, folha de pagamento, rescisões, afastamentos, admissões e transferências de colaboradores.</p>
-<p>A arquitetura utiliza um esquema estrela com tabelas de fato (Folha, Admissão, Rescisão, Afastamento, Transferidos, etc.) que se conectam a tabelas de dimensão (dCalendario, Empresas, Verbas, etc.).</p>
-<h3 id="mudancas-principais-desde-a-versao-anterior">Mudanças Principais desde a versão anterior:</h3>
-<ul>
-<li><strong>Novas tabelas adicionadas:</strong> Afastamento, Folha Intermitente, Adiantamento 13º, Colaboradores Complementares, FatNovo, Dev</li>
-<li><strong>Tabela de Medidas centralizada:</strong> Todas as 48 medidas agora em uma única tabela chamada "Medidas"</li>
-<li><strong>Novos campos dimensionais:</strong> dREF, dGenero, FiltrosPrimeiraPagina, Impostos (Cadastro), Funções colaboradores</li>
-<li><strong>Medidas expandidas:</strong> Agora com 62 medidas no total (vs 14 na versão anterior)</li>
-<li><strong>Tabelas de suporte:</strong> LocalDateTable's automáticas, DateTableTemplate</li>
-</ul>
-<hr />
-<h2 id="visao-geral-das-tabelas">📊 Visão Geral das Tabelas</h2>
-<h3 id="total-de-tabelas-42"><strong>Total de Tabelas: 42</strong></h3>
-<ul>
-<li>10 Tabelas de Fato</li>
-<li>14 Tabelas de Dimensão</li>
-<li>18 Tabelas de Suporte/Auxiliares (LocalDateTables, Templates)</li>
-</ul>
-<hr />
-<h2 id="tabelas-de-fato">🔴 TABELAS DE FATO</h2>
-<h3 id="1-folha">1. <strong>Folha</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato principal que armazena todos os registros de folha de pagamento mensal com detalhes de verbas</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 8
-- BDCODEMP (ID Empresa)
-- BDCODCOL (ID Colaborador)
-- BDREFFN (Referência Mês/Ano)
-- BDCODVER (Código Verba)
-- BDVALVFN (Valor Verba)
-- ID_EMPRESA + ID_COLABORADOR (Chave Composta)
-- Genero (Sexo)
-- RowNumber (ID Linha)</p>
-<p><strong>Medida:</strong>
-- <strong>Pro-Labore:</strong> Calcula valor de pro-labore da folha de pagamento</p>
-<p><strong>Fonte de Dados:</strong> VWRH_UNION_MES_VERBAS (ODBC - VSCI)</p>
-<p><strong>Última Atualização:</strong> 18/02/2025</p>
-<hr />
-<h3 id="2-admissao">2. <strong>Admissão</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato que registra admissões de novos colaboradores</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 9
-- BDCODEMP (ID Empresa)
-- BDCODCOL (ID Colaborador)
-- BDNOMCOLUPPER (Nome do Colaborador em UPPER)
-- BDDATAADMCOL (Data da Admissão)
-- BDSEXOCOL (Sexo: M/F/SEM CADASTRO)
-- ID_EMPRESA + ID_COLABORADOR (Chave Composta)
-- ID_MATRIZ (Matriz da Empresa)
-- RESCISAO (Data de Rescisão - quando aplicável)
-- DATA_TRANSFERENCIA (Data de Transferência - quando aplicável)</p>
-<p><strong>Medidas (6):</strong>
-- <strong>Contratações:</strong> Conta colaboradores admitidos (excluindo transferências internas)
-- <strong>TESTE:</strong> Medida para testes (não usar em produção)
-- <strong>Média Ativos:</strong> Calcula média de colaboradores ativos no período
-- <strong>Ativos:</strong> Conta colaboradores ativos
-- <strong>Total de Ativos Geral:</strong> Total de ativos sem filtros contextuais
-- <strong>% de Ativos por Filial:</strong> Percentual de ativos por filial</p>
-<p><strong>Fonte de Dados:</strong> VW_COLABORADORES_REF_ATUAL (ODBC - VSCI)</p>
-<p><strong>Última Atualização:</strong> 18/02/2025</p>
-<hr />
-<h3 id="3-rescisao">3. <strong>Rescisão</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato com registros de rescisões de contrato de colaboradores</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 5
-- ID_EMPRESA + ID_COLABORADOR
-- RESCISAO (Data da Rescisão)
-- e outras dimensões</p>
-<p><strong>Medida:</strong>
-- <strong>Demissões:</strong> Conta colaboradores demitidos (excluindo transferências internas)</p>
-<p><strong>Fonte de Dados:</strong> VW_RESCISAO e VW_COLABORADORES_REF_ATUAL (ODBC - VSCI)</p>
-<hr />
-<h3 id="4-afastamento">4. <strong>Afastamento</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato que registra períodos de afastamento de colaboradores (licenças, atestados, etc.)</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 6
-- BDCODEMP, BDCODCOL, e campos de data/tipo de afastamento</p>
-<p><strong>Medida:</strong>
-- <strong>MediaAfastados:</strong> Calcula a média de colaboradores afastados</p>
-<p><strong>Fonte de Dados:</strong> ODBC - VSCI</p>
-<p><strong>Última Atualização:</strong> 18/02/2025</p>
-<hr />
-<h3 id="5-transferidos">5. <strong>Transferidos</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato com registros de transferências internas de colaboradores entre empresas</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 9
-- BDCODEMP, BDCODCOL, ID_EMPRESA + ID_COLABORADOR, e informações de destino</p>
-<p><strong>Medida:</strong>
-- <strong>Autonomos:</strong> Contagem distinta de autônomos ignorando filtros de contexto</p>
-<p><strong>Fonte de Dados:</strong> VRH_EMP_TTRANSCOL (ODBC - VSCI)</p>
-<hr />
-<h3 id="6-folha-intermitente">6. <strong>Folha Intermitente</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato para colaboradores com regime intermitente</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 20</p>
-<p><strong>Fonte de Dados:</strong> ODBC - VSCI</p>
-<hr />
-<h3 id="7-rescisao_valor">7. <strong>Rescisao_Valor</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato com valores de folha relacionados a rescisões</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 5</p>
-<p><strong>Fonte de Dados:</strong> VRHF_EMP_TFOLHANORMAL, VRHF_EMP_TFOLHATOMADOR, VRHF_EMP_TFOLHAINT (ODBC - VSCI)</p>
-<hr />
-<h3 id="8-fatnovo">8. <strong>FatNovo</strong></h3>
-<p><strong>Descrição:</strong> Nova tabela de fato (propósito em desenvolvimento)</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 28</p>
-<p><strong>Medida:</strong> 1 medida</p>
-<hr />
-<h3 id="9-ser">9. <strong>Ser</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato com informações de serviços</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 19</p>
-<p><strong>Fonte de Dados:</strong> VW_VEF_TOT_NAT_SER (ODBC - VSCI)</p>
-<hr />
-<h3 id="10-outras-receitas">10. <strong>Outras Receitas</strong></h3>
-<p><strong>Descrição:</strong> Tabela de fato com receitas de tipos específicos</p>
-<p><strong>Modo:</strong> Import<br />
-<strong>Colunas:</strong> 3</p>
-<p><strong>Fonte de Dados:</strong> VEF_EMP_TMOVOREC (ODBC - VSCI)</p>
-<hr />
-<h2 id="tabelas-de-dimensao">🔵 TABELAS DE DIMENSÃO</h2>
-<h3 id="1-dcalendario">1. <strong>dCalendario</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão de tempo, essencial para análises baseadas em datas</p>
-<p><strong>Colunas:</strong> 7
-- Data
-- Mês/Ano (MM/AAAA)
-- REF (AAAA-MM)
-- Hierarquias de data</p>
-<p><strong>Fonte de Dados:</strong> Tabela criada internamente a partir de 01/01/2020</p>
-<hr />
-<h3 id="2-dref">2. <strong>dREF</strong></h3>
-<p><strong>Descrição:</strong> Dimensão complementar de referência temporal</p>
-<p><strong>Colunas:</strong> 1</p>
-<hr />
-<h3 id="3-empresas">3. <strong>Empresas</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com informações das empresas</p>
-<p><strong>Colunas:</strong> 13
-- ID_EMPRESA
-- CNPJ_EMPRESA
-- NOME_EMPRESA
-- ID_MATRIZ
-- e outros campos cadastrais</p>
-<p><strong>Medida:</strong>
-- <strong>UnNome:</strong> Concatena CNPJ + Nome da empresa</p>
-<p><strong>Fonte de Dados:</strong> TEMPRESAS_REF e TEMPRESAS (ODBC - VSCI)</p>
-<hr />
-<h3 id="4-verbas">4. <strong>Verbas</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com detalhes das verbas de folha</p>
-<p><strong>Colunas:</strong> 26
-- BDCODVER (Código Verba)
-- Descrição
-- Tipo
-- e outros detalhes cadastrais</p>
-<p><strong>Fonte de Dados:</strong> VRH_BASE_TVERBAS_REF (ODBC - VSCI)</p>
-<hr />
-<h3 id="5-tabela-verbas">5. <strong>Tabela Verbas</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão auxiliar com lista de verbas</p>
-<p><strong>Colunas:</strong> 2</p>
-<hr />
-<h3 id="6-tabela-verbas-2">6. <strong>Tabela Verbas (2)</strong></h3>
-<p><strong>Descrição:</strong> Dimensão com lista distinta de tipos de verbas para filtros</p>
-<p><strong>Colunas:</strong> 2</p>
-<hr />
-<h3 id="7-tabelaverbasgrafico">7. <strong>TabelaVerbasGrafico</strong></h3>
-<p><strong>Descrição:</strong> Tabela calculada baseada em 'Tabela Verbas' para visualizações</p>
-<p><strong>Colunas:</strong> 2</p>
-<hr />
-<h3 id="8-impostos-cadastro">8. <strong>Impostos (Cadastro)</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com configuração de impostos</p>
-<p><strong>Colunas:</strong> 64</p>
-<hr />
-<h3 id="9-cadastro-funcoes">9. <strong>Cadastro funções</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com funções/cargos cadastrados</p>
-<p><strong>Colunas:</strong> 5</p>
-<hr />
-<h3 id="10-dgenero">10. <strong>dGenero</strong></h3>
-<p><strong>Descrição:</strong> Dimensão simples com valores de gênero</p>
-<p><strong>Colunas:</strong> 1</p>
-<hr />
-<h3 id="11-filtrosprimeirapagina">11. <strong>FiltrosPrimeiraPagina</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão para controlar filtros da primeira página</p>
-<p><strong>Colunas:</strong> 1</p>
-<hr />
-<h3 id="12-colaboradores-complementares">12. <strong>Colaboradores Complementares</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com dados complementares de colaboradores</p>
-<p><strong>Colunas:</strong> 4</p>
-<hr />
-<h3 id="13-dev">13. <strong>Dev</strong></h3>
-<p><strong>Descrição:</strong> Tabela auxiliar (propósito em desenvolvimento)</p>
-<p><strong>Colunas:</strong> 28</p>
-<hr />
-<h3 id="14-tomador">14. <strong>Tomador</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com informações de tomadores</p>
-<p><strong>Colunas:</strong> 5</p>
-<hr />
-<h3 id="15-inssfgts">15. <strong>INSS/FGTS</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com parâmetros de INSS/FGTS</p>
-<p><strong>Colunas:</strong> 7</p>
-<hr />
-<h3 id="16-autonomos">16. <strong>Autonomos</strong></h3>
-<p><strong>Descrição:</strong> Tabela de dimensão com dados de trabalhadores autônomos</p>
-<p><strong>Colunas:</strong> 4</p>
-<p><strong>Medida:</strong>
-- <strong>Autonomos:</strong> Contagem distinta de autônomos</p>
-<hr />
-<h2 id="tabelas-de-suporteauxiliares">🟢 TABELAS DE SUPORTE/AUXILIARES</h2>
-<h3 id="localdatetables-geradas-automaticamente">LocalDateTables (Geradas Automaticamente)</h3>
-<ul>
-<li>LocalDateTable_2c49e048-6d98-4b3e-9cde-e67a12616b35</li>
-<li>LocalDateTable_3d34609f-326f-4dbf-af61-a146cd417b9e</li>
-<li>LocalDateTable_e50db523-851f-4a24-ab43-78b060b5d637</li>
-<li>LocalDateTable_91c8fce7-0ee8-435e-a57e-522c521acffe</li>
-<li>LocalDateTable_132baca2-cfba-4265-9a25-54e5ab0a627e</li>
-<li>LocalDateTable_d7f2caf7-c456-413c-9a81-c542aaa316db</li>
-<li>LocalDateTable_26e00dbf-12e3-4a28-a915-b0946603e76d</li>
-<li>LocalDateTable_6441f675-3fc8-476a-83c0-3cc933b7d940</li>
-<li>LocalDateTable_a71cbb32-db90-4e30-9749-498ad148ce76</li>
-<li>LocalDateTable_b1061df8-4532-40ef-9866-8c0707d5c5cc</li>
-</ul>
-<h3 id="outras-tabelas-de-suporte">Outras Tabelas de Suporte</h3>
-<ul>
-<li><strong>DateTableTemplate_4c1d8dcc-67d3-4969-97d9-4e4030d39070:</strong> Template de tabela de data</li>
-<li><strong>Funções colaboradores (2):</strong> Cópia auxiliar</li>
-<li><strong>Funções colaboradores (3):</strong> Cópia auxiliar</li>
-</ul>
-<hr />
-<h2 id="tabela-de-medidas-centralizada">🔶 TABELA DE MEDIDAS CENTRALIZADA</h2>
-<p><strong>Tabela:</strong> Medidas<br />
-<strong>Colunas:</strong> 0 (Tabela vazia, apenas medidas)<br />
-<strong>Total de Medidas:</strong> 48</p>
-<h3 id="medidas-de-pessoal">Medidas de Pessoal:</h3>
-<ol>
-<li><strong>Pro-Labore</strong> - Valor de pro-labore da folha</li>
-<li><strong>TodasEmpresas</strong> - Agregação de todas as empresas</li>
-<li><strong>Demissões</strong> - Contagem de demissões</li>
-<li><strong>Contratações</strong> - Contagem de contratações/admissões</li>
-<li><strong>Média Ativos</strong> - Média de colaboradores ativos</li>
-<li><strong>Ativos</strong> - Total de colaboradores ativos</li>
-<li><strong>Total de Ativos Geral</strong> - Ativos sem filtros contextuais</li>
-<li><strong>% de Ativos por Filial</strong> - Percentual por filial</li>
-<li><strong>MediaAfastados</strong> - Média de afastados</li>
-<li><strong>Período consultado</strong> - Período da consulta</li>
-<li><strong>Autonomos</strong> - Contagem de autônomos</li>
-<li><strong>Turnover</strong> - Taxa de turnover</li>
-<li><strong>Absenteísmo</strong> - Taxa de absenteísmo</li>
-<li><strong>Assiduidade</strong> - Taxa de assiduidade</li>
-</ol>
-<h3 id="medidas-de-horas-e-afastamentos">Medidas de Horas e Afastamentos:</h3>
-<ol>
-<li><strong>Atestado Abonado</strong> - Valor de atestado abonado</li>
-<li><strong>Horas Faltas</strong> - Total de horas de falta</li>
-<li><strong>Horas Extras</strong> - Total de horas extras</li>
-<li><strong>Horas Trabalhadas x HE</strong> - Comparação de horas</li>
-</ol>
-<h3 id="medidas-de-folha-e-proventos">Medidas de Folha e Proventos:</h3>
-<ol>
-<li><strong>Salario Mensalista</strong> - Salário de colaboradores mensalistas</li>
-<li><strong>Adiantamento</strong> - Valor de adiantamento de salário</li>
-<li><strong>Férias</strong> - Valor de férias</li>
-<li><strong>Rescisão</strong> - Valor de rescisão</li>
-<li><strong>Total proventos</strong> - Soma de todos os proventos</li>
-<li><strong>Liquido folha pago</strong> - Valor líquido de folha pago</li>
-</ol>
-<h3 id="medidas-de-descontos-e-impostos">Medidas de Descontos e Impostos:</h3>
-<ol>
-<li><strong>IRRF</strong> - Imposto de Renda Retido na Fonte</li>
-<li><strong>INSS</strong> - Contribuição INSS</li>
-<li><strong>FGTS</strong> - Fundo de Garantia do Tempo de Serviço</li>
-<li><strong>GRRF</strong> - Contribuição sindical/GRRF</li>
-<li><strong>Sindicatos</strong> - Desconto de sindicato</li>
-</ol>
-<h3 id="medidas-de-faturamento-e-custos">Medidas de Faturamento e Custos:</h3>
-<ol>
-<li><strong>Faturamento</strong> - Valor total de faturamento</li>
-<li><strong>Custo total da folha</strong> - Custo total de folha de pagamento</li>
-<li><strong>Faturamento / Funcionário</strong> - Faturamento por funcionário</li>
-<li><strong>Folha x Faturamento</strong> - Relação de folha sobre faturamento</li>
-<li><strong>TotalFat</strong> - Total de faturamento (versão alternativa)</li>
-</ol>
-<h3 id="medidas-de-transferencia-e-liquidacao">Medidas de Transferência e Liquidação:</h3>
-<ol>
-<li><strong>Liquido Transferencia</strong> - Valor líquido de transferência</li>
-</ol>
-<h3 id="medidas-de-visualizacao-e-controle">Medidas de Visualização e Controle:</h3>
-<ol>
-<li><strong>ValoresTabela</strong> - Valores para tabela</li>
-<li><strong>% Variação</strong> - Percentual de variação</li>
-<li><strong>NomesGraficoPeriodo</strong> - Nomes para gráfico por período</li>
-<li><strong>NomesGraficoCargo</strong> - Nomes para gráfico por cargo</li>
-<li><strong>NomesGraficoGenero</strong> - Nomes para gráfico por gênero</li>
-<li><strong>ValoresTabela2</strong> - Valores para tabela (versão 2)</li>
-<li><strong>MedidaPorCargo</strong> - Medida agrupada por cargo</li>
-<li><strong>MedidaPorCargoPizza</strong> - Medida para gráfico de pizza por cargo</li>
-<li><strong>SalarioMensalistaText</strong> - Salário mensalista em texto</li>
-<li><strong>TituloFolhaPorPeriodo</strong> - Título dinâmico para folha por período</li>
-<li><strong>TituloFolhaPorFilial</strong> - Título dinâmico para folha por filial</li>
-<li><strong>TituloSwitch</strong> - Título para switch/seletor</li>
-<li><strong>Afastados</strong> - Total de colaboradores afastados</li>
-<li><strong>TurnoverMedia</strong> - Média de turnover</li>
-</ol>
-<h3 id="medidas-de-testes-nao-usar-em-producao">Medidas de Testes (NÃO USAR EM PRODUÇÃO):</h3>
-<ol>
-<li><strong>TESTE</strong> - Medida de teste</li>
-<li><strong>TESTE2</strong> - Medida de teste 2</li>
-<li><strong>Teste1</strong> - Medida de teste</li>
-<li><strong>100%</strong> - Constante 100%</li>
-<li><strong>3%</strong> - Constante 3%</li>
-<li><strong>97%</strong> - Constante 97%</li>
-<li><strong>10%</strong> - Constante 10%</li>
-<li><strong>1%</strong> - Constante 1%</li>
-<li><strong>5%</strong> - Constante 5%</li>
-<li><strong>7%</strong> - Constante 7%</li>
-<li><strong>15%</strong> - Constante 15%</li>
-<li><strong>20%</strong> - Constante 20%</li>
-<li><strong>Dev</strong> - Medida em desenvolvimento</li>
-</ol>
-<hr />
-<h2 id="relacionamentos-principais">📈 Relacionamentos Principais</h2>
-<p>O modelo segue a arquitetura de esquema estrela com os seguintes relacionamentos:</p>
-<ul>
-<li><strong>Folha</strong> ←→ Empresas (por BDCODEMP)</li>
-<li><strong>Folha</strong> ←→ Verbas (por BDCODVER)</li>
-<li><strong>Folha</strong> ←→ dCalendario (por BDREFFN)</li>
-<li><strong>Admissão</strong> ←→ Empresas (por BDCODEMP)</li>
-<li><strong>Admissão</strong> ←→ dCalendario</li>
-<li><strong>Rescisão</strong> ←→ Empresas</li>
-<li><strong>Rescisão</strong> ←→ dCalendario</li>
-<li><strong>Afastamento</strong> ←→ Empresas</li>
-<li><strong>Afastamento</strong> ←→ dCalendario</li>
-<li><strong>Transferidos</strong> ←→ Empresas</li>
-</ul>
-<hr />
-<h2 id="informacoes-tecnicas-do-modelo">💾 Informações Técnicas do Modelo</h2>
-<table>
-<thead>
-<tr>
-<th>Propriedade</th>
-<th>Valor</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Nome do Modelo</td>
-<td>30985e29-0fe1-40e6-88af-4e2bd5a9646e</td>
-</tr>
-<tr>
-<td>Nível de Compatibilidade</td>
-<td>1601</td>
-</tr>
-<tr>
-<td>Idioma</td>
-<td>Português (1046)</td>
-</tr>
-<tr>
-<td>Modo de Armazenamento</td>
-<td>Import</td>
-</tr>
-<tr>
-<td>Data de Criação</td>
-<td>08/11/2024</td>
-</tr>
-<tr>
-<td>Última Atualização</td>
-<td>27/01/2026</td>
-</tr>
-<tr>
-<td>Última Atualização de Schema</td>
-<td>27/01/2026</td>
-</tr>
-<tr>
-<td>Tamanho Estimado</td>
-<td>132 MB</td>
-</tr>
-<tr>
-<td>Estado</td>
-<td>Unprocessed</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<h2 id="ciclo-de-atualizacao">🔄 Ciclo de Atualização</h2>
-<p>As tabelas conectadas via ODBC são atualizadas regularmente. A última atualização registrada foi em <strong>18/02/2025</strong>.</p>
-<hr />
-<h2 id="observacoes-importantes">⚠️ Observações Importantes</h2>
-<ol>
-<li><strong>Medidas de Teste:</strong> Remover ou consolidar as 11+ medidas de teste antes de usar em produção</li>
-<li><strong>LocalDateTables:</strong> Verificar se todas as 10 LocalDateTables são necessárias (potencial limpeza)</li>
-<li><strong>Tabelas Duplicadas:</strong> Existem múltiplas versões de algumas tabelas (Funções colaboradores, Tabela Verbas) - considerar consolidação</li>
-<li><strong>Dev:</strong> Verificar o propósito das tabelas "Dev" e "FatNovo"</li>
-<li><strong>Otimização:</strong> Modelo atual com 132 MB - avaliar se há oportunidades de otimização</li>
-</ol>
-<hr />
-<h2 id="fontes-de-dados">🔗 Fontes de Dados</h2>
-<p>Todas as tabelas de fato e dimensão (exceto as criadas internamente) conectam ao banco de dados via <strong>ODBC (DSN: VSCI)</strong>.</p>
-<p><strong>Sistema:</strong> Visual Software Recursos Humanos (VSCI)</p>
-<hr />
-<h2 id="historico-de-alteracoes">📝 Histórico de Alterações</h2>
-<table>
-<thead>
-<tr>
-<th>Data</th>
-<th>Alteração</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>27/01/2026</td>
-<td>Documentação atualizada - Análise completa do modelo atual</td>
-</tr>
-<tr>
-<td>05/09/2025</td>
-<td>Última versão documentada</td>
-</tr>
-</tbody>
-</table>
-<hr />
-<p><strong>Fim do Documento</strong></p>
-<p><em>Documentação gerada automaticamente via Power BI Modeling MCP em 27/01/2026</em></p>
-        <footer>
-            <p><strong>Documentação gerada automaticamente via Power BI Modeling MCP em 27/01/2026</strong></p>
-        </footer>
+    <div class="wrapper">
+        <!-- SIDEBAR ÍNDICE -->
+        <aside class="sidebar">
+            <nav id="tableOfContents">
+                <!-- O índice será preenchido por JavaScript -->
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="container">
+                <header>
+                    <h1><i class="fas fa-chart-line"></i> Documentação BI Cliente - Departamento Pessoal</h1>
+                    <div class="meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <strong>Versão Atualizada:</strong> Janeiro 2026
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-user"></i>
+                            <strong>Responsável:</strong> Guilherme Cardoso
+                        </div>
+                    </div>
+                </header>
+
+                <section id="introducao">
+                    <h2><i class="fas fa-info-circle"></i> Introdução ao Modelo de Dados do BI de Departamento Pessoal</h2>
+                    <p>Este documento apresenta a estrutura atualizada do modelo de Business Intelligence (BI) para a área de Departamento Pessoal. O modelo foi redesenhado para fornecer uma visão integrada das operações de Recursos Humanos, com foco em análises de pessoal, folha de pagamento, rescisões, afastamentos, admissões e transferências de colaboradores.</p>
+                    <p>A arquitetura utiliza um esquema estrela com tabelas de fato (Folha, Admissão, Rescisão, Afastamento, Transferidos, etc.) que se conectam a tabelas de dimensão (dCalendario, Empresas, Verbas, etc.).</p>
+                </section>
+
+                <section id="visao-geral">
+                    <h2><i class="fas fa-database"></i> Visão Geral das Tabelas</h2>
+                    <p><strong>Total de Tabelas:</strong> 42</p>
+                    <ul>
+                        <li>10 Tabelas de Fato</li>
+                        <li>14 Tabelas de Dimensão</li>
+                        <li>18 Tabelas de Suporte/Auxiliares (LocalDateTables, Templates)</li>
+                    </ul>
+                </section>
+
+                <section id="tabelas-fato">
+                    <h2><i class="fas fa-table"></i> Tabelas de Fato</h2>
+
+                    <h3>1. Folha</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato principal que armazena todos os registros de folha de pagamento mensal com detalhes de verbas</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Quantidade de Colunas</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>VWRH_UNION_MES_VERBAS (ODBC - VSCI)</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>18/02/2025</td>
+                        </tr>
+                    </table>
+
+                    <h4>Colunas:</h4>
+                    <ul>
+                        <li>BDCODEMP (ID Empresa)</li>
+                        <li>BDCODCOL (ID Colaborador)</li>
+                        <li>BDREFFN (Referência Mês/Ano)</li>
+                        <li>BDCODVER (Código Verba)</li>
+                        <li>BDVALVFN (Valor Verba)</li>
+                        <li>ID_EMPRESA + ID_COLABORADOR (Chave Composta)</li>
+                        <li>Genero (Sexo)</li>
+                        <li>RowNumber (ID Linha)</li>
+                    </ul>
+
+                    <h4>Medidas:</h4>
+                    <ul>
+                        <li><strong>Pro-Labore:</strong> Calcula valor de pro-labore da folha de pagamento</li>
+                    </ul>
+
+                    <h3>2. Admissão</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato que registra admissões de novos colaboradores</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Quantidade de Colunas</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>VW_COLABORADORES_REF_ATUAL (ODBC - VSCI)</td>
+                        </tr>
+                    </table>
+
+                    <h4>Medidas:</h4>
+                    <ul>
+                        <li><strong>Contratações:</strong> Conta colaboradores admitidos (excluindo transferências internas)</li>
+                        <li><strong>Média Ativos:</strong> Calcula média de colaboradores ativos no período</li>
+                        <li><strong>Ativos:</strong> Conta colaboradores ativos</li>
+                        <li><strong>Total de Ativos Geral:</strong> Total de ativos sem filtros contextuais</li>
+                        <li><strong>% de Ativos por Filial:</strong> Percentual de ativos por filial</li>
+                    </ul>
+
+                    <h3>3. Rescisão</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com registros de rescisões de contrato de colaboradores</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Quantidade de Colunas</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>VW_RESCISAO e VW_COLABORADORES_REF_ATUAL</td>
+                        </tr>
+                    </table>
+
+                    <h4>Medidas:</h4>
+                    <ul>
+                        <li><strong>Demissões:</strong> Conta colaboradores demitidos (excluindo transferências internas)</li>
+                    </ul>
+
+                    <h3>4. Afastamento</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato que registra períodos de afastamento de colaboradores (licenças, atestados, etc.)</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Quantidade de Colunas</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC - VSCI</td>
+                        </tr>
+                    </table>
+
+                    <h4>Medidas:</h4>
+                    <ul>
+                        <li><strong>MediaAfastados:</strong> Calcula a média de colaboradores afastados</li>
+                    </ul>
+
+                    <h3>5. Transferidos</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com registros de transferências internas de colaboradores entre empresas</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Quantidade de Colunas</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>VRH_EMP_TTRANSCOL (ODBC - VSCI)</td>
+                        </tr>
+                    </table>
+
+                    <h3>6. Folha Intermitente</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato para colaboradores com regime intermitente</p>
+                    <ul>
+                        <li>Modo: Import</li>
+                        <li>Quantidade de Colunas: 20</li>
+                        <li>Fonte de Dados: ODBC - VSCI</li>
+                    </ul>
+
+                    <h3>7. Rescisao_Valor</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com valores de folha relacionados a rescisões</p>
+                    <ul>
+                        <li>Modo: Import</li>
+                        <li>Quantidade de Colunas: 5</li>
+                        <li>Fonte de Dados: VRHF_EMP_TFOLHANORMAL, VRHF_EMP_TFOLHATOMADOR, VRHF_EMP_TFOLHAINT</li>
+                    </ul>
+
+                    <h3>8. FatNovo</h3>
+                    <p><strong>Descrição:</strong> Nova tabela de fato (propósito em desenvolvimento)</p>
+                    <ul>
+                        <li>Modo: Import</li>
+                        <li>Quantidade de Colunas: 28</li>
+                        <li>Quantidade de Medidas: 1</li>
+                    </ul>
+
+                    <h3>9. Ser</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com informações de serviços</p>
+                    <ul>
+                        <li>Modo: Import</li>
+                        <li>Quantidade de Colunas: 19</li>
+                        <li>Fonte de Dados: VW_VEF_TOT_NAT_SER (ODBC - VSCI)</li>
+                    </ul>
+
+                    <h3>10. Outras Receitas</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com receitas de tipos específicos</p>
+                    <ul>
+                        <li>Modo: Import</li>
+                        <li>Quantidade de Colunas: 3</li>
+                        <li>Fonte de Dados: VEF_EMP_TMOVOREC (ODBC - VSCI)</li>
+                    </ul>
+                </section>
+
+                <section id="tabelas-dimensao">
+                    <h2><i class="fas fa-cube"></i> Tabelas de Dimensão</h2>
+
+                    <h3>1. dCalendario</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão de tempo, essencial para análises baseadas em datas</p>
+                    <ul>
+                        <li>Quantidade de Colunas: 7</li>
+                        <li>Contém: Data, Mês/Ano, REF, Hierarquias</li>
+                        <li>Fonte: Tabela criada internamente a partir de 01/01/2020</li>
+                    </ul>
+
+                    <h3>2. Empresas</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão com informações das empresas</p>
+                    <ul>
+                        <li>Quantidade de Colunas: 13</li>
+                        <li>Campos: ID_EMPRESA, CNPJ_EMPRESA, NOME_EMPRESA, ID_MATRIZ</li>
+                        <li>Fonte de Dados: TEMPRESAS_REF e TEMPRESAS (ODBC - VSCI)</li>
+                    </ul>
+
+                    <h3>3. Verbas</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão com detalhes das verbas de folha</p>
+                    <ul>
+                        <li>Quantidade de Colunas: 26</li>
+                        <li>Campos: BDCODVER, Descrição, Tipo</li>
+                        <li>Fonte de Dados: VRH_BASE_TVERBAS_REF (ODBC - VSCI)</li>
+                    </ul>
+
+                    <h3>4. Impostos (Cadastro)</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão com configuração de impostos</p>
+                    <ul>
+                        <li>Quantidade de Colunas: 64</li>
+                        <li>Tabela de referência completa para cálculos fiscais</li>
+                    </ul>
+
+                    <h3>5. Autonomos</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão com dados de trabalhadores autônomos</p>
+                    <ul>
+                        <li>Quantidade de Colunas: 4</li>
+                        <li>Fonte de Dados: VRH_EMP_AUTONOMOS (ODBC - VSCI)</li>
+                    </ul>
+
+                    <h3>Outras Tabelas de Dimensão:</h3>
+                    <ul>
+                        <li><strong>dREF:</strong> Dimensão complementar de referência temporal</li>
+                        <li><strong>dGenero:</strong> Dimensão simples com valores de gênero</li>
+                        <li><strong>Tabela Verbas:</strong> Lista de verbas auxiliar</li>
+                        <li><strong>Cadastro funções:</strong> Funções/cargos cadastrados</li>
+                        <li><strong>Colaboradores Complementares:</strong> Dados complementares</li>
+                        <li><strong>Tomador:</strong> Informações de tomadores</li>
+                        <li><strong>INSS/FGTS:</strong> Parâmetros de INSS/FGTS</li>
+                    </ul>
+                </section>
+
+                <section id="tabela-medidas">
+                    <h2><i class="fas fa-calculator"></i> Tabela de Medidas Centralizada</h2>
+                    <p><strong>Tabela:</strong> Medidas | <strong>Total de Medidas:</strong> 62</p>
+
+                    <h3>Medidas de Pessoal:</h3>
+                    <table>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>Ativos</td>
+                            <td>Total de colaboradores ativos</td>
+                        </tr>
+                        <tr>
+                            <td>Contratações</td>
+                            <td>Contagem de contratações/admissões</td>
+                        </tr>
+                        <tr>
+                            <td>Demissões</td>
+                            <td>Contagem de demissões</td>
+                        </tr>
+                        <tr>
+                            <td>Média Ativos</td>
+                            <td>Média de colaboradores ativos</td>
+                        </tr>
+                        <tr>
+                            <td>Afastados</td>
+                            <td>Total de colaboradores afastados</td>
+                        </tr>
+                        <tr>
+                            <td>Turnover</td>
+                            <td>Taxa de turnover</td>
+                        </tr>
+                        <tr>
+                            <td>Absenteísmo</td>
+                            <td>Taxa de absenteísmo</td>
+                        </tr>
+                        <tr>
+                            <td>Assiduidade</td>
+                            <td>Taxa de assiduidade</td>
+                        </tr>
+                    </table>
+
+                    <h3>Medidas de Folha e Proventos:</h3>
+                    <table>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>Salario Mensalista</td>
+                            <td>Salário de colaboradores mensalistas</td>
+                        </tr>
+                        <tr>
+                            <td>Adiantamento</td>
+                            <td>Valor de adiantamento de salário</td>
+                        </tr>
+                        <tr>
+                            <td>Férias</td>
+                            <td>Valor de férias</td>
+                        </tr>
+                        <tr>
+                            <td>Rescisão</td>
+                            <td>Valor de rescisão</td>
+                        </tr>
+                        <tr>
+                            <td>Total proventos</td>
+                            <td>Soma de todos os proventos</td>
+                        </tr>
+                        <tr>
+                            <td>Liquido folha pago</td>
+                            <td>Valor líquido de folha pago</td>
+                        </tr>
+                    </table>
+
+                    <h3>Medidas de Descontos e Impostos:</h3>
+                    <table>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>IRRF</td>
+                            <td>Imposto de Renda Retido na Fonte</td>
+                        </tr>
+                        <tr>
+                            <td>INSS</td>
+                            <td>Contribuição INSS</td>
+                        </tr>
+                        <tr>
+                            <td>FGTS</td>
+                            <td>Fundo de Garantia do Tempo de Serviço</td>
+                        </tr>
+                        <tr>
+                            <td>GRRF</td>
+                            <td>Contribuição sindical/GRRF</td>
+                        </tr>
+                        <tr>
+                            <td>Sindicatos</td>
+                            <td>Desconto de sindicato</td>
+                        </tr>
+                    </table>
+
+                    <h3>Medidas de Faturamento e Custos:</h3>
+                    <table>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>Faturamento</td>
+                            <td>Valor total de faturamento</td>
+                        </tr>
+                        <tr>
+                            <td>Custo total da folha</td>
+                            <td>Custo total de folha de pagamento</td>
+                        </tr>
+                        <tr>
+                            <td>Faturamento / Funcionário</td>
+                            <td>Faturamento por funcionário</td>
+                        </tr>
+                        <tr>
+                            <td>Folha x Faturamento</td>
+                            <td>Relação de folha sobre faturamento</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="relacionamentos">
+                    <h2><i class="fas fa-link"></i> Relacionamentos Principais</h2>
+                    <p>O modelo segue a arquitetura de esquema estrela com os seguintes relacionamentos:</p>
+                    <table>
+                        <tr>
+                            <th>Tabela Origem</th>
+                            <th>Relacionamento</th>
+                            <th>Tabela Destino</th>
+                        </tr>
+                        <tr>
+                            <td>Folha</td>
+                            <td>BDCODEMP</td>
+                            <td>Empresas</td>
+                        </tr>
+                        <tr>
+                            <td>Folha</td>
+                            <td>BDCODVER</td>
+                            <td>Verbas</td>
+                        </tr>
+                        <tr>
+                            <td>Folha</td>
+                            <td>BDREFFN</td>
+                            <td>dCalendario</td>
+                        </tr>
+                        <tr>
+                            <td>Admissão</td>
+                            <td>BDCODEMP</td>
+                            <td>Empresas</td>
+                        </tr>
+                        <tr>
+                            <td>Rescisão</td>
+                            <td>BDCODEMP</td>
+                            <td>Empresas</td>
+                        </tr>
+                        <tr>
+                            <td>Afastamento</td>
+                            <td>BDCODEMP</td>
+                            <td>Empresas</td>
+                        </tr>
+                        <tr>
+                            <td>Transferidos</td>
+                            <td>BDCODEMP</td>
+                            <td>Empresas</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="informacoes-tecnicas">
+                    <h2><i class="fas fa-cogs"></i> Informações Técnicas do Modelo</h2>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Nome do Modelo</td>
+                            <td>30985e29-0fe1-40e6-88af-4e2bd5a9646e</td>
+                        </tr>
+                        <tr>
+                            <td>Nível de Compatibilidade</td>
+                            <td>1601</td>
+                        </tr>
+                        <tr>
+                            <td>Idioma</td>
+                            <td>Português (1046)</td>
+                        </tr>
+                        <tr>
+                            <td>Modo de Armazenamento</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Data de Criação</td>
+                            <td>08/11/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>27/01/2026</td>
+                        </tr>
+                        <tr>
+                            <td>Tamanho Estimado</td>
+                            <td>132 MB</td>
+                        </tr>
+                        <tr>
+                            <td>Estado</td>
+                            <td>Unprocessed</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="fontes-dados">
+                    <h2><i class="fas fa-database"></i> Fontes de Dados</h2>
+                    <p>Todas as tabelas de fato e dimensão (exceto as criadas internamente) conectam ao banco de dados via <strong>ODBC (DSN: VSCI)</strong>.</p>
+                    <div class="info-box">
+                        <p><strong>Sistema:</strong> Único</p>
+                    </div>
+                </section>
+
+                <section id="historico">
+                    <h2><i class="fas fa-history"></i> Histórico de Alterações</h2>
+                    <table>
+                        <tr>
+                            <th>Data</th>
+                            <th>Alteração</th>
+                        </tr>
+                        <tr>
+                            <td>27/01/2026</td>
+                            <td>Documentação atualizada - Análise completa do modelo atual com menu interativo</td>
+                        </tr>
+                        <tr>
+                            <td>05/09/2025</td>
+                            <td>Última versão documentada</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <footer>
+                    <p><strong>Documentação BI - Departamento Pessoal</strong></p>
+                    <p>Versão Atualizada | Janeiro de 2026</p>
+                </footer>
+            </div>
+        </main>
     </div>
+
+    <script>
+        // Estado de expansão das seções
+        const sectionStates = {};
+
+        // Gerar índice automaticamente
+        function generateTableOfContents() {
+            const toc = document.getElementById('tableOfContents');
+            const container = document.querySelector('.container');
+            const headings = container.querySelectorAll('h2, h3');
+            
+            let currentSection = null;
+            let currentList = null;
+
+            headings.forEach((heading, index) => {
+                const id = heading.parentElement.id || `heading-${index}`;
+                heading.parentElement.id = id;
+
+                if (heading.tagName === 'H2') {
+                    // Criar seção principal com expandir/recolher
+                    const section = document.createElement('div');
+                    section.className = 'toc-section';
+                    section.id = `section-${id}`;
+
+                    const sectionHeader = document.createElement('div');
+                    sectionHeader.className = 'toc-section-header';
+                    
+                    const toggleIcon = document.createElement('span');
+                    toggleIcon.className = 'toggle-icon';
+                    toggleIcon.innerHTML = '<i class="fas fa-chevron-down"></i>';
+
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.style.color = 'inherit';
+                    link.style.textDecoration = 'none';
+                    link.style.flex = '1';
+                    link.textContent = heading.textContent;
+
+                    sectionHeader.appendChild(toggleIcon);
+                    sectionHeader.appendChild(link);
+
+                    const sectionContent = document.createElement('div');
+                    sectionContent.className = 'toc-section-content';
+
+                    currentList = document.createElement('ul');
+                    currentList.className = 'toc-list';
+
+                    sectionContent.appendChild(currentList);
+
+                    // Adicionar evento de clique para expandir/recolher
+                    sectionHeader.addEventListener('click', function(e) {
+                        if (e.target.closest('a')) return;
+                        
+                        if (!sectionHeader.classList.contains('no-children')) {
+                            const icon = sectionHeader.querySelector('.toggle-icon');
+                            const isCollapsed = sectionContent.classList.contains('collapsed');
+                            
+                            sectionContent.classList.toggle('collapsed');
+                            icon.classList.toggle('collapsed');
+                            
+                            sectionStates[id] = !isCollapsed;
+                        }
+                    });
+
+                    section.appendChild(sectionHeader);
+                    section.appendChild(sectionContent);
+                    toc.appendChild(section);
+                    currentSection = { section, header: sectionHeader, content: sectionContent, id };
+
+                } else if (heading.tagName === 'H3' && currentList) {
+                    // Adicionar como subitem
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.textContent = heading.textContent;
+
+                    const item = document.createElement('li');
+                    item.appendChild(link);
+
+                    const nested = currentList.querySelector('.nested') || (() => {
+                        const nestedList = document.createElement('ul');
+                        nestedList.className = 'toc-list nested';
+                        currentList.appendChild(nestedList);
+                        return nestedList;
+                    })();
+
+                    nested.appendChild(item);
+                }
+            });
+
+            // Segunda passada: marcar tópicos sem filhos
+            document.querySelectorAll('.toc-section').forEach(section => {
+                const content = section.querySelector('.toc-section-content');
+                const nestedList = content.querySelector('.toc-list.nested');
+                const header = section.querySelector('.toc-section-header');
+                const toggleIcon = header.querySelector('.toggle-icon');
+
+                // Se não tem sublista (nested), é um tópico sem filhos
+                if (!nestedList) {
+                    header.classList.add('no-children');
+                    toggleIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        // Destacar link ativo ao rolar
+        function highlightActiveLink() {
+            const sections = document.querySelectorAll('h2, h3');
+            const links = document.querySelectorAll('#tableOfContents a');
+
+            window.addEventListener('scroll', () => {
+                let currentSection = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        currentSection = section.parentElement.id;
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        // Smooth scroll
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+                if (e.target.closest('#tableOfContents')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        });
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTableOfContents();
+            highlightActiveLink();
+        });
+    </script>
 </body>
 </html>
