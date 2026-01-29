@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#7e1a47">
+    <title>Documentação BI Painel Fiscal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #7e1a47;
+            --secondary-color: #921e52;
+            --accent-light: #c94a6d;
+            --accent-lighter: #e8b4cc;
+            --light-bg: #faf8fb;
+            --border-color: #e8d9e8;
+            --text-dark: #2d1b2e;
+            --text-light: #6b5b6b;
+            --hover-bg: #f3e8f3;
+            --white: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #faf8fb 0%, #f3e8f3 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 30px 0;
+            box-shadow: 3px 0 20px rgba(126, 26, 71, 0.3);
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 25px 25px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .toc-section {
+            margin-bottom: 5px;
+            padding: 0;
+        }
+
+        .toc-section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            border: none;
+            background: none;
+        }
+
+        .toc-section-header:not(.no-children) {
+            cursor: pointer;
+        }
+
+        .toc-section-header:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-section-header:active {
+            transform: translateY(0);
+        }
+
+        .toc-section-header.no-children {
+            cursor: default;
+        }
+
+        .toc-section-header .toggle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            min-width: 20px;
+            flex-shrink: 0;
+        }
+
+        .toc-section-header .toggle-icon.hidden {
+            display: none;
+        }
+
+        .toc-section-header .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .toc-section-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .toc-section-content.collapsed {
+            max-height: 0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: 13px;
+            display: block;
+            padding: 10px 20px;
+            border-radius: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            position: relative;
+            font-weight: 500;
+            cursor: pointer;
+            -webkit-touch-callout: none;
+        }
+
+        .toc-list a:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: none;
+        }
+
+        .toc-list a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-lighter);
+            padding-left: 23px;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-list a.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-left-color: var(--accent-lighter);
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .toc-list.nested {
+            margin: 0;
+            padding: 0;
+            border-left: none;
+        }
+
+        .toc-list.nested a {
+            font-size: 12px;
+            padding: 8px 20px 8px 40px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+
+        .toc-list.nested a:hover {
+            padding-left: 43px;
+            color: var(--white);
+        }
+
+        .toc-list.nested a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 300px;
+            width: calc(100% - 300px);
+            padding: 40px 60px;
+        }
+
+        .container {
+            max-width: 950px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(126, 26, 71, 0.12);
+            padding: 50px 60px;
+        }
+
+        /* HEADER */
+        header {
+            margin-bottom: 45px;
+            padding-bottom: 30px;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        header h1 {
+            font-size: 42px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            word-break: break-word;
+        }
+
+        header .meta {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+
+        header .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        header .meta-item i {
+            color: var(--secondary-color);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* HEADINGS */
+        h2 {
+            color: var(--primary-color);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            font-size: 30px;
+            font-weight: 800;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            scroll-margin-top: 100px;
+            letter-spacing: -0.3px;
+            word-break: break-word;
+        }
+
+        h2 i {
+            flex-shrink: 0;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            scroll-margin-top: 100px;
+            word-break: break-word;
+        }
+
+        h4 {
+            color: var(--accent-light);
+            margin-top: 18px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        p {
+            margin-bottom: 16px;
+            text-align: justify;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            line-height: 1.75;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        ul, ol {
+            margin: 20px 0 20px 35px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        strong {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        code {
+            background: var(--hover-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(146, 30, 82, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 16px 18px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            word-break: break-word;
+        }
+
+        table td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 18px;
+            font-size: 13.5px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        table tr:hover {
+            background: var(--light-bg);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f0d9f0 0%, #e8c9e8 100%);
+            border-left: 5px solid var(--secondary-color);
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            border-left: 5px solid #d94a38;
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .warning-box strong {
+            color: #d94a38;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        footer strong {
+            color: var(--secondary-color);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                padding: 30px 40px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 40px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            h2 {
+                font-size: 24px;
+                padding-left: 15px;
+                gap: 10px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p, li {
+                font-size: 14px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 15px;
+                gap: 6px;
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+
+            .toc-list.nested a {
+                padding: 7px 15px 7px 35px;
+            }
+
+            table th, table td {
+                padding: 12px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .wrapper {
+                flex-direction: column-reverse;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px 0;
+                max-height: none;
+            }
+
+            .sidebar-header {
+                padding: 0 20px 15px 20px;
+                margin-bottom: 15px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 25px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(126, 26, 71, 0.08);
+            }
+
+            header {
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+            }
+
+            header h1 {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            header .meta {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 12px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-top: 30px;
+                margin-bottom: 15px;
+                padding-left: 15px;
+                border-left-width: 4px;
+                gap: 8px;
+            }
+
+            h3 {
+                font-size: 16px;
+                margin-top: 20px;
+                margin-bottom: 12px;
+            }
+
+            h4 {
+                font-size: 14px;
+                margin-top: 12px;
+                margin-bottom: 8px;
+            }
+
+            p {
+                font-size: 13px;
+                line-height: 1.65;
+                text-align: left;
+                margin-bottom: 12px;
+            }
+
+            ul, ol {
+                margin: 15px 0 15px 25px;
+                padding: 0;
+            }
+
+            li {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            code {
+                font-size: 12px;
+                padding: 2px 6px;
+            }
+
+            table {
+                margin: 20px 0;
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table th {
+                padding: 12px 8px;
+                font-size: 11px;
+                letter-spacing: 0.5px;
+            }
+
+            table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .info-box, .warning-box {
+                padding: 15px 16px;
+                margin: 20px 0;
+                font-size: 13px;
+                border-left-width: 4px;
+            }
+
+            footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                font-size: 11px;
+            }
+
+            .toc-section {
+                margin-bottom: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .toc-section-header {
+                font-size: 13px;
+                padding: 12px 16px;
+                gap: 8px;
+            }
+
+            .toc-section-header:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
+                box-shadow: none;
+            }
+
+            .toc-section-header:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 13px;
+                padding: 10px 16px;
+                border-left-width: 3px;
+            }
+
+            .toc-list a:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
+                box-shadow: none;
+                padding-left: 16px;
+            }
+
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-list.nested a {
+                font-size: 12px;
+                padding: 8px 16px 8px 35px;
+            }
+
+            .toc-list.nested a:hover {
+                padding-left: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content, .container {
+                padding: 16px;
+            }
+
+            header h1 {
+                font-size: 20px;
+                gap: 6px;
+            }
+
+            header .meta-item {
+                gap: 6px;
+            }
+
+            h2 {
+                font-size: 18px;
+                padding-left: 12px;
+                gap: 6px;
+            }
+
+            h3 {
+                font-size: 14px;
+            }
+
+            h4 {
+                font-size: 13px;
+            }
+
+            p, li {
+                font-size: 12px;
+            }
+
+            ul, ol {
+                margin: 12px 0 12px 20px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .toc-list.nested a {
+                padding: 6px 12px 6px 30px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            table th, table td {
+                padding: 8px 6px;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @media (hover: none) {
+            .toc-section-header:hover,
+            .toc-list a:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .toc-section-header:active,
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <nav id="tableOfContents">
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="container">
+                <header>
+                    <h1><i class="fas fa-chart-pie"></i> Documentação BI Painel Fiscal</h1>
+                    <div class="meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <strong>Versão Atualizada:</strong> Janeiro 2026
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-database"></i>
+                            <strong>Status:</strong> Ativo
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-cube"></i>
+                            <strong>Compatibilidade:</strong> Nível 1601
+                        </div>
+                    </div>
+                </header>
+
+                <section id="introducao">
+                    <h2><i class="fas fa-info-circle"></i> Introdução ao Modelo Painel Fiscal</h2>
+                    <p>Este documento apresenta a estrutura completa do modelo de Business Intelligence "Painel Fiscal", que consolida análises fiscais e financeiras da organização. O modelo foi desenvolvido para fornecer visibilidade integrada sobre faturamento, compras, devolução, conformidade fiscal (ICMS, PIS/COFINS) e relatórios comparativos de períodos.</p>
+                    <p>A arquitetura utiliza um esquema relacionado com múltiplas tabelas de fato (Faturamento, Compra, Devoluções, etc.) conectadas a dimensões temporais e empresariais, permitindo análises multidimensionais complexas.</p>
+                    <div class="info-box">
+                        <p><strong>Nota:</strong> Este modelo foi desenvolvido para análises fiscais e contábeis, com suporte a comparativos de períodos e cálculos de impostos automatizados.</p>
+                    </div>
+                </section>
+
+                <section id="visao-geral">
+                    <h2><i class="fas fa-database"></i> Visão Geral do Modelo</h2>
+                    <p><strong>Nome do Modelo:</strong> Model</p>
+                    <p><strong>Modo de Operação:</strong> Import</p>
+                    <p><strong>Idioma:</strong> Português (Brasil)</p>
+                    <p><strong>Última Modificação:</strong> 09 de julho de 2025</p>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Quantidade</th>
+                        </tr>
+                        <tr>
+                            <td>Tabelas Totais</td>
+                            <td>27</td>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>159</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>98</td>
+                        </tr>
+                        <tr>
+                            <td>Relacionamentos</td>
+                            <td>27</td>
+                        </tr>
+                        <tr>
+                            <td>Partições</td>
+                            <td>27</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="tabelas-fato">
+                    <h2><i class="fas fa-table"></i> Tabelas de Fato</h2>
+                    
+                    <h3>1. Faturamento</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato principal contendo dados consolidados de faturamento de vendas por empresa, período e código natural de operação fiscal.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>18</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>10/07/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC: VW_VEF_TOT_NAT_SAI (VSCI)</td>
+                        </tr>
+                    </table>
+                    <h4>Colunas Principais:</h4>
+                    <ul>
+                        <li>BDCODEMP - Código da Empresa</li>
+                        <li>VALOR - Valor Contábil da Operação</li>
+                        <li>VALOR_TRIBUTADO - Base de Cálculo para Impostos</li>
+                        <li>BDREFLAN - Referência do Lançamento (Período)</li>
+                        <li>BDPREFIXONAT - Código Natural da Operação Fiscal</li>
+                    </ul>
+                    <h4>Principais Medidas:</h4>
+                    <ul>
+                        <li><strong>Faturamento:</strong> Valor total de faturamento</li>
+                        <li><strong>Faturamento_Liquido:</strong> Faturamento líquido de devoluções</li>
+                        <li><strong>Faturamento_Tributado:</strong> Base tributária do faturamento</li>
+                        <li><strong>Faturamento_Comparativo:</strong> Comparação com período anterior</li>
+                        <li><strong>DiferencaFaturamento:</strong> Variação absoluta do faturamento</li>
+                        <li><strong>%DiferencaFaturamento:</strong> Variação percentual do faturamento</li>
+                        <li><strong>Quebra:</strong> Margem ou quebra de valor</li>
+                    </ul>
+
+                    <h3>2. Compra</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com dados consolidados de compras/aquisições por empresa, período e código natural de operação fiscal.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>25</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>08/01/2026</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC: VW_VEF_TOT_NAT_ENT (VSCI)</td>
+                        </tr>
+                    </table>
+                    <h4>Principais Medidas:</h4>
+                    <ul>
+                        <li><strong>Compra:</strong> Valor total de compras</li>
+                        <li><strong>Compra_Liquida:</strong> Compras líquidas de devoluções</li>
+                        <li><strong>Compra_Tributada:</strong> Base tributária de compras</li>
+                        <li><strong>Uso/Consumo:</strong> Percentual de uso/consumo</li>
+                        <li><strong>Compras/Faturamento:</strong> Índice de compra sobre faturamento</li>
+                        <li><strong>Compra_Comparativo:</strong> Comparação período anterior</li>
+                        <li><strong>DiferencaCompra:</strong> Variação de compra</li>
+                    </ul>
+
+                    <h3>3. Pis/Cofins</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com cálculos e movimentações de PIS (Programa de Integração Social) e COFINS (Contribuição para Financiamento da Seguridade Social).</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>21</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Ligação Temporal</td>
+                            <td>Data de Ocorrência da Receita</td>
+                        </tr>
+                    </table>
+
+                    <h3>4. ICMS</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com movimentações e cálculos de ICMS (Imposto sobre Circulação de Mercadorias e Serviços) por período.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                    </table>
+
+                    <h3>5. Ajuste ICMS</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com ajustes, diferenças e apurações de ICMS.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>6</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                    </table>
+
+                    <h3>6. Devolucoes</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com registros de devoluções de vendas.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                    </table>
+
+                    <h3>7. DevCompra</h3>
+                    <p><strong>Descrição:</strong> Tabela de fato com registros de devoluções de compras.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="tabelas-dimensao">
+                    <h2><i class="fas fa-cube"></i> Tabelas de Dimensão</h2>
+
+                    <h3>1. Empresas</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão com informações cadastrais das empresas do grupo.</p>
+                    <ul>
+                        <li>Colunas: 13</li>
+                        <li>Medidas: 1</li>
+                        <li>Função: Identificação e contexto das operações comerciais</li>
+                    </ul>
+
+                    <h3>2. dCalendario</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão de tempo com data, períodos, referências e hierarquias temporais.</p>
+                    <ul>
+                        <li>Colunas: 11</li>
+                        <li>Função: Análise temporal de dados contábeis e fiscais</li>
+                    </ul>
+
+                    <h3>3. Tabelas de Calendários Auxiliares</h3>
+                    <ul>
+                        <li><strong>dCalendario Comparativo:</strong> Para análises de períodos comparativos</li>
+                        <li><strong>dCalendario REF:</strong> Para referências de período fiscal</li>
+                        <li><strong>LocalDateTable_*:</strong> Tabelas auxiliares de data do sistema</li>
+                    </ul>
+
+                    <h3>4. Tabelas de Tipos/Classificações</h3>
+                    <ul>
+                        <li><strong>Tipo:</strong> Classificação de tipos de operação</li>
+                        <li><strong>Tipo%:</strong> Tipos com percentuais</li>
+                        <li><strong>Tipo Meta:</strong> Tipos com metas de desempenho</li>
+                        <li><strong>TiposAux:</strong> Tabela auxiliar de índices</li>
+                    </ul>
+
+                    <h3>5. Tabelas de Suporte</h3>
+                    <ul>
+                        <li><strong>Botao Compras:</strong> Controles de navegação/botões</li>
+                        <li><strong>OpcaoDeducao:</strong> Opções de dedução fiscal</li>
+                        <li><strong>Pis/Cofins Antes:</strong> Dados históricos de PIS/COFINS</li>
+                    </ul>
+                </section>
+
+                <section id="medidas">
+                    <h2><i class="fas fa-calculator"></i> Medidas Centralizadas</h2>
+                    <p><strong>Total de Medidas:</strong> 98</p>
+                    <p>O modelo possui medidas distribuídas nas seguintes categorias principais:</p>
+
+                    <h3>Medidas de Faturamento (18)</h3>
+                    <p>Análises de receita bruta, líquida, tributada e comparativas com períodos anteriores.</p>
+
+                    <h3>Medidas de Compra (25)</h3>
+                    <p>Métricas de aquisição, custo de mercadorias, índices de consumo e comparativas.</p>
+
+                    <h3>Medidas de PIS/COFINS (21)</h3>
+                    <p>Cálculos de contribuições e comparativas.</p>
+
+                    <h3>Medidas de ICMS (15)</h3>
+                    <p>Movimentações, ajustes e apurações de imposto sobre circulação.</p>
+
+                    <h3>Medidas Comparativas e KPIs (19)</h3>
+                    <p>Análises de variação, índices operacionais, metas e booleanas de navegação.</p>
+                </section>
+
+                <section id="relacionamentos">
+                    <h2><i class="fas fa-link"></i> Arquitetura de Relacionamentos</h2>
+                    <p>O modelo utiliza 27 relacionamentos ativos conectando tabelas de fato a dimensões, consolidando a análise em estrutura multidimensional.</p>
+
+                    <h3>Padrões de Relacionamento:</h3>
+                    <table>
+                        <tr>
+                            <th>Tipo de Relacionamento</th>
+                            <th>Quantidade</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>Fato → Dimensão (Empresa)</td>
+                            <td>6</td>
+                            <td>Conecta tabelas de fato a Empresas</td>
+                        </tr>
+                        <tr>
+                            <td>Fato → Dimensão (Calendário)</td>
+                            <td>10</td>
+                            <td>Conecta tabelas de fato a dimensões temporais</td>
+                        </tr>
+                        <tr>
+                            <td>Calendário ↔ Auxiliares</td>
+                            <td>5</td>
+                            <td>Relaciona calendários entre si</td>
+                        </tr>
+                        <tr>
+                            <td>Tabelas Auxiliares</td>
+                            <td>6</td>
+                            <td>Relaciona tabelas de suporte e navegação</td>
+                        </tr>
+                    </table>
+
+                    <h3>Principais Relacionamentos Ativos:</h3>
+                    <ul>
+                        <li><strong>Faturamento → Empresas</strong> via BDCODEMP (N:1)</li>
+                        <li><strong>Faturamento → dCalendario</strong> via BDREFLAN (N:N)</li>
+                        <li><strong>Compra → Empresas</strong> via BDCODEMP (N:1)</li>
+                        <li><strong>Compra → dCalendario</strong> via BDREFLAN (N:N)</li>
+                        <li><strong>ICMS → Empresas</strong> via BDCODEMP (N:1)</li>
+                        <li><strong>ICMS → dCalendario</strong> via BDREFERENCIA (N:N)</li>
+                        <li><strong>PIS/COFINS → dCalendario</strong> via BDDATAOREC (N:1)</li>
+                        <li><strong>Devoluções → Empresas</strong> via BDCODEMP (N:1)</li>
+                        <li><strong>Tabelas Auxiliares → TiposAux</strong> (para navegação)</li>
+                    </ul>
+                </section>
+
+                <section id="tecnicamente">
+                    <h2><i class="fas fa-cogs"></i> Especificações Técnicas</h2>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Nome do Banco de Dados</td>
+                            <td>dfaee5a7-ac17-4592-b3c7-56ff801c44ea</td>
+                        </tr>
+                        <tr>
+                            <td>Nível de Compatibilidade</td>
+                            <td>1601</td>
+                        </tr>
+                        <tr>
+                            <td>Idioma Padrão</td>
+                            <td>Português (Brasil)</td>
+                        </tr>
+                        <tr>
+                            <td>Modo de Dados</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Visão de Dados Padrão</td>
+                            <td>Completa</td>
+                        </tr>
+                        <tr>
+                            <td>Modo de Conexão Padrão</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Versão PowerBI</td>
+                            <td>PowerBI_V3</td>
+                        </tr>
+                        <tr>
+                            <td>Inteligência de Tempo</td>
+                            <td>Habilitada</td>
+                        </tr>
+                    </table>
+
+                    <h3>Fonte de Dados Principal:</h3>
+                    <p><strong>Tipo:</strong> ODBC</p>
+                    <p><strong>DSN:</strong> Único</p>
+                    <p><strong>Máximo de Conexões Simultâneas:</strong> 10</p>
+                </section>
+
+                <section id="historico">
+                    <h2><i class="fas fa-history"></i> Histórico de Alterações</h2>
+                    <table>
+                        <tr>
+                            <th>Data</th>
+                            <th>Alteração</th>
+                        </tr>
+                        <tr>
+                            <td>29/01/2026</td>
+                            <td>Documentação HTML completa gerada automaticamente com análise técnica</td>
+                        </tr>
+                        <tr>
+                            <td>08/01/2026</td>
+                            <td>Atualização da tabela de Compras</td>
+                        </tr>
+                        <tr>
+                            <td>10/07/2025</td>
+                            <td>Última atualização da tabela de Faturamento</td>
+                        </tr>
+                        <tr>
+                            <td>09/07/2025</td>
+                            <td>Última modificação estrutural do modelo</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <footer>
+                    <p><strong>Documentação BI - Painel Fiscal</strong></p>
+                    <p>Versão Atualizada | Janeiro de 2026</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const sectionStates = {};
+
+        function generateTableOfContents() {
+            const toc = document.getElementById('tableOfContents');
+            const container = document.querySelector('.container');
+            const headings = container.querySelectorAll('h2, h3');
+            
+            let currentSection = null;
+            let currentList = null;
+
+            headings.forEach((heading, index) => {
+                const id = heading.parentElement.id || `heading-${index}`;
+                heading.parentElement.id = id;
+
+                if (heading.tagName === 'H2') {
+                    const section = document.createElement('div');
+                    section.className = 'toc-section';
+                    section.id = `section-${id}`;
+
+                    const sectionHeader = document.createElement('div');
+                    sectionHeader.className = 'toc-section-header';
+                    
+                    const toggleIcon = document.createElement('span');
+                    toggleIcon.className = 'toggle-icon';
+                    toggleIcon.innerHTML = '<i class="fas fa-chevron-down"></i>';
+
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.style.color = 'inherit';
+                    link.style.textDecoration = 'none';
+                    link.style.flex = '1';
+                    link.textContent = heading.textContent;
+
+                    sectionHeader.appendChild(toggleIcon);
+                    sectionHeader.appendChild(link);
+
+                    const sectionContent = document.createElement('div');
+                    sectionContent.className = 'toc-section-content';
+
+                    currentList = document.createElement('ul');
+                    currentList.className = 'toc-list';
+
+                    sectionContent.appendChild(currentList);
+
+                    sectionHeader.addEventListener('click', function(e) {
+                        if (e.target.closest('a')) return;
+                        
+                        if (!sectionHeader.classList.contains('no-children')) {
+                            const icon = sectionHeader.querySelector('.toggle-icon');
+                            const isCollapsed = sectionContent.classList.contains('collapsed');
+                            
+                            sectionContent.classList.toggle('collapsed');
+                            icon.classList.toggle('collapsed');
+                            
+                            sectionStates[id] = !isCollapsed;
+                        }
+                    });
+
+                    section.appendChild(sectionHeader);
+                    section.appendChild(sectionContent);
+                    toc.appendChild(section);
+                    currentSection = { section, header: sectionHeader, content: sectionContent, id };
+
+                } else if (heading.tagName === 'H3' && currentList) {
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.textContent = heading.textContent;
+
+                    const item = document.createElement('li');
+                    item.appendChild(link);
+
+                    const nested = currentList.querySelector('.nested') || (() => {
+                        const nestedList = document.createElement('ul');
+                        nestedList.className = 'toc-list nested';
+                        currentList.appendChild(nestedList);
+                        return nestedList;
+                    })();
+
+                    nested.appendChild(item);
+                }
+            });
+
+            document.querySelectorAll('.toc-section').forEach(section => {
+                const content = section.querySelector('.toc-section-content');
+                const nestedList = content.querySelector('.toc-list.nested');
+                const header = section.querySelector('.toc-section-header');
+                const toggleIcon = header.querySelector('.toggle-icon');
+
+                if (!nestedList) {
+                    header.classList.add('no-children');
+                    toggleIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        function highlightActiveLink() {
+            const sections = document.querySelectorAll('h2, h3');
+            const links = document.querySelectorAll('#tableOfContents a');
+
+            window.addEventListener('scroll', () => {
+                let currentSection = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        currentSection = section.parentElement.id;
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+                if (e.target.closest('#tableOfContents')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTableOfContents();
+            highlightActiveLink();
+        });
+    </script>
+</body>
+</html>
