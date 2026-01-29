@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#7e1a47">
+    <title>Documentação BI Contábil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #7e1a47;
+            --secondary-color: #921e52;
+            --accent-light: #c94a6d;
+            --accent-lighter: #e8b4cc;
+            --light-bg: #faf8fb;
+            --border-color: #e8d9e8;
+            --text-dark: #2d1b2e;
+            --text-light: #6b5b6b;
+            --hover-bg: #f3e8f3;
+            --white: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: linear-gradient(135deg, #faf8fb 0%, #f3e8f3 100%);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 300px;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 30px 0;
+            box-shadow: 3px 0 20px rgba(126, 26, 71, 0.3);
+            z-index: 1000;
+            top: 0;
+            left: 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar-header {
+            padding: 0 25px 25px 25px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .toc-section {
+            margin-bottom: 5px;
+            padding: 0;
+        }
+
+        .toc-section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            user-select: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            border: none;
+            background: none;
+        }
+
+        .toc-section-header:not(.no-children) {
+            cursor: pointer;
+        }
+
+        .toc-section-header:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-section-header:active {
+            transform: translateY(0);
+        }
+
+        .toc-section-header.no-children {
+            cursor: default;
+        }
+
+        .toc-section-header .toggle-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+            font-size: 12px;
+            min-width: 20px;
+            flex-shrink: 0;
+        }
+
+        .toc-section-header .toggle-icon.hidden {
+            display: none;
+        }
+
+        .toc-section-header .toggle-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .toc-section-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .toc-section-content.collapsed {
+            max-height: 0;
+        }
+
+        .toc-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list li {
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-list a {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            font-size: 13px;
+            display: block;
+            padding: 10px 20px;
+            border-radius: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+            position: relative;
+            font-weight: 500;
+            cursor: pointer;
+            -webkit-touch-callout: none;
+        }
+
+        .toc-list a:active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: none;
+        }
+
+        .toc-list a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--accent-lighter);
+            padding-left: 23px;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .toc-list a.active {
+            background: rgba(255, 255, 255, 0.25);
+            border-left-color: var(--accent-lighter);
+            font-weight: 600;
+            color: var(--white);
+        }
+
+        .toc-list.nested {
+            margin: 0;
+            padding: 0;
+            border-left: none;
+        }
+
+        .toc-list.nested a {
+            font-size: 12px;
+            padding: 8px 20px 8px 40px;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+        }
+
+        .toc-list.nested a:hover {
+            padding-left: 43px;
+            color: var(--white);
+        }
+
+        .toc-list.nested a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 300px;
+            width: calc(100% - 300px);
+            padding: 40px 60px;
+        }
+
+        .container {
+            max-width: 950px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(126, 26, 71, 0.12);
+            padding: 50px 60px;
+        }
+
+        /* HEADER */
+        header {
+            margin-bottom: 45px;
+            padding-bottom: 30px;
+            border-bottom: 4px solid var(--primary-color);
+        }
+
+        header h1 {
+            font-size: 42px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            word-break: break-word;
+        }
+
+        header .meta {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 20px;
+        }
+
+        header .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        header .meta-item i {
+            color: var(--secondary-color);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* HEADINGS */
+        h2 {
+            color: var(--primary-color);
+            margin-top: 45px;
+            margin-bottom: 25px;
+            font-size: 30px;
+            font-weight: 800;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            scroll-margin-top: 100px;
+            letter-spacing: -0.3px;
+            word-break: break-word;
+        }
+
+        h2 i {
+            flex-shrink: 0;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 18px;
+            font-size: 22px;
+            font-weight: 700;
+            scroll-margin-top: 100px;
+            word-break: break-word;
+        }
+
+        h4 {
+            color: var(--accent-light);
+            margin-top: 18px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            word-break: break-word;
+        }
+
+        p {
+            margin-bottom: 16px;
+            text-align: justify;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            line-height: 1.75;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        ul, ol {
+            margin: 20px 0 20px 35px;
+        }
+
+        li {
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-size: 14.5px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        strong {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        code {
+            background: var(--hover-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: var(--primary-color);
+            font-size: 13px;
+            word-break: break-all;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(146, 30, 82, 0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: var(--white);
+            padding: 16px 18px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            word-break: break-word;
+        }
+
+        table td {
+            border-bottom: 1px solid var(--border-color);
+            padding: 14px 18px;
+            font-size: 13.5px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        table tr:hover {
+            background: var(--light-bg);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #f0d9f0 0%, #e8c9e8 100%);
+            border-left: 5px solid var(--secondary-color);
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .info-box strong {
+            color: var(--primary-color);
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffe8e0 100%);
+            border-left: 5px solid #d94a38;
+            padding: 20px 22px;
+            margin: 30px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .warning-box strong {
+            color: #d94a38;
+        }
+
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid var(--border-color);
+            color: var(--text-light);
+            font-size: 12px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        footer strong {
+            color: var(--secondary-color);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 250px;
+            }
+
+            .main-content {
+                margin-left: 250px;
+                width: calc(100% - 250px);
+                padding: 30px 40px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 40px;
+                border-radius: 8px;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            h2 {
+                font-size: 24px;
+                padding-left: 15px;
+                gap: 10px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            p, li {
+                font-size: 14px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 15px;
+                gap: 6px;
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+
+            .toc-list.nested a {
+                padding: 7px 15px 7px 35px;
+            }
+
+            table th, table td {
+                padding: 12px 12px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .wrapper {
+                flex-direction: column-reverse;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+                padding: 20px 0;
+                max-height: none;
+            }
+
+            .sidebar-header {
+                padding: 0 20px 15px 20px;
+                margin-bottom: 15px;
+            }
+
+            .sidebar-header h2 {
+                font-size: 16px;
+                gap: 8px;
+            }
+
+            .sidebar-header p {
+                font-size: 11px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 16px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 25px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 16px rgba(126, 26, 71, 0.08);
+            }
+
+            header {
+                margin-bottom: 30px;
+                padding-bottom: 20px;
+            }
+
+            header h1 {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+
+            header .meta {
+                flex-direction: column;
+                gap: 10px;
+                font-size: 12px;
+            }
+
+            h2 {
+                font-size: 20px;
+                margin-top: 30px;
+                margin-bottom: 15px;
+                padding-left: 15px;
+                border-left-width: 4px;
+                gap: 8px;
+            }
+
+            h3 {
+                font-size: 16px;
+                margin-top: 20px;
+                margin-bottom: 12px;
+            }
+
+            h4 {
+                font-size: 14px;
+                margin-top: 12px;
+                margin-bottom: 8px;
+            }
+
+            p {
+                font-size: 13px;
+                line-height: 1.65;
+                text-align: left;
+                margin-bottom: 12px;
+            }
+
+            ul, ol {
+                margin: 15px 0 15px 25px;
+                padding: 0;
+            }
+
+            li {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            code {
+                font-size: 12px;
+                padding: 2px 6px;
+            }
+
+            table {
+                margin: 20px 0;
+                font-size: 12px;
+                display: block;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            table th {
+                padding: 12px 8px;
+                font-size: 11px;
+                letter-spacing: 0.5px;
+            }
+
+            table td {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .info-box, .warning-box {
+                padding: 15px 16px;
+                margin: 20px 0;
+                font-size: 13px;
+                border-left-width: 4px;
+            }
+
+            footer {
+                margin-top: 40px;
+                padding-top: 20px;
+                font-size: 11px;
+            }
+
+            .toc-section {
+                margin-bottom: 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .toc-section-header {
+                font-size: 13px;
+                padding: 12px 16px;
+                gap: 8px;
+            }
+
+            .toc-section-header:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
+                box-shadow: none;
+            }
+
+            .toc-section-header:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-section-header .toggle-icon {
+                width: 18px;
+                height: 18px;
+                font-size: 11px;
+            }
+
+            .toc-list a {
+                font-size: 13px;
+                padding: 10px 16px;
+                border-left-width: 3px;
+            }
+
+            .toc-list a:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: none;
+                box-shadow: none;
+                padding-left: 16px;
+            }
+
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .toc-list.nested a {
+                font-size: 12px;
+                padding: 8px 16px 8px 35px;
+            }
+
+            .toc-list.nested a:hover {
+                padding-left: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-content, .container {
+                padding: 16px;
+            }
+
+            header h1 {
+                font-size: 20px;
+                gap: 6px;
+            }
+
+            header .meta-item {
+                gap: 6px;
+            }
+
+            h2 {
+                font-size: 18px;
+                padding-left: 12px;
+                gap: 6px;
+            }
+
+            h3 {
+                font-size: 14px;
+            }
+
+            h4 {
+                font-size: 13px;
+            }
+
+            p, li {
+                font-size: 12px;
+            }
+
+            ul, ol {
+                margin: 12px 0 12px 20px;
+            }
+
+            .toc-section-header {
+                font-size: 12px;
+                padding: 10px 12px;
+            }
+
+            .toc-list a {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .toc-list.nested a {
+                padding: 6px 12px 6px 30px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            table th, table td {
+                padding: 8px 6px;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .container {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @media (hover: none) {
+            .toc-section-header:hover,
+            .toc-list a:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .toc-section-header:active,
+            .toc-list a:active {
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <nav id="tableOfContents">
+            </nav>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main-content">
+            <div class="container">
+                <header>
+                    <h1><i class="fas fa-ledger"></i> Documentação BI Contábil</h1>
+                    <div class="meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar"></i>
+                            <strong>Versão Atualizada:</strong> Janeiro 2026
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-database"></i>
+                            <strong>Status:</strong> Ativo
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-cube"></i>
+                            <strong>Compatibilidade:</strong> Nível 1601
+                        </div>
+                    </div>
+                </header>
+
+                <section id="introducao">
+                    <h2><i class="fas fa-info-circle"></i> Introdução ao Modelo BI Contábil</h2>
+                    <p>Este documento apresenta a estrutura completa do modelo de Business Intelligence "BI Contábil", um sistema consolidado para análises contábeis e financeiras da organização. O modelo foi desenvolvido para fornecer visibilidade integrada sobre receitas, despesas, plano de contas, e relatórios financeiros complexos.</p>
+                    <p>A arquitetura utiliza um esquema multidimensional com tabelas de transações (Receita, Despesa) conectadas a dimensões contábeis (Plano de Contas, Empresas, Calendários), permitindo análises detalhadas de demonstrações financeiras (DRE), comparativos de períodos e análises verticais/horizontais.</p>
+                    <div class="info-box">
+                        <p><strong>Nota:</strong> Este modelo é otimizado para análises contábeis complexas com suporte a múltiplas perspectivas financeiras, cálculos de indicadores EBITDA, margem bruta e análises de resultado.</p>
+                    </div>
+                </section>
+
+                <section id="visao-geral">
+                    <h2><i class="fas fa-database"></i> Visão Geral do Modelo</h2>
+                    <p><strong>Nome do Modelo:</strong> Model</p>
+                    <p><strong>Modo de Operação:</strong> Import</p>
+                    <p><strong>Idioma:</strong> Português (Brasil)</p>
+                    <p><strong>Última Modificação Estrutural:</strong> 26 de setembro de 2025</p>
+                    <table>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Quantidade</th>
+                        </tr>
+                        <tr>
+                            <td>Tabelas Totais</td>
+                            <td>31</td>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>463</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>47</td>
+                        </tr>
+                        <tr>
+                            <td>Relacionamentos</td>
+                            <td>30</td>
+                        </tr>
+                        <tr>
+                            <td>Partições</td>
+                            <td>31</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <section id="tabelas-fato">
+                    <h2><i class="fas fa-table"></i> Tabelas de Transações (Fato)</h2>
+                    
+                    <h3>1. Receita</h3>
+                    <p><strong>Descrição:</strong> Tabela principal de transações contábeis de receita. Consolidada com todos os lançamentos contábeis de entrada/crédito da organização.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>60</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>43</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>16/12/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC: VSUC_EMPRESAS_TLAN (VSCI)</td>
+                        </tr>
+                    </table>
+                    <h4>Principais Campos:</h4>
+                    <ul>
+                        <li>BDCODEMP - Código da Empresa</li>
+                        <li>BDCODPLAPADRAO - Código Plano de Contas Padrão</li>
+                        <li>BDDATALAN - Data do Lançamento Contábil</li>
+                        <li>BDVALOR - Valor da Operação</li>
+                        <li>BDCODEMP+BDCODCONTA - Chave Composta para Relacionamento</li>
+                        <li>BDDEBITO / BDCREDITO - Valores em Débito/Crédito</li>
+                    </ul>
+                    <h4>Principais Medidas (43):</h4>
+                    <ul>
+                        <li><strong>ReceitaTotal:</strong> Valor total consolidado de receita</li>
+                        <li><strong>ReceitaBruta:</strong> Receita antes de deduções</li>
+                        <li><strong>ReceitaLíquida:</strong> Receita após deduções e impostos</li>
+                        <li><strong>DeducaoReceitas:</strong> Total de deduções de receita</li>
+                        <li><strong>CustoTotal:</strong> Custo das mercadorias vendidas</li>
+                        <li><strong>ResultadoBruto:</strong> Receita menos custos</li>
+                        <li><strong>ResultadoLiquido:</strong> Resultado líquido do período</li>
+                        <li><strong>DRE:</strong> Demonstração de Resultado do Exercício</li>
+                        <li><strong>ComparativoReceita:</strong> Análise comparativa entre períodos</li>
+                        <li><strong>DREGrafico:</strong> Dados formatados para visualização gráfica</li>
+                        <li><strong>AV (Análise Vertical):</strong> Percentual sobre receita</li>
+                        <li><strong>AH (Análise Horizontal):</strong> Variação percentual periódica</li>
+                        <li><strong>%EBITDA:</strong> EBITDA percentual</li>
+                        <li><strong>%ResultadoLiquido:</strong> Margem líquida</li>
+                        <li>Diversas medidas para custos (comercial, geral, financeiro, folha)</li>
+                    </ul>
+
+                    <h3>2. Despesa</h3>
+                    <p><strong>Descrição:</strong> Tabela de transações contábeis de despesa. Consolida todos os lançamentos de saída/débito da organização, categorizada por natureza de despesa.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>61</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC: VSUC_EMPRESAS_TLAN (VSCI)</td>
+                        </tr>
+                    </table>
+                    <p><strong>Nota:</strong> As medidas de despesa são calculadas na tabela Receita para manter DRE centralizada.</p>
+                </section>
+
+                <section id="tabelas-dimensao">
+                    <h2><i class="fas fa-cube"></i> Tabelas de Dimensão</h2>
+
+                    <h3>1. Plano de Contas</h3>
+                    <p><strong>Descrição:</strong> Tabela de dimensão estruturada com a hierarquia contábil completa da empresa.</p>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Colunas</td>
+                            <td>47</td>
+                        </tr>
+                        <tr>
+                            <td>Medidas</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Modo</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Última Atualização</td>
+                            <td>28/11/2025</td>
+                        </tr>
+                        <tr>
+                            <td>Fonte de Dados</td>
+                            <td>ODBC: planos_tpla (VSCI)</td>
+                        </tr>
+                    </table>
+                    <h4>Estrutura Hierárquica:</h4>
+                    <ul>
+                        <li><strong>Nivel1:</strong> Grupos contábeis principais (Ativo, Passivo, DRE, etc.)</li>
+                        <li><strong>Nivel2:</strong> Subgrupos contábeis (Ativo Circulante, etc.)</li>
+                        <li><strong>BDCTALON:</strong> Código contábil estruturado (ex: 01.01.01.001)</li>
+                        <li><strong>BDNOMCTA:</strong> Denominação da conta</li>
+                        <li><strong>BDTIPCTA:</strong> Tipo de conta (Sintética/Analítica)</li>
+                        <li><strong>BDFORMULA:</strong> Fórmulas de cálculo para contas derivadas</li>
+                    </ul>
+
+                    <h3>2. Empresas</h3>
+                    <p><strong>Descrição:</strong> Tabela com informações cadastrais das empresas do grupo.</p>
+                    <ul>
+                        <li>Colunas: 10</li>
+                        <li>Função: Contexto organizacional para análises consolidadas</li>
+                    </ul>
+
+                    <h3>3. dCalendario</h3>
+                    <p><strong>Descrição:</strong> Dimensão temporal com datas para análises temporais.</p>
+                    <ul>
+                        <li>Colunas: 3</li>
+                        <li>Função: Análise de períodos e comparativos temporais</li>
+                    </ul>
+
+                    <h3>4. Plano de Contas Novo</h3>
+                    <p><strong>Descrição:</strong> Tabela de mapeamento/ordenação para apresentação de DRE formatada.</p>
+                    <ul>
+                        <li>Colunas: 4</li>
+                        <li>Medidas: 1</li>
+                        <li>Função: Ordenação e formatação de linhas de DRE</li>
+                    </ul>
+
+                    <h3>5. Tabelas Auxiliares</h3>
+                    <ul>
+                        <li><strong>ContasSelecao:</strong> Selecionador de contas específicas (4 colunas, 3 medidas)</li>
+                        <li><strong>SelectorAV/AH:</strong> Selecionador de tipo de análise (4 colunas)</li>
+                        <li><strong>Metricas:</strong> Indicadores e métricas de desempenho (3 colunas)</li>
+                        <li><strong>Consulta1:</strong> Tabela adicional com 99 colunas (propósito específico)</li>
+                    </ul>
+
+                    <h3>6. LocalDateTables</h3>
+                    <p><strong>Quantidade:</strong> 15 tabelas automáticas</p>
+                    <p><strong>Função:</strong> Suporte a análises de data em diferentes colunas de transação</p>
+                </section>
+
+                <section id="relacionamentos">
+                    <h2><i class="fas fa-link"></i> Arquitetura de Relacionamentos</h2>
+                    <p>O modelo utiliza 30 relacionamentos ativos estruturando uma análise multidimensional integrada.</p>
+
+                    <h3>Padrões de Relacionamento:</h3>
+                    <table>
+                        <tr>
+                            <th>Tipo de Relacionamento</th>
+                            <th>Quantidade</th>
+                            <th>Descrição</th>
+                        </tr>
+                        <tr>
+                            <td>Receita → Dimensões</td>
+                            <td>6</td>
+                            <td>Conecta tabela Receita a Plano de Contas, Empresas, Calendários</td>
+                        </tr>
+                        <tr>
+                            <td>Despesa → Dimensões</td>
+                            <td>6</td>
+                            <td>Conecta tabela Despesa a dimensões</td>
+                        </tr>
+                        <tr>
+                            <td>Plano Contas → LocalDateTables</td>
+                            <td>2</td>
+                            <td>Relaciona datas de cadastro/inativação</td>
+                        </tr>
+                        <tr>
+                            <td>Dimensões Internas</td>
+                            <td>2</td>
+                            <td>Relaciona Plano Contas com Plano Contas Novo e Metricas</td>
+                        </tr>
+                        <tr>
+                            <td>LocalDateTables</td>
+                            <td>14</td>
+                            <td>Relacionamentos com tabelas de data do sistema</td>
+                        </tr>
+                    </table>
+
+                    <h3>Relacionamentos Principais (Ativos):</h3>
+                    <ul>
+                        <li><strong>Receita.BDCODEMP+BDCODCONTA → Plano de Contas.BDCODEMP+BDCONTA</strong> (N:1)</li>
+                        <li><strong>Receita.BDCODEMP → Empresas.ID_EMPRESA</strong> (N:1)</li>
+                        <li><strong>Receita.BDDATA → dCalendario.Date</strong> (N:1)</li>
+                        <li><strong>Despesa.BDCODEMP+BDCODCONTADEB → Plano de Contas</strong> (N:1)</li>
+                        <li><strong>Plano de Contas.Nivel1 → Plano de Contas Novo.Ordem</strong> (N:1)</li>
+                        <li><strong>Metricas.Ordem ↔ Plano de Contas Novo.Ordem</strong> (1:1 Bidirecional)</li>
+                    </ul>
+                </section>
+
+                <section id="tecnicamente">
+                    <h2><i class="fas fa-cogs"></i> Especificações Técnicas</h2>
+                    <table>
+                        <tr>
+                            <th>Propriedade</th>
+                            <th>Valor</th>
+                        </tr>
+                        <tr>
+                            <td>Nome do Banco de Dados</td>
+                            <td>9a1f3131-35e0-4e97-8b83-06521110ba67</td>
+                        </tr>
+                        <tr>
+                            <td>Nível de Compatibilidade</td>
+                            <td>1601</td>
+                        </tr>
+                        <tr>
+                            <td>Idioma Padrão</td>
+                            <td>Português (Brasil)</td>
+                        </tr>
+                        <tr>
+                            <td>Modo de Dados</td>
+                            <td>Import</td>
+                        </tr>
+                        <tr>
+                            <td>Visão de Dados Padrão</td>
+                            <td>Completa</td>
+                        </tr>
+                        <tr>
+                            <td>Versão PowerBI</td>
+                            <td>PowerBI_V3</td>
+                        </tr>
+                        <tr>
+                            <td>Inteligência de Tempo</td>
+                            <td>Habilitada</td>
+                        </tr>
+                        <tr>
+                            <td>Data de Última Modificação Estrutural</td>
+                            <td>26/09/2025</td>
+                        </tr>
+                    </table>
+
+                    <h3>Fonte de Dados:</h3>
+                    <p><strong>Tipo:</strong> ODBC</p>
+                    <p><strong>DSN:</strong> VSCI (Visual Software Contabilidade/Fiscal)</p>
+                    <p><strong>Máximo de Conexões:</strong> 10</p>
+                    <p><strong>Período de Dados:</strong> A partir de 2025-01-01</p>
+                </section>
+
+                <section id="medidas">
+                    <h2><i class="fas fa-calculator"></i> Medidas do Modelo</h2>
+                    <p><strong>Total de Medidas:</strong> 47</p>
+
+                    <h3>Distribuição de Medidas:</h3>
+                    <ul>
+                        <li><strong>Tabela Receita:</strong> 43 medidas (análises de resultado, DRE, comparativas)</li>
+                        <li><strong>Tabela ContasSelecao:</strong> 3 medidas (seletores)</li>
+                        <li><strong>Tabela Plano de Contas Novo:</strong> 1 medida</li>
+                    </ul>
+
+                    <h3>Principais Categorias de Medidas:</h3>
+
+                    <h4>Medidas de Resultado (11)</h4>
+                    <ul>
+                        <li>ReceitaBruta, ReceitaLíquida, ReceitaTotal</li>
+                        <li>CustoTotal, ResultadoBruto</li>
+                        <li>DespesasComerciais, DespesasGerais, DespesasFinanceiras, DespesasFolha</li>
+                        <li>ResultadoLiquido, OutrasDespesas</li>
+                    </ul>
+
+                    <h4>Medidas de Análise Financeira (8)</h4>
+                    <ul>
+                        <li>DRE, DRE_Formatado, DREGrafico</li>
+                        <li>%ResultadoLiquido, %EBITDA</li>
+                        <li>ComparativoReceita, ResultadoGraficoTempo</li>
+                        <li>ValorReal</li>
+                    </ul>
+
+                    <h4>Medidas de Análise Vertical/Horizontal (6)</h4>
+                    <ul>
+                        <li>AV (Análise Vertical - % sobre receita)</li>
+                        <li>AH (Análise Horizontal - variação temporal)</li>
+                        <li>Switch% (Seletor de tipo de análise)</li>
+                        <li>SwitchSetas (Indicadores gráficos)</li>
+                        <li>TemAV?, ValorLiquido</li>
+                    </ul>
+
+                    <h4>Medidas de Controle/Navegação (18)</h4>
+                    <ul>
+                        <li>FiltroFonte, Debug Param</li>
+                        <li>EmpresaSelecionada, Empresas Com Dados</li>
+                        <li>NomeGraficoReceita, NomeGraficoDeducoes, NomeGraficoTempo</li>
+                        <li>GraficoReceitas, DeducaoReceitasTotal, OutrasReceitas</li>
+                        <li>E outras medidas para controle de interface</li>
+                    </ul>
+                </section>
+
+                <section id="historico">
+                    <h2><i class="fas fa-history"></i> Histórico de Alterações</h2>
+                    <table>
+                        <tr>
+                            <th>Data</th>
+                            <th>Alteração</th>
+                        </tr>
+                        <tr>
+                            <td>29/01/2026</td>
+                            <td>Documentação HTML completa gerada automaticamente com análise técnica</td>
+                        </tr>
+                        <tr>
+                            <td>16/12/2025</td>
+                            <td>Última atualização da tabela Receita</td>
+                        </tr>
+                        <tr>
+                            <td>28/11/2025</td>
+                            <td>Última atualização do Plano de Contas</td>
+                        </tr>
+                        <tr>
+                            <td>26/09/2025</td>
+                            <td>Última modificação estrutural do modelo</td>
+                        </tr>
+                        <tr>
+                            <td>28/04/2025</td>
+                            <td>Última data de modificação de dados</td>
+                        </tr>
+                    </table>
+                </section>
+
+                <footer>
+                    <p><strong>Documentação BI - Contábil</strong></p>
+                    <p>Versão Atualizada | Janeiro de 2026</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const sectionStates = {};
+
+        function generateTableOfContents() {
+            const toc = document.getElementById('tableOfContents');
+            const container = document.querySelector('.container');
+            const headings = container.querySelectorAll('h2, h3');
+            
+            let currentSection = null;
+            let currentList = null;
+
+            headings.forEach((heading, index) => {
+                const id = heading.parentElement.id || `heading-${index}`;
+                heading.parentElement.id = id;
+
+                if (heading.tagName === 'H2') {
+                    const section = document.createElement('div');
+                    section.className = 'toc-section';
+                    section.id = `section-${id}`;
+
+                    const sectionHeader = document.createElement('div');
+                    sectionHeader.className = 'toc-section-header';
+                    
+                    const toggleIcon = document.createElement('span');
+                    toggleIcon.className = 'toggle-icon';
+                    toggleIcon.innerHTML = '<i class="fas fa-chevron-down"></i>';
+
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.style.color = 'inherit';
+                    link.style.textDecoration = 'none';
+                    link.style.flex = '1';
+                    link.textContent = heading.textContent;
+
+                    sectionHeader.appendChild(toggleIcon);
+                    sectionHeader.appendChild(link);
+
+                    const sectionContent = document.createElement('div');
+                    sectionContent.className = 'toc-section-content';
+
+                    currentList = document.createElement('ul');
+                    currentList.className = 'toc-list';
+
+                    sectionContent.appendChild(currentList);
+
+                    sectionHeader.addEventListener('click', function(e) {
+                        if (e.target.closest('a')) return;
+                        
+                        if (!sectionHeader.classList.contains('no-children')) {
+                            const icon = sectionHeader.querySelector('.toggle-icon');
+                            const isCollapsed = sectionContent.classList.contains('collapsed');
+                            
+                            sectionContent.classList.toggle('collapsed');
+                            icon.classList.toggle('collapsed');
+                            
+                            sectionStates[id] = !isCollapsed;
+                        }
+                    });
+
+                    section.appendChild(sectionHeader);
+                    section.appendChild(sectionContent);
+                    toc.appendChild(section);
+                    currentSection = { section, header: sectionHeader, content: sectionContent, id };
+
+                } else if (heading.tagName === 'H3' && currentList) {
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.textContent = heading.textContent;
+
+                    const item = document.createElement('li');
+                    item.appendChild(link);
+
+                    const nested = currentList.querySelector('.nested') || (() => {
+                        const nestedList = document.createElement('ul');
+                        nestedList.className = 'toc-list nested';
+                        currentList.appendChild(nestedList);
+                        return nestedList;
+                    })();
+
+                    nested.appendChild(item);
+                }
+            });
+
+            document.querySelectorAll('.toc-section').forEach(section => {
+                const content = section.querySelector('.toc-section-content');
+                const nestedList = content.querySelector('.toc-list.nested');
+                const header = section.querySelector('.toc-section-header');
+                const toggleIcon = header.querySelector('.toggle-icon');
+
+                if (!nestedList) {
+                    header.classList.add('no-children');
+                    toggleIcon.classList.add('hidden');
+                }
+            });
+        }
+
+        function highlightActiveLink() {
+            const sections = document.querySelectorAll('h2, h3');
+            const links = document.querySelectorAll('#tableOfContents a');
+
+            window.addEventListener('scroll', () => {
+                let currentSection = '';
+
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 150) {
+                        currentSection = section.parentElement.id;
+                    }
+                });
+
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSection}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A' && e.target.getAttribute('href').startsWith('#')) {
+                if (e.target.closest('#tableOfContents')) {
+                    e.preventDefault();
+                    const target = document.querySelector(e.target.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTableOfContents();
+            highlightActiveLink();
+        });
+    </script>
+</body>
+</html>
