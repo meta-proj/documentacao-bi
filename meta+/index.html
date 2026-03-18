@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta+ · Guia de Métricas</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine:        #6b2048;
+    --wine-deep:   #1c0913;
+    --wine-mid:    #9c6a84;
+    --wine-light:  #d1bac6;
+    --wine-pale:   #f3ecf0;
+    --white:       #ffffff;
+    --off-white:   #f4f4f4;
+    --text-dark:   #191919;
+    --text-body:   #3d1a2e;
+    --text-muted:  #7a5068;
+    --border:      #e2d0da;
+    --border-mid:  #c8a8ba;
+
+    --green:       #2a7a52;
+    --green-bg:    #edf6f1;
+    --green-bdr:   #b8dccb;
+    --red:         #8b2a2a;
+    --red-bg:      #f9eded;
+    --amber:       #7a4a12;
+    --amber-bg:    #fdf3e7;
+    --amber-bdr:   #e8c98a;
+    --blue:        #1e4d7a;
+    --blue-bg:     #e8f0f8;
+    --blue-bdr:    #a8c4e0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-body);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--wine-deep);
+    border-bottom: 3px solid var(--wine);
+    padding: 0 2rem;
+    display: flex; align-items: center;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: .95rem; font-weight: 700;
+    color: var(--wine-light);
+    white-space: nowrap;
+    padding: .85rem 1.5rem .85rem 0;
+    border-right: 1px solid rgba(255,255,255,.12);
+    margin-right: 1rem;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  nav a {
+    color: rgba(255,255,255,.45);
+    text-decoration: none;
+    font-size: .68rem; font-weight: 600;
+    padding: .85rem .7rem;
+    white-space: nowrap; transition: color .2s;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  nav a:hover { color: var(--wine-light); }
+
+  /* HERO */
+  .hero {
+    background: var(--wine-deep);
+    padding: 5rem 2rem 4.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--wine), var(--wine-mid), var(--wine-light));
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: .65rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--wine-light);
+    border: 1px solid rgba(209,186,198,.3);
+    padding: .3rem 1rem; border-radius: 2px;
+    margin-bottom: 1.8rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    font-weight: 700; color: var(--white);
+    line-height: 1.2; margin-bottom: 1.2rem; letter-spacing: -.02em;
+  }
+  .hero h1 span { color: var(--wine-light); }
+  .hero p {
+    max-width: 520px; margin: 0 auto;
+    color: rgba(255,255,255,.5);
+    font-size: .92rem; line-height: 1.85; font-weight: 400;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  /* SECTION */
+  .section-header { padding: 3.5rem 0 1.4rem; }
+  .section-label {
+    font-size: .65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--wine-mid); margin-bottom: .55rem;
+  }
+  .section-header h2 {
+    font-size: 1.45rem; font-weight: 700;
+    color: var(--wine-deep); line-height: 1.25; letter-spacing: -.01em;
+  }
+  .section-header p {
+    color: var(--text-muted); font-size: .88rem;
+    margin-top: .45rem; max-width: 580px;
+    font-weight: 400; line-height: 1.75;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--wine-light), transparent);
+    margin-bottom: 1.75rem;
+  }
+
+  /* METRIC CARD */
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: .9rem; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+    animation: fadeUp .35s ease both;
+  }
+  .metric-card:hover {
+    border-color: var(--wine-mid);
+    box-shadow: 0 2px 10px rgba(107,32,72,.07);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .metric-header {
+    padding: 1rem 1.3rem;
+    display: flex; align-items: center; gap: .9rem;
+    cursor: pointer; user-select: none;
+  }
+  .metric-bar {
+    width: 3px; height: 34px; border-radius: 2px; flex-shrink: 0;
+  }
+  .bar-identity { background: var(--wine-mid); }
+  .bar-team     { background: var(--green); }
+  .bar-revenue  { background: var(--wine); }
+  .bar-cost     { background: var(--red); }
+  .bar-result   { background: var(--amber); }
+
+  .metric-name {
+    flex: 1; font-weight: 600; font-size: .93rem; color: var(--wine-deep);
+  }
+  .metric-name small {
+    display: block; font-size: .73rem;
+    color: var(--text-muted); font-weight: 400; margin-top: .1rem;
+  }
+  .metric-toggle {
+    color: var(--wine-mid); font-size: .6rem; font-weight: 700;
+    width: 20px; height: 20px; border: 1px solid var(--border);
+    border-radius: 2px; background: var(--off-white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .3s;
+  }
+  .metric-card.open .metric-toggle { transform: rotate(180deg); }
+
+  .metric-body {
+    display: none; border-top: 1px solid var(--border);
+    padding: 1.4rem 1.3rem; background: var(--white);
+  }
+  .metric-card.open .metric-body { display: block; }
+
+  /* BODY BLOCKS */
+  .block { margin-bottom: 1.2rem; }
+  .block:last-child { margin-bottom: 0; }
+  .block-label {
+    font-size: .63rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .1em;
+    color: var(--wine-mid); margin-bottom: .45rem;
+  }
+
+  .what-box {
+    background: var(--wine-pale);
+    border-left: 3px solid var(--wine-light);
+    border-radius: 0 4px 4px 0;
+    padding: .85rem 1.1rem;
+    color: var(--text-body); line-height: 1.8; font-size: .88rem;
+  }
+
+  .how-box {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--wine);
+    border-radius: 0 4px 4px 0;
+    padding: .95rem 1.1rem;
+    font-size: .87rem; color: var(--text-body); line-height: 1.8;
+  }
+  .formula-step {
+    display: flex; align-items: baseline; gap: .7rem; padding: .18rem 0;
+  }
+  .formula-op {
+    font-weight: 700; color: var(--wine);
+    width: 14px; flex-shrink: 0; text-align: center;
+  }
+  .formula-line em { color: var(--wine); font-style: normal; font-weight: 600; }
+  .formula-result {
+    margin-top: .65rem; padding-top: .65rem;
+    border-top: 1px solid var(--border);
+    color: var(--green); font-weight: 600; font-size: .87rem;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  .formula-result .formula-op { color: var(--green); }
+  .formula-sub-label {
+    font-size: .72rem; color: var(--text-muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em;
+    margin: .55rem 0 .25rem;
+  }
+
+  .details-list { list-style: none; margin-top: .7rem; }
+  .details-list li {
+    padding: .32rem 0 .32rem 1.2rem;
+    position: relative; font-size: .86rem;
+    color: var(--text-muted); line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .details-list li:last-child { border-bottom: none; }
+  .details-list li::before {
+    content: '–'; position: absolute; left: 0;
+    color: var(--wine-mid); font-weight: 700;
+  }
+  .details-list li strong { color: var(--text-dark); font-weight: 600; }
+
+  .alert-box {
+    display: flex; gap: .7rem;
+    background: var(--amber-bg); border: 1px solid var(--amber-bdr);
+    border-radius: 4px; padding: .8rem 1rem;
+    font-size: .84rem; color: var(--amber);
+    margin-top: .85rem; line-height: 1.6;
+  }
+  .info-box {
+    background: var(--blue-bg); border: 1px solid var(--blue-bdr);
+    border-radius: 4px; padding: .85rem 1rem;
+    font-size: .87rem; color: var(--blue);
+    margin-bottom: 1.4rem; line-height: 1.7;
+  }
+  .info-box strong { color: var(--blue); }
+  .info-box-amber {
+    background: var(--amber-bg); border: 1px solid var(--amber-bdr);
+    border-radius: 4px; padding: .85rem 1rem;
+    font-size: .87rem; color: var(--amber);
+    margin-bottom: 1.4rem; line-height: 1.7;
+  }
+
+  /* PCT TABLE */
+  .pct-table {
+    width: 100%; border-collapse: collapse;
+    font-size: .84rem; margin-top: .75rem; border-radius: 4px; overflow: hidden;
+  }
+  .pct-table th {
+    background: var(--wine-pale); color: var(--wine); font-weight: 700;
+    font-size: .65rem; letter-spacing: .08em; text-transform: uppercase;
+    padding: .6rem .9rem; text-align: left;
+    border-bottom: 2px solid var(--wine-light);
+  }
+  .pct-table td { padding: .55rem .9rem; border-bottom: 1px solid var(--border); }
+  .pct-table tr:last-child td { border-bottom: none; }
+  .pct-table tr:nth-child(even) td { background: var(--off-white); }
+  .pct-val { font-weight: 700; color: var(--wine); }
+  .pct-note { color: var(--text-muted); font-size: .78rem; }
+
+  /* EXPAND BTN */
+  .all-open-btn {
+    font-size: .68rem; font-weight: 600;
+    color: var(--wine-mid); background: none;
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: .32rem .85rem; cursor: pointer;
+    transition: all .2s; font-family: 'Sora', sans-serif;
+    margin-bottom: 1rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .all-open-btn:hover {
+    background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine);
+  }
+
+  /* FLOW */
+  .flow-visual {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2rem; margin: 1.5rem 0;
+  }
+  .flow-title {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--wine-mid);
+    margin-bottom: 1.5rem; text-align: center;
+  }
+  .flow-item {
+    padding: .8rem 1.1rem; border-radius: 4px; margin-bottom: 3px;
+    font-size: .87rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem; border: 1px solid transparent;
+  }
+  .fi-label { font-weight: 600; }
+  .fi-note  { font-size: .76rem; color: var(--text-muted); margin-top: .08rem; }
+  .flow-arrow {
+    text-align: center; color: var(--wine-light); font-size: .75rem;
+    padding: .18rem 0; letter-spacing: .08em; font-weight: 600;
+  }
+  .fi-green { background: var(--green-bg);  border-color: var(--green-bdr);  color: var(--green); }
+  .fi-red   { background: var(--red-bg);    border-color: #e8b8b8;           color: var(--red); }
+  .fi-amber { background: var(--amber-bg);  border-color: var(--amber-bdr);  color: var(--amber); }
+  .fi-wine  { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+  .fi-final { background: var(--wine-deep); border-color: var(--wine); color: var(--wine-light); font-weight: 700; }
+  .fi-final .fi-note { color: rgba(209,186,198,.55); }
+
+  .step-badge {
+    font-size: .65rem; font-weight: 700; padding: .18rem .5rem;
+    border-radius: 2px; flex-shrink: 0; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bdr); }
+  .badge-red   { background: var(--red-bg);   color: var(--red);   border: 1px solid #e8b8b8; }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
+  .badge-wine  { background: var(--wine-pale);color: var(--wine);  border: 1px solid var(--wine-light); }
+  .badge-final { background: var(--wine);     color: var(--white); border: 1px solid var(--wine); }
+
+  /* GLOSSÁRIO */
+  .glossary-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; background: var(--border); margin-top: 1.25rem;
+  }
+  @media (max-width: 560px) { .glossary-grid { grid-template-columns: 1fr; } }
+  .glossary-item { background: var(--white); padding: .95rem 1.1rem; }
+  .glossary-item dt { font-weight: 700; color: var(--wine); font-size: .87rem; margin-bottom: .28rem; }
+  .glossary-item dd { color: var(--text-muted); font-size: .82rem; line-height: 1.65; font-weight: 400; }
+
+  /* FOOTER */
+  footer {
+    background: var(--wine-deep); border-top: 3px solid var(--wine);
+    padding: 2.5rem 2rem; text-align: center;
+    color: rgba(255,255,255,.3); font-size: .78rem;
+    line-height: 1.9; margin-top: 5rem;
+  }
+  footer strong { color: var(--wine-light); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Meta+</div>
+  <a href="#identificacao">Identificação</a>
+  <a href="#equipe">Equipe</a>
+  <a href="#receita">Receita</a>
+  <a href="#custos">Custos</a>
+  <a href="#resultado">Resultado</a>
+  <a href="#fluxo">Fluxo completo</a>
+  <a href="#glossario">Glossário</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Guia do Usuário Final</div>
+  <h1>O que cada número<br><span>realmente significa</span></h1>
+  <p>Este guia explica, em linguagem simples, como cada valor exibido no dashboard é calculado — quais informações são usadas e por quê.</p>
+</div>
+
+
+<!-- IDENTIFICAÇÃO -->
+<div class="container">
+  <div class="section-header" id="identificacao">
+    <div class="section-label">Grupo 1</div>
+    <h2>Identificação do Colaborador</h2>
+    <p>Dados básicos de quem está sendo analisado no painel. Variam conforme o filtro selecionado.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-identity"></div>
+      <div class="metric-name">Nome <small>Identificação do profissional selecionado</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Exibe o nome completo do colaborador selecionado no filtro do dashboard. Quando nenhum colaborador está selecionado, o campo fica vazio indicando visão geral.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Lido direto do <em>cadastro de colaboradores</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Só exibe quando <em>exatamente um colaborador</em> está selecionado no filtro</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-identity"></div>
+      <div class="metric-name">Cargo <small>Função exercida pelo colaborador</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mostra o título da função do colaborador exatamente como está registrado no sistema. Exemplos: Analista DP, Coordenador Fiscal, Auxiliar Contábil.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Lido do campo <em>Descrição da função</em> no cadastro de colaboradores</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-identity"></div>
+      <div class="metric-name">Núcleo <small>Equipe à qual o colaborador pertence</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Nome da equipe à qual o colaborador pertence. Um colaborador pode estar em mais de um núcleo — nesse caso todos são listados separados por vírgula.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Lido da <em>tabela de equipes</em> vinculada ao colaborador</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Na visão de equipe sem colaborador individual: exibe o núcleo do <em>filtro ativo</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- EQUIPE -->
+<div class="container">
+  <div class="section-header" id="equipe">
+    <div class="section-label">Grupo 2</div>
+    <h2>Quantitativo de Equipe</h2>
+    <p>Quantas pessoas compõem o núcleo e o setor do colaborador. Supervisores e Gerentes são sempre excluídos — seus custos são tratados separadamente.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-team"></div>
+      <div class="metric-name">Qtd. Profissionais no Núcleo <small>Pessoas na mesma equipe pequena</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos colaboradores operacionais estão no mesmo núcleo que o profissional selecionado. Esse número é usado para dividir o custo do líder de forma justa entre os membros da equipe.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta colaboradores vinculados ao <em>mesmo núcleo</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui quem tem hierarquia de <em>Supervisor</em> ou <em>Gerente</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Quanto maior o núcleo, <strong>menor a parcela</strong> do custo do líder que recai sobre cada colaborador</li>
+        <li>Núcleo com 5 pessoas: custo do líder dividido por 5 igualmente</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-team"></div>
+      <div class="metric-name">Qtd. Profissionais no Setor <small>Pessoas em todo o departamento</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos colaboradores operacionais existem em todo o setor do colaborador (Departamento Pessoal, Fiscal ou Contabilidade). Esse número é usado para dividir o custo do Gerente e do Supervisor entre todos os operadores do setor.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta colaboradores do <em>mesmo departamento</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui equipes de <em>Apoio</em>, <em>Supervisores</em> e <em>Gerentes</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para <em>Passo Fundo</em>: conta todos os colaboradores da cidade, independente do núcleo</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- RECEITA -->
+<div class="container">
+  <div class="section-header" id="receita">
+    <div class="section-label">Grupo 3</div>
+    <h2>Receita</h2>
+    <p>O faturamento atribuído ao colaborador ou ao seu setor. Não é o faturamento total da empresa — é a parcela proporcional que pertence ao seu setor e ao trabalho realizado.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="info-box">
+    <strong>Contexto importante:</strong> A Meta+ presta serviços de diferentes áreas (DP, Fiscal, Contabilidade) para o mesmo cliente. Quando um cliente paga uma mensalidade, esse valor é dividido entre os setores que o atendem, de acordo com percentuais pré-definidos. A receita exibida no dashboard já considera essa divisão.
+  </div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Percentual de Participação do Setor <small>Quanto da mensalidade do cliente pertence a este setor</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Para cada cliente, indica qual porcentagem do valor mensal pago pertence ao setor do colaborador. Clientes atendidos por um único setor atribuem 100% da receita a ele. Quando múltiplos setores atendem o mesmo cliente, o valor é distribuído entre eles.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">O sistema verifica se o cliente tem <em>percentuais especiais cadastrados</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Caso contrário, aplica os <em>percentuais padrão por setor</em>:</span></div>
+        </div>
+        <table class="pct-table">
+          <thead>
+            <tr><th>Setor</th><th>Percentual</th><th>Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Departamento Pessoal</td><td class="pct-val">30%</td><td class="pct-note">Cliente contrata os 3 setores</td></tr>
+            <tr><td>Fiscal</td><td class="pct-val">33%</td><td class="pct-note">Cliente contrata os 3 setores</td></tr>
+            <tr><td>Contabilidade</td><td class="pct-val">37%</td><td class="pct-note">Cliente contrata os 3 setores</td></tr>
+            <tr><td>Qualquer setor (exclusivo)</td><td class="pct-val">100%</td><td class="pct-note">Cliente contrata apenas esse setor</td></tr>
+            <tr><td>Contabilidade + Fiscal (sem DP)</td><td class="pct-val">53% / 47%</td><td class="pct-note">Exceção cadastrada</td></tr>
+            <tr><td>Contabilidade + DP (sem Fiscal)</td><td class="pct-val">56% / 44%</td><td class="pct-note">Exceção cadastrada</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Receita do Setor <small>Faturamento atribuído ao colaborador no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Soma total do faturamento que pertence ao setor do colaborador no período selecionado. O cálculo é feito cliente a cliente: o valor de cada mensalidade é multiplicado pelo percentual do setor e ponderado pelo volume de tarefas realizadas.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-sub-label">Para cada cliente atendido no período:</div>
+          <div class="formula-step"><span class="formula-op">×</span><span class="formula-line"><em>Valor da mensalidade</em> do cliente</span></div>
+          <div class="formula-step"><span class="formula-op">×</span><span class="formula-line"><em>Percentual de participação do setor</em> naquele cliente</span></div>
+          <div class="formula-step"><span class="formula-op">×</span><span class="formula-line">Peso pelo <em>volume de tarefas</em> realizadas para aquele cliente no período</span></div>
+          <div class="formula-result"><span class="formula-op">+</span><span>Soma de todos os clientes = Receita do Setor</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O <strong>volume de tarefas</strong> funciona como peso: clientes com mais tarefas têm maior influência na receita do colaborador</li>
+        <li>Para <strong>Contabilidade</strong>: usa a tabela de contas a receber específica de CTB</li>
+        <li>Para <strong>Sapiranga</strong>: usa a tabela de Sapiranga — único colaborador no núcleo recebe 100%; dois ou mais dividem 70% / 30%</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Taxa de Impostos <small>Percentual da receita destinado a tributos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual fixo de 10% aplicado sobre a receita do setor para estimar o custo tributário. Descontado antes de calcular o resultado final.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Taxa fixa de <em>10%</em>, definida centralmente pela empresa</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Aplicada igualmente a <em>todos os colaboradores e setores</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Impostos em R$ <small>Valor absoluto dos tributos no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor em reais dos impostos calculados sobre a receita do setor. Corresponde a 10% da Receita do Setor.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Receita do Setor</em> × 10%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Receita Retida <small>Parcela guardada pela empresa</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Parcela da receita que a empresa retém para cobrir custos não mapeados, criar reservas financeiras e garantir reinvestimento. Representa 19% da receita do setor e não é distribuída aos colaboradores.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Receita do Setor</em> × 19%</span></div>
+        </div>
+      </div>
+      <div class="alert-box">Este valor é descontado do resultado e não é distribuído a nenhum colaborador — permanece na empresa.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- CUSTOS -->
+<div class="container">
+  <div class="section-header" id="custos">
+    <div class="section-label">Grupo 4</div>
+    <h2>Custos</h2>
+    <p>Todos os gastos atribuídos ao colaborador: seu próprio custo, a parcela de custo de quem lidera, gerencia e apoia — tudo dividido proporcionalmente.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="info-box-amber">
+    <strong>Encargos trabalhistas (fator 1,5):</strong> Todo salário é multiplicado por 1,5 para representar o custo real ao empregador, incorporando FGTS, INSS patronal, férias, 13º salário e outros direitos. Um salário de R$ 3.000 gera custo real de R$ 4.500.
+  </div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo do Operador <small>Custo direto do próprio colaborador</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O custo total do próprio colaborador para a empresa no período selecionado: salário acrescido de todos os encargos trabalhistas, multiplicado pelo número de meses analisados.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Salário do colaborador</em> × 1,5 (encargos) × <em>número de meses</em> do período</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li><strong>Líderes, Supervisores e Gerentes</strong> recebem valor zero aqui — o custo deles é tratado em métricas próprias</li>
+        <li>Colaboradores do núcleo de <strong>Apoio</strong> recebem zero aqui — seu custo está em "Custo de Apoio"</li>
+        <li>O <strong>número de meses</strong> é determinado automaticamente pelo filtro de data do dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo do Líder (rateado) <small>Parcela do custo do líder da equipe</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O custo do líder da equipe, dividido igualmente entre todos os membros do núcleo. Como o líder dedica tempo a toda a equipe, seu custo é rateado entre todos os que ele lidera.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Calcula o custo total do líder: <em>salário do líder</em> × 1,5</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pelo <em>número de membros do núcleo</em></span></div>
+          <div class="formula-step"><span class="formula-op">3</span><span class="formula-line">Multiplica pelo <em>número de meses</em> do período</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Parcela do custo do líder por colaborador</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Exemplo: custo do líder de R$ 6.000 em um núcleo com <strong>4 pessoas</strong> = R$ 1.500 por colaborador</li>
+        <li>O próprio <strong>líder</strong> também recebe sua parcela proporcional ao visualizar o próprio cartão</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo de Apoio + Despesa Operacional <small>Custos de suporte e despesas fixas rateados por toda a empresa</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Parcela dos gastos de toda a estrutura de suporte da empresa (RH, Financeiro, Administrativo, Diretoria) e das despesas operacionais fixas (aluguel, sistemas, infraestrutura) atribuída a cada colaborador operacional.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-sub-label">Custo de Apoio:</div>
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Soma os salários (× 1,5) de <em>toda a equipe de Apoio</em> mais o custo da <em>Diretoria</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pelo <em>total de colaboradores operacionais</em> da empresa</span></div>
+          <div class="formula-sub-label">Despesa Operacional:</div>
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Calcula a <em>média mensal</em> das despesas operacionais dos <em>últimos 3 meses fechados</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pelo <em>total de operadores</em> da empresa</span></div>
+          <div class="formula-result"><span class="formula-op">+</span><span>Ambos multiplicados pelo número de meses e somados</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>A <strong>média de 3 meses</strong> nas despesas evita que um gasto pontual distorça o resultado de um único mês</li>
+        <li>Esse custo é dividido <strong>igualmente entre todos os operadores</strong> da empresa, independente de setor ou núcleo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo de Gestão do Setor <small>Parcela do Gerente e Supervisor rateada entre os operadores</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O custo do Gerente e do Supervisor do setor, dividido entre todos os operadores do departamento. Como esses gestores dedicam tempo a todo o setor, o custo é rateado proporcionalmente.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Identifica o <em>Gerente responsável</em> pelo setor — cada departamento tem o seu definido no sistema</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Soma o custo do Gerente + Supervisor (salário × 1,5 de cada)</span></div>
+          <div class="formula-step"><span class="formula-op">3</span><span class="formula-line">Divide pelo <em>número de operadores do setor</em></span></div>
+          <div class="formula-step"><span class="formula-op">4</span><span class="formula-line">Multiplica pelo <em>número de meses</em> do período</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Para <strong>Sapiranga</strong>: inclui também a parcela da coordenadora regional, rateada entre todos os colaboradores de Sapiranga</li>
+        <li>Para <strong>Passo Fundo</strong>: inclui a parcela da coordenadora local, rateada entre os colaboradores de Passo Fundo</li>
+        <li>Exibe <strong>"NÃO CADASTRADO"</strong> se o setor não tiver gerente registrado no sistema</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo Total <small>Soma de todos os custos atribuídos ao colaborador</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O investimento total que a empresa faz para manter aquele colaborador ativo e produtivo: custo direto somado à fatia de todos os custos compartilhados — líder, apoio e gestão do setor.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Custo do Operador</em> — salário com encargos</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Custo do Líder</em> — rateado pelo núcleo</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Custo de Apoio + Despesa Operacional</em> — rateado pela empresa toda</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Custo de Gestão do Setor</em> — rateado pelo departamento</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Custo Total do Colaborador</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- RESULTADO -->
+<div class="container">
+  <div class="section-header" id="resultado">
+    <div class="section-label">Grupo 5</div>
+    <h2>Resultado e Distribuição</h2>
+    <p>O lucro gerado pelo colaborador e como ele é distribuído. É aqui que o trabalho se transforma em valor financeiro concreto.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">Resultado Líquido <small>O lucro gerado no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor que sobra da receita depois de pagar todos os custos, os impostos e a parcela que fica na empresa. Resultado positivo indica que o colaborador gerou lucro. Resultado negativo indica que os custos superaram a receita no período.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op" style="color:var(--green)">+</span><span class="formula-line"><em>Receita do Setor</em></span></div>
+          <div class="formula-step"><span class="formula-op" style="color:var(--red)">−</span><span class="formula-line"><em>Custo Total</em> — operador, líder, apoio e gestão</span></div>
+          <div class="formula-step"><span class="formula-op" style="color:var(--red)">−</span><span class="formula-line"><em>Impostos</em> — 10% da receita</span></div>
+          <div class="formula-step"><span class="formula-op" style="color:var(--red)">−</span><span class="formula-line"><em>Receita Retida</em> — 19% da receita, permanece na empresa</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Resultado Líquido</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Resultado <strong>negativo</strong> pode ocorrer em meses de férias, colaboradores recém-admitidos ou sazonalidade — não indica problema grave por si só</li>
+        <li>O resultado líquido <strong>não é o valor recebido</strong> pelo colaborador — é o lucro antes da distribuição</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">Resultado a Distribuir <small>Parcela do lucro destinada às comissões</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Os 30% do resultado líquido destinados ao programa de comissões — o montante a ser dividido entre os colaboradores. Os outros 70% permanecem com a empresa para reinvestimento e crescimento.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Resultado Líquido</em> × 30%</span></div>
+        </div>
+      </div>
+      <div class="alert-box">30% é a política de distribuição de resultados definida pela Meta+.</div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">Valor a Receber <small>Comissão individual do colaborador</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor de comissão que o colaborador tem direito a receber, com base no resultado do seu setor e no seu percentual de participação conforme o cargo. Quanto maior o resultado gerado, maior a comissão.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Resultado a Distribuir</em> × <em>percentual do cargo do colaborador</em></span></div>
+          <div class="formula-sub-label">O percentual varia por unidade:</div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Colaboradores de <em>Porto Alegre</em>: tabela de distribuição POA</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Colaboradores de <em>Sapiranga</em>: tabela de distribuição SAP</span></div>
+        </div>
+      </div>
+      <div class="alert-box">Este é o valor <strong>bruto de comissão</strong> calculado pelo sistema. Podem ocorrer ajustes pela gestão antes do pagamento final.</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- FLUXO -->
+<div class="container" id="fluxo">
+  <div class="section-header">
+    <div class="section-label">Visão Geral</div>
+    <h2>Como tudo se conecta</h2>
+    <p>Do faturamento do cliente até a comissão do colaborador — o caminho completo do cálculo.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="flow-visual">
+    <div class="flow-title">Fluxo de Cálculo do Resultado</div>
+    <div class="flow-item fi-green">
+      <div><div class="fi-label">Receita do Setor</div><div class="fi-note">Mensalidades × percentual do setor × peso das tarefas realizadas</div></div>
+      <span class="step-badge badge-green">Entrada</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-red">
+      <div><div class="fi-label">Menos — Custo Total</div><div class="fi-note">Operador + Líder rateado + Apoio rateado + Gestão rateada</div></div>
+      <span class="step-badge badge-red">Saída</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-red">
+      <div><div class="fi-label">Menos — Impostos (10%)</div><div class="fi-note">10% da Receita do Setor destinados a tributos</div></div>
+      <span class="step-badge badge-red">Saída</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-red">
+      <div><div class="fi-label">Menos — Receita Retida (19%)</div><div class="fi-note">Permanece na empresa para reservas e reinvestimento</div></div>
+      <span class="step-badge badge-red">Empresa</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-amber">
+      <div><div class="fi-label">Resultado Líquido</div><div class="fi-note">O lucro gerado pelo colaborador no período</div></div>
+      <span class="step-badge badge-amber">Lucro</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-wine">
+      <div><div class="fi-label">Resultado a Distribuir (× 30%)</div><div class="fi-note">Fatia do lucro destinada ao programa de comissões</div></div>
+      <span class="step-badge badge-wine">Distribuição</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item fi-final">
+      <div><div class="fi-label">Valor a Receber (× percentual do cargo)</div><div class="fi-note">Comissão individual — proporcional ao cargo e ao resultado gerado</div></div>
+      <span class="step-badge badge-final">Comissão</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- GLOSSÁRIO -->
+<div class="container" id="glossario">
+  <div class="section-header">
+    <div class="section-label">Referência</div>
+    <h2>Glossário</h2>
+    <p>Termos usados no dashboard e neste guia.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="glossary-grid">
+    <dl class="glossary-item"><dt>Encargo Trabalhista (×1,5)</dt><dd>Multiplicador sobre o salário para estimar o custo real ao empregador: FGTS, INSS, férias, 13º salário e outros direitos.</dd></dl>
+    <dl class="glossary-item"><dt>Núcleo</dt><dd>Grupo pequeno de colaboradores com um líder. Exemplos: Núcleo DP 1, Núcleo Fiscal 2. É a menor unidade de equipe no dashboard.</dd></dl>
+    <dl class="glossary-item"><dt>Setor / Departamento</dt><dd>Área maior que reúne vários núcleos. Exemplos: Departamento Pessoal, Fiscal, Contabilidade.</dd></dl>
+    <dl class="glossary-item"><dt>Operador</dt><dd>Colaborador que executa as tarefas dos clientes. Hierarquia base — não é líder, supervisor nem gerente.</dd></dl>
+    <dl class="glossary-item"><dt>Apoio</dt><dd>Colaboradores de RH, Financeiro, Administrativo. Os custos deles são divididos entre todos os operadores da empresa.</dd></dl>
+    <dl class="glossary-item"><dt>Rateio</dt><dd>Divisão proporcional de um custo entre vários colaboradores. Exemplo: o custo do líder é rateado igualmente entre os membros do núcleo.</dd></dl>
+    <dl class="glossary-item"><dt>Contas a Receber</dt><dd>Tabela com o valor da mensalidade de cada cliente. É a base de cálculo da receita.</dd></dl>
+    <dl class="glossary-item"><dt>Receita Retida</dt><dd>19% da receita guardado pela empresa para cobrir custos estratégicos e reservas. Não é distribuído.</dd></dl>
+    <dl class="glossary-item"><dt>POA / SAP</dt><dd>Porto Alegre (POA) e Sapiranga (SAP). Cada unidade tem suas próprias tabelas de clientes e percentuais.</dd></dl>
+    <dl class="glossary-item"><dt>Exceção de Cliente</dt><dd>Percentuais customizados para clientes com contratos fora do padrão, cadastrados em tabela separada.</dd></dl>
+    <dl class="glossary-item"><dt>Percentual do Cargo</dt><dd>Participação nas comissões definida por cargo. Determina quanto do montante a distribuir cada colaborador recebe.</dd></dl>
+    <dl class="glossary-item"><dt>Resultado a Distribuir</dt><dd>30% do resultado líquido destinado ao programa de comissões — total disponível para dividir entre os colaboradores.</dd></dl>
+  </div>
+</div>
+
+<footer>
+  <strong>Meta+</strong> · Documentação de Métricas do Dashboard<br>
+  Gerado a partir do modelo Power BI · Março 2026
+</footer>
+
+<script>
+  function toggleCard(header) {
+    header.closest('.metric-card').classList.toggle('open');
+  }
+  document.querySelectorAll('.all-open-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cards = btn.closest('.container').querySelectorAll('.metric-card');
+      const allOpen = [...cards].every(c => c.classList.contains('open'));
+      cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+      btn.textContent = allOpen ? 'Expandir todos' : 'Recolher todos';
+    });
+  });
+  document.querySelectorAll('.metric-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.03}s`;
+  });
+</script>
+</body>
+</html>
