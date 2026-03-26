@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta+ · Guia de Métricas — BI Contábil</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine:        #6b2048;
+    --wine-deep:   #1c0913;
+    --wine-mid:    #9c6a84;
+    --wine-light:  #d1bac6;
+    --wine-pale:   #f3ecf0;
+    --white:       #ffffff;
+    --off-white:   #f4f4f4;
+    --text-dark:   #191919;
+    --text-body:   #3d1a2e;
+    --text-muted:  #7a5068;
+    --border:      #e2d0da;
+
+    --green:       #2a7a52;
+    --green-bg:    #edf6f1;
+    --green-bdr:   #b8dccb;
+    --red:         #8b2a2a;
+    --red-bg:      #f9eded;
+    --amber:       #7a4a12;
+    --amber-bg:    #fdf3e7;
+    --amber-bdr:   #e8c98a;
+    --blue:        #1e4d7a;
+    --blue-bg:     #e8f0f8;
+    --blue-bdr:    #a8c4e0;
+    --slate:       #3a4a5a;
+    --slate-bg:    #eef1f4;
+    --slate-bdr:   #b0c0d0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-body);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--wine-deep);
+    border-bottom: 3px solid var(--wine);
+    padding: 0 2rem;
+    display: flex; align-items: center;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: .95rem; font-weight: 700;
+    color: var(--wine-light);
+    white-space: nowrap;
+    padding: .85rem 1.5rem .85rem 0;
+    border-right: 1px solid rgba(255,255,255,.12);
+    margin-right: 1rem;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  nav a {
+    color: rgba(255,255,255,.45);
+    text-decoration: none;
+    font-size: .68rem; font-weight: 600;
+    padding: .85rem .7rem;
+    white-space: nowrap; transition: color .2s;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  nav a:hover { color: var(--wine-light); }
+
+  /* HERO */
+  .hero {
+    background: var(--wine-deep);
+    padding: 5rem 2rem 4.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--wine), var(--wine-mid), var(--wine-light));
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: .65rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--wine-light);
+    border: 1px solid rgba(209,186,198,.3);
+    padding: .3rem 1rem; border-radius: 2px;
+    margin-bottom: 1.8rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    font-weight: 700; color: var(--white);
+    line-height: 1.2; margin-bottom: 1.2rem; letter-spacing: -.02em;
+  }
+  .hero h1 span { color: var(--wine-light); }
+  .hero p {
+    max-width: 520px; margin: 0 auto;
+    color: rgba(255,255,255,.5);
+    font-size: .92rem; line-height: 1.85; font-weight: 400;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  /* SECTION */
+  .section-header { padding: 3.5rem 0 1.4rem; }
+  .section-label {
+    font-size: .65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--wine-mid); margin-bottom: .55rem;
+  }
+  .section-header h2 {
+    font-size: 1.45rem; font-weight: 700;
+    color: var(--wine-deep); line-height: 1.25; letter-spacing: -.01em;
+  }
+  .section-header p {
+    color: var(--text-muted); font-size: .88rem;
+    margin-top: .45rem; max-width: 600px;
+    font-weight: 400; line-height: 1.75;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--wine-light), transparent);
+    margin-bottom: 1.75rem;
+  }
+
+  /* METRIC CARD */
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: .9rem; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+    animation: fadeUp .35s ease both;
+  }
+  .metric-card:hover {
+    border-color: var(--wine-mid);
+    box-shadow: 0 2px 10px rgba(107,32,72,.07);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .metric-header {
+    padding: 1rem 1.3rem;
+    display: flex; align-items: center; gap: .9rem;
+    cursor: pointer; user-select: none;
+  }
+  .metric-bar {
+    width: 3px; height: 34px; border-radius: 2px; flex-shrink: 0;
+  }
+  .bar-base     { background: var(--slate); }
+  .bar-revenue  { background: var(--green); }
+  .bar-cost     { background: var(--red); }
+  .bar-expenses { background: var(--amber); }
+  .bar-result   { background: var(--wine); }
+  .bar-analysis { background: var(--blue); }
+
+  .metric-name {
+    flex: 1; font-weight: 600; font-size: .93rem; color: var(--wine-deep);
+  }
+  .metric-name small {
+    display: block; font-size: .73rem;
+    color: var(--text-muted); font-weight: 400; margin-top: .1rem;
+  }
+  .metric-toggle {
+    color: var(--wine-mid); font-size: .6rem; font-weight: 700;
+    width: 20px; height: 20px; border: 1px solid var(--border);
+    border-radius: 2px; background: var(--off-white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .3s;
+  }
+  .metric-card.open .metric-toggle { transform: rotate(180deg); }
+
+  .metric-body {
+    display: none; border-top: 1px solid var(--border);
+    padding: 1.4rem 1.3rem; background: var(--white);
+  }
+  .metric-card.open .metric-body { display: block; }
+
+  /* BODY BLOCKS */
+  .block { margin-bottom: 1.2rem; }
+  .block:last-child { margin-bottom: 0; }
+  .block-label {
+    font-size: .63rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .1em;
+    color: var(--wine-mid); margin-bottom: .45rem;
+  }
+
+  .what-box {
+    background: var(--wine-pale);
+    border-left: 3px solid var(--wine-light);
+    border-radius: 0 4px 4px 0;
+    padding: .85rem 1.1rem;
+    color: var(--text-body); line-height: 1.8; font-size: .88rem;
+  }
+
+  .how-box {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--wine);
+    border-radius: 0 4px 4px 0;
+    padding: .95rem 1.1rem;
+    font-size: .87rem; color: var(--text-body); line-height: 1.8;
+  }
+  .formula-step {
+    display: flex; align-items: baseline; gap: .7rem; padding: .18rem 0;
+  }
+  .formula-op {
+    font-weight: 700; color: var(--wine);
+    width: 14px; flex-shrink: 0; text-align: center;
+  }
+  .formula-line em { color: var(--wine); font-style: normal; font-weight: 600; }
+  .formula-result {
+    margin-top: .65rem; padding-top: .65rem;
+    border-top: 1px solid var(--border);
+    color: var(--green); font-weight: 600; font-size: .87rem;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  .formula-result .formula-op { color: var(--green); }
+  .formula-sub-label {
+    font-size: .72rem; color: var(--text-muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em;
+    margin: .55rem 0 .25rem;
+  }
+
+  .details-list { list-style: none; margin-top: .7rem; }
+  .details-list li {
+    padding: .32rem 0 .32rem 1.2rem;
+    position: relative; font-size: .86rem;
+    color: var(--text-muted); line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .details-list li:last-child { border-bottom: none; }
+  .details-list li::before {
+    content: '–'; position: absolute; left: 0;
+    color: var(--wine-mid); font-weight: 700;
+  }
+  .details-list li strong { color: var(--text-dark); font-weight: 600; }
+
+  .alert-box {
+    background: var(--amber-bg); border: 1px solid var(--amber-bdr);
+    border-radius: 4px; padding: .8rem 1rem;
+    font-size: .84rem; color: var(--amber);
+    margin-top: .85rem; line-height: 1.6;
+  }
+  .info-box {
+    background: var(--blue-bg); border: 1px solid var(--blue-bdr);
+    border-radius: 4px; padding: .85rem 1rem;
+    font-size: .87rem; color: var(--blue);
+    margin-bottom: 1.4rem; line-height: 1.7;
+  }
+  .info-box strong { color: var(--blue); }
+
+  /* EXPAND BTN */
+  .all-open-btn {
+    font-size: .68rem; font-weight: 600;
+    color: var(--wine-mid); background: none;
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: .32rem .85rem; cursor: pointer;
+    transition: all .2s; font-family: 'Sora', sans-serif;
+    margin-bottom: 1rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .all-open-btn:hover {
+    background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine);
+  }
+
+  /* DRE FLOW */
+  .dre-flow {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2rem; margin: 1.5rem 0;
+  }
+  .dre-flow-title {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--wine-mid);
+    margin-bottom: 1.5rem; text-align: center;
+  }
+  .dre-item {
+    padding: .75rem 1.1rem; border-radius: 4px; margin-bottom: 3px;
+    font-size: .87rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem; border: 1px solid transparent;
+  }
+  .dre-label { font-weight: 600; }
+  .dre-note  { font-size: .76rem; color: var(--text-muted); margin-top: .08rem; }
+  .dre-arrow { text-align: center; color: var(--wine-light); font-size: .75rem; padding: .18rem 0; font-weight: 600; }
+  .dre-subtotal {
+    padding: .75rem 1.1rem; border-radius: 4px; margin: 4px 0;
+    font-size: .87rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem;
+    border: 2px solid transparent;
+    font-weight: 700;
+  }
+  .d-green  { background: var(--green-bg);  border-color: var(--green-bdr);  color: var(--green); }
+  .d-red    { background: var(--red-bg);    border-color: #e8b8b8;           color: var(--red); }
+  .d-amber  { background: var(--amber-bg);  border-color: var(--amber-bdr);  color: var(--amber); }
+  .d-slate  { background: var(--slate-bg);  border-color: var(--slate-bdr);  color: var(--slate); }
+  .d-wine   { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+  .d-final  { background: var(--wine-deep); border-color: var(--wine); color: var(--wine-light); }
+  .d-final .dre-note { color: rgba(209,186,198,.55); }
+
+  .step-badge {
+    font-size: .65rem; font-weight: 700; padding: .18rem .5rem;
+    border-radius: 2px; flex-shrink: 0; letter-spacing: .04em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bdr); }
+  .badge-red   { background: var(--red-bg);   color: var(--red);   border: 1px solid #e8b8b8; }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
+  .badge-slate { background: var(--slate-bg); color: var(--slate); border: 1px solid var(--slate-bdr); }
+  .badge-wine  { background: var(--wine-pale);color: var(--wine);  border: 1px solid var(--wine-light); }
+  .badge-final { background: var(--wine);     color: var(--white); border: 1px solid var(--wine); }
+
+  /* GLOSSÁRIO */
+  .glossary-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; background: var(--border); margin-top: 1.25rem;
+  }
+  @media (max-width: 560px) { .glossary-grid { grid-template-columns: 1fr; } }
+  .glossary-item { background: var(--white); padding: .95rem 1.1rem; }
+  .glossary-item dt { font-weight: 700; color: var(--wine); font-size: .87rem; margin-bottom: .28rem; }
+  .glossary-item dd { color: var(--text-muted); font-size: .82rem; line-height: 1.65; font-weight: 400; }
+
+  /* FOOTER */
+  footer {
+    background: var(--wine-deep); border-top: 3px solid var(--wine);
+    padding: 2.5rem 2rem; text-align: center;
+    color: rgba(255,255,255,.3); font-size: .78rem;
+    line-height: 1.9; margin-top: 5rem;
+  }
+  footer strong { color: var(--wine-light); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Meta+ · BI Contábil</div>
+  <a href="#base">Base de Cálculo</a>
+  <a href="#receita">Receita</a>
+  <a href="#custos">Custos</a>
+  <a href="#despesas">Despesas</a>
+  <a href="#resultado">Resultado</a>
+  <a href="#analise">Análise</a>
+  <a href="#dre">DRE Completo</a>
+  <a href="#glossario">Glossário</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Guia do Usuário</div>
+  <h1>BI Contábil<br><span>O que é e como usar?</span></h1>
+  <p>O BI Contábil é uma ferramenta que permite visualizar e analisar a situação financeira da empresa de forma clara e objetiva.</p>
+  <li></li>
+    <p>Este guia explica, em linguagem simples, o que cada métrica do painel financeiro representa, de onde vem o valor e como ele é calculado.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     BASE DE CÁLCULO
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="base">
+    <div class="section-label">Grupo 1</div>
+    <h2>Base de Cálculo</h2>
+    <p>Medida fundamental que alimenta praticamente todos os outros indicadores. Entender ela é entender o painel inteiro.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>O que é o Plano de Contas?</strong> É a estrutura que organiza todas as movimentações financeiras da empresa em categorias (Receitas, Custos, Despesas, etc.). Cada lançamento no sistema pertence a uma conta específica desse plano. Todas as métricas do dashboard filtram esse plano para mostrar apenas o grupo de contas relevante.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-base"></div>
+      <div class="metric-name">Valor Líquido (base de todos os cálculos) <small>Soma dos lançamentos após exclusão de entradas zeradas</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">É o ponto de partida de todo o dashboard. Soma todos os valores financeiros lançados no sistema para o período e filtros selecionados, excluindo automaticamente registros que foram zerados ou estornados (identificados por uma chave interna de controle).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Soma todos os <em>lançamentos de receita</em> do período selecionado</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Soma todos os <em>lançamentos de despesa</em>, excluindo registros marcados como zerados</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Receita total − Despesas válidas</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Registros <strong>zerados</strong> são lançamentos que foram estornados ou corrigidos e não devem entrar no cálculo — o sistema os identifica automaticamente</li>
+        <li>Esta medida não aparece diretamente no painel, mas é usada internamente por todas as outras métricas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-base"></div>
+      <div class="metric-name">DRE (valor de cada linha do demonstrativo) <small>Motor principal do relatório financeiro</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Calcula o valor correto para cada linha do Demonstrativo de Resultado (DRE). Dependendo de qual linha está sendo exibida, pode mostrar o valor detalhado daquela conta específica, ou o valor acumulado de todas as linhas acima dela (subtotais). Linhas de resultado líquido têm o sinal invertido para facilitar a leitura.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para <em>linhas de detalhe</em>: mostra o valor daquela conta específica</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para <em>linhas de subtotal</em>: soma todas as contas anteriores no Plano de Contas</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para a linha de <em>Resultado Líquido</em>: inverte o sinal (negativo vira positivo quando há lucro)</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para a linha de <em>EBIT</em>: usa cálculo específico próprio</span></div>
+        </div>
+      </div>
+      <div class="alert-box">Esta medida muda de comportamento conforme a linha do DRE que está sendo exibida — não tem um valor único fixo.</div>
+    </div>
+  </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     RECEITA
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="receita">
+    <div class="section-label">Grupo 2</div>
+    <h2>Receita</h2>
+    <p>Tudo que a empresa recebeu ou tem a receber no período. Separado em receita bruta (total), deduções (impostos e devoluções) e receita líquida (o que efetivamente fica).</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Receita Bruta <small>Total faturado antes de qualquer desconto ou imposto</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das vendas e prestações de serviço da empresa no período, antes de qualquer desconto, devolução ou imposto sobre a receita. É o "topo" do DRE — o maior número de receita antes das deduções.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma todos os lançamentos classificados como <em>Receita Bruta</em> no Plano de Contas (Ordem 1)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Deduções da Receita <small>Impostos sobre vendas e devoluções</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valores que reduzem a Receita Bruta: impostos incidentes sobre as vendas (como ISS, PIS, COFINS) e eventuais devoluções ou cancelamentos. São obrigações que a empresa recolhe sobre o faturamento.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos classificados como <em>Deduções de Receita</em> no Plano de Contas (Ordem 2)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Este valor é sempre <strong>negativo</strong> pois representa saída — reduz a receita</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Receita Líquida <small>O que efetivamente fica após os impostos sobre vendas</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">A receita real da empresa após descontar os impostos sobre vendas e devoluções. É o valor de referência para calcular a Análise Vertical (percentuais de cada linha do DRE) e os indicadores de rentabilidade.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Receita Bruta</em> (Ordem 1)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Deduções da Receita</em> (Ordem 2 — valor negativo)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Receita Líquida</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Receita Total (para indicadores) <small>Base de comparação dos indicadores de resultado</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Versão simplificada da receita usada como denominador nos indicadores percentuais (como margem líquida). Considera apenas os lançamentos classificados no grupo de receitas (contas iniciadas em "03") para garantir consistência nas comparações.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Filtra apenas contas do grupo <em>"03 — Receitas"</em> no Plano de Contas</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Usado como <em>base de divisão</em> nos cálculos de Análise Vertical e indicadores de margem</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     CUSTOS
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="custos">
+    <div class="section-label">Grupo 3</div>
+    <h2>Custos</h2>
+    <p>Gastos diretamente relacionados à produção do serviço ou produto vendido. Diferente das despesas, os custos estão vinculados ao que a empresa entregou ao cliente.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">CMV — Custo do Serviço / Mercadoria <small>Custo direto de tudo que foi entregue ao cliente</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O Custo da Mercadoria Vendida (CMV) ou Custo do Serviço Prestado — é o quanto a empresa gastou diretamente para entregar o que vendeu. Para uma empresa de serviços como a Meta+, inclui principalmente os custos operacionais vinculados diretamente à execução dos serviços aos clientes.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma todos os lançamentos classificados como <em>CMV/Custo de Serviço</em> no Plano de Contas (Ordem 4)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Custo Total <small>Soma geral de todos os custos do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Soma de todos os lançamentos classificados como custos no Plano de Contas (contas iniciadas em "05"). Usado em indicadores e comparativos de custo.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Filtra apenas contas do grupo <em>"05 — Custos"</em> no Plano de Contas</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O valor resultante é <strong>negativo</strong> (saída de caixa). A métrica "Custo Total Real" inverte o sinal para exibição em gráficos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-cost"></div>
+      <div class="metric-name">Resultado Bruto <small>Lucro após deduzir apenas os custos diretos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O que sobra da Receita Bruta após pagar os impostos sobre vendas e os custos diretos dos serviços prestados. Ainda não considera as despesas administrativas, comerciais e financeiras — é um indicador de eficiência operacional básica.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Receita Bruta</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Deduções da Receita</em> (valor negativo)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>CMV</em> (valor negativo)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Resultado Bruto</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     DESPESAS
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="despesas">
+    <div class="section-label">Grupo 4</div>
+    <h2>Despesas</h2>
+    <p>Gastos necessários para manter a operação da empresa, mas que não estão diretamente vinculados ao serviço entregue ao cliente. Divididos por natureza para facilitar a análise.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-expenses"></div>
+      <div class="metric-name">Despesas com Folha de Pagamento <small>Salários, encargos e benefícios do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Toda a folha de pagamento da empresa: salários, 13º proporcional, férias, encargos patronais (INSS, FGTS), benefícios (vale-transporte, vale-refeição, plano de saúde, etc.). É geralmente a maior despesa de uma empresa de serviços.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos classificados como <em>Despesas com Folha</em> no Plano de Contas (Ordem 8)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-expenses"></div>
+      <div class="metric-name">Despesas Gerais e Administrativas <small>Custos de estrutura e funcionamento da empresa</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Gastos com a manutenção da estrutura da empresa: aluguel, água, luz, telefone, internet, material de escritório, softwares, seguros, honorários contábeis, jurídicos e outros gastos administrativos que não se encaixam em categorias específicas.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos de <em>Despesas Gerais e Administrativas</em> no Plano de Contas (Ordem 9)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-expenses"></div>
+      <div class="metric-name">Despesas Comerciais <small>Gastos com vendas, marketing e captação de clientes</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Investimentos em crescimento da carteira de clientes: publicidade, marketing digital, materiais de divulgação, eventos, comissões de vendas e outros gastos relacionados à captação e manutenção de clientes.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos de <em>Despesas Comerciais</em> no Plano de Contas (Ordem 10)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-expenses"></div>
+      <div class="metric-name">Despesas Financeiras <small>Juros, tarifas bancárias e encargos de financiamentos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Custos relacionados ao uso de capital de terceiros e operações bancárias: juros de empréstimos, tarifas bancárias, encargos sobre cartão de crédito e financiamentos. São despesas que existem independente do volume de vendas.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos de <em>Despesas Financeiras</em> no Plano de Contas (Ordem 12)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>As despesas financeiras são tratadas separadamente do EBITDA justamente porque representam o <strong>custo do endividamento</strong>, não a eficiência operacional</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-expenses"></div>
+      <div class="metric-name">Outras Despesas <small>Gastos eventuais e não recorrentes</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Despesas que não se enquadram nas categorias anteriores ou que têm caráter eventual: multas, perdas, indenizações, gastos extraordinários. Por serem não recorrentes, devem ser analisadas com atenção — uma alta nessa linha pode distorcer o resultado do mês.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os lançamentos de <em>Outras Despesas</em> no Plano de Contas (Ordem 13)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     RESULTADO
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="resultado">
+    <div class="section-label">Grupo 5</div>
+    <h2>Resultado</h2>
+    <p>Os indicadores finais de desempenho financeiro — do resultado operacional até o lucro líquido do período.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">EBITDA <small>Resultado operacional antes de juros, impostos, depreciação e amortização</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O EBITDA mede a capacidade de geração de caixa da operação, ignorando o impacto de decisões financeiras (como empréstimos), tributárias e contábeis (depreciação). É o indicador mais usado para comparar a eficiência operacional de empresas, pois mostra o resultado "puro" da atividade.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Receita Bruta</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Deduções da Receita</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>CMV</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Despesas com Folha</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Despesas Gerais e Administrativas</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Despesas Comerciais</em></span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line"><em>Depreciação e Amortização</em> (excluídas do cálculo)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>EBITDA</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O EBITDA <strong>não inclui</strong> despesas financeiras, impostos sobre o lucro, depreciação nem amortização</li>
+        <li>Um EBITDA positivo indica que a <strong>operação em si</strong> é lucrativa, mesmo que o resultado líquido final seja negativo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">EBIT <small>Resultado operacional após depreciação, antes de juros e impostos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O EBIT (também chamado de Resultado Operacional) é semelhante ao EBITDA, mas inclui a depreciação e amortização de ativos. Representa o lucro gerado pela atividade operacional antes de considerar o custo do capital (juros) e os impostos sobre o lucro.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Resultado antes das despesas financeiras</em> (linha anterior ao EBIT no DRE)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Despesas Financeiras</em> (adicionadas de volta — são excluídas do EBIT)</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line"><em>Outras Receitas</em> (ajuste para isolar o resultado operacional)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Depreciação e Amortização</em> (incluídas no EBIT, ao contrário do EBITDA)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>EBIT</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>EBIT = EBITDA − Depreciação e Amortização</li>
+        <li>É a base de cálculo do indicador <strong>% EBIT (margem operacional)</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-result"></div>
+      <div class="metric-name">Resultado Líquido <small>O lucro ou prejuízo final do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O lucro ou prejuízo final da empresa após considerar absolutamente todas as receitas, custos, despesas, resultados financeiros e impostos sobre o lucro. É o número mais completo do DRE e representa o real ganho ou perda do período.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>EBIT</em> (resultado operacional)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Resultado Financeiro</em> (receitas − despesas financeiras)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Outras Receitas e Despesas</em> não operacionais</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line"><em>IRPJ e CSLL</em> (impostos sobre o lucro)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Resultado Líquido</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Valor <strong>positivo</strong>: a empresa teve lucro no período</li>
+        <li>Valor <strong>negativo</strong>: a empresa teve prejuízo — os custos totais superaram as receitas</li>
+        <li>O sinal é <strong>invertido automaticamente</strong> no sistema para que lucro apareça como número positivo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ANÁLISE
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="analise">
+    <div class="section-label">Grupo 6</div>
+    <h2>Indicadores de Análise</h2>
+    <p>Percentuais e comparativos que permitem entender a proporção e a evolução de cada linha do DRE — ferramentas essenciais para identificar tendências.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-analysis"></div>
+      <div class="metric-name">AV — Análise Vertical <small>Quanto cada linha representa da Receita Líquida</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mostra qual percentual da Receita Líquida cada linha do DRE representa. Permite entender a composição do resultado: por exemplo, saber que as despesas com folha correspondem a 40% da receita, ou que o CMV representa 25%. É a principal ferramenta para analisar a estrutura de custos da empresa.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Valor da linha</em> ÷ <em>Receita Líquida</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">O resultado sempre é exibido como percentual positivo, mesmo para linhas de despesa</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>A Receita Líquida sempre representa <strong>100%</strong> na Análise Vertical</li>
+        <li>Útil para comparar empresas de tamanhos diferentes ou o mesmo mês em anos distintos</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-analysis"></div>
+      <div class="metric-name">AH — Análise Horizontal <small>Variação percentual em relação ao mês anterior</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mostra quanto cada linha do DRE cresceu ou reduziu em relação ao mês imediatamente anterior. Permite identificar tendências: uma despesa com folha que cresce 5% ao mês merece atenção, assim como uma receita que cai consecutivamente.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Busca o <em>valor atual</em> da linha no período selecionado</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Busca o <em>valor do mês anterior</em> ao período selecionado</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>(Valor atual − Valor anterior) ÷ Valor anterior</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Resultado <strong>positivo</strong>: a linha cresceu em relação ao mês anterior</li>
+        <li>Resultado <strong>negativo</strong>: a linha reduziu — para despesas, isso é positivo; para receitas, é um alerta</li>
+        <li>As setas exibidas no painel indicam visualmente a direção da variação e se ela é favorável ou desfavorável</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-analysis"></div>
+      <div class="metric-name">% Margem Líquida <small>Percentual do faturamento que virou lucro</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Indica qual porcentagem de cada real faturado sobrou como lucro líquido ao final. Uma margem de 15% significa que a cada R$ 100 faturados, R$ 15 viraram lucro após todos os custos, despesas e impostos. É o indicador mais sintético de rentabilidade.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Resultado Líquido</em> ÷ <em>Receita Total</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-analysis"></div>
+      <div class="metric-name">% Margem EBIT <small>Percentual do faturamento que virou resultado operacional</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Indica a eficiência operacional da empresa: qual porcentagem da receita vira resultado operacional, antes de considerar o custo do endividamento e os impostos sobre lucro. É útil para comparar a operação pura, sem o efeito de decisões financeiras.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>EBIT</em> ÷ <em>Receita Total</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-analysis"></div>
+      <div class="metric-name">% Despesas sobre a Receita <small>Peso das despesas operacionais no faturamento</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Indica quanto das despesas operacionais (folha, gerais, comerciais, financeiras e outras) representam em relação à Receita Bruta. Permite monitorar se os gastos estão crescendo mais rápido que o faturamento — um alerta importante para a sustentabilidade financeira.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line">Soma das <em>despesas operacionais</em> (Ordens 8, 9, 10, 12 e 13) ÷ <em>Receita Bruta</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">O resultado é exibido como percentual <strong>positivo</strong> (o sinal negativo das despesas é invertido)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     DRE COMPLETO
+════════════════════════════════════════════ -->
+<div class="container" id="dre">
+  <div class="section-header">
+    <div class="section-label">Visão Geral</div>
+    <h2>Estrutura Completa do DRE</h2>
+    <p>A sequência lógica do Demonstrativo de Resultado — do faturamento bruto até o lucro ou prejuízo final.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="dre-flow">
+    <div class="dre-flow-title">Demonstrativo de Resultado do Exercício — Fluxo de Cálculo</div>
+
+    <div class="dre-item d-green">
+      <div><div class="dre-label">Receita Bruta</div><div class="dre-note">Total faturado — vendas e serviços prestados no período</div></div>
+      <span class="step-badge badge-green">Receita</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-item d-red">
+      <div><div class="dre-label">Menos — Deduções da Receita</div><div class="dre-note">Impostos sobre vendas (ISS, PIS, COFINS) e devoluções</div></div>
+      <span class="step-badge badge-red">Dedução</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-subtotal d-green">
+      <div><div class="dre-label">= Receita Líquida</div><div class="dre-note">Base de cálculo da Análise Vertical e dos indicadores de margem</div></div>
+      <span class="step-badge badge-green">Subtotal</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-item d-red">
+      <div><div class="dre-label">Menos — CMV / Custo do Serviço</div><div class="dre-note">Custo direto de tudo que foi entregue ao cliente</div></div>
+      <span class="step-badge badge-red">Custo</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-subtotal d-green">
+      <div><div class="dre-label">= Resultado Bruto</div><div class="dre-note">Receita Líquida − CMV</div></div>
+      <span class="step-badge badge-green">Subtotal</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-item d-amber">
+      <div><div class="dre-label">Menos — Despesas com Folha</div><div class="dre-note">Salários, encargos e benefícios de todos os colaboradores</div></div>
+      <span class="step-badge badge-amber">Despesa</span>
+    </div>
+    <div class="dre-item d-amber" style="margin-top:3px">
+      <div><div class="dre-label">Menos — Despesas Gerais e Administrativas</div><div class="dre-note">Aluguel, utilities, softwares, honorários e demais custos de estrutura</div></div>
+      <span class="step-badge badge-amber">Despesa</span>
+    </div>
+    <div class="dre-item d-amber" style="margin-top:3px">
+      <div><div class="dre-label">Menos — Despesas Comerciais</div><div class="dre-note">Marketing, publicidade e captação de clientes</div></div>
+      <span class="step-badge badge-amber">Despesa</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-item d-red">
+      <div><div class="dre-label">Menos — Depreciação e Amortização</div><div class="dre-note">Desgaste contábil de ativos e direitos intangíveis</div></div>
+      <span class="step-badge badge-red">Ajuste</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-subtotal d-wine">
+      <div><div class="dre-label">= EBIT — Resultado Operacional</div><div class="dre-note">Lucro da operação antes de juros e impostos sobre lucro</div></div>
+      <span class="step-badge badge-wine">Indicador</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-item d-red">
+      <div><div class="dre-label">Mais/Menos — Resultado Financeiro</div><div class="dre-note">Juros pagos em empréstimos e receitas financeiras de aplicações</div></div>
+      <span class="step-badge badge-red">Financeiro</span>
+    </div>
+    <div class="dre-item d-green" style="margin-top:3px">
+      <div><div class="dre-label">Mais — Outras Receitas</div><div class="dre-note">Receitas não operacionais e eventuais</div></div>
+      <span class="step-badge badge-green">Receita</span>
+    </div>
+    <div class="dre-item d-red" style="margin-top:3px">
+      <div><div class="dre-label">Menos — Outras Despesas</div><div class="dre-note">Gastos eventuais e não recorrentes</div></div>
+      <span class="step-badge badge-red">Despesa</span>
+    </div>
+    <div class="dre-item d-red" style="margin-top:3px">
+      <div><div class="dre-label">Menos — IRPJ e CSLL</div><div class="dre-note">Impostos sobre o lucro</div></div>
+      <span class="step-badge badge-red">Imposto</span>
+    </div>
+    <div class="dre-arrow">↓</div>
+    <div class="dre-subtotal d-final">
+      <div><div class="dre-label">= Resultado Líquido</div><div class="dre-note">Lucro ou prejuízo final — o número mais completo do relatório</div></div>
+      <span class="step-badge badge-final">Resultado Final</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     GLOSSÁRIO
+════════════════════════════════════════════ -->
+<div class="container" id="glossario">
+  <div class="section-header">
+    <div class="section-label">Referência</div>
+    <h2>Glossário</h2>
+    <p>Termos financeiros usados no dashboard e neste guia.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="glossary-grid">
+    <dl class="glossary-item"><dt>DRE</dt><dd>Demonstrativo de Resultado do Exercício — relatório que mostra todas as receitas e despesas do período, culminando no lucro ou prejuízo final.</dd></dl>
+    <dl class="glossary-item"><dt>Plano de Contas</dt><dd>Estrutura que classifica todos os lançamentos financeiros em categorias (Receitas, Custos, Despesas). Cada conta tem um código e uma ordem no DRE.</dd></dl>
+    <dl class="glossary-item"><dt>Receita Bruta</dt><dd>Valor total faturado antes de qualquer desconto, devolução ou imposto sobre vendas.</dd></dl>
+    <dl class="glossary-item"><dt>Receita Líquida</dt><dd>Receita Bruta menos as deduções (impostos sobre vendas e devoluções). Base de comparação da Análise Vertical.</dd></dl>
+    <dl class="glossary-item"><dt>CMV / CSV</dt><dd>Custo da Mercadoria Vendida ou Custo do Serviço Prestado — o que a empresa gastou diretamente para entregar o que vendeu.</dd></dl>
+    <dl class="glossary-item"><dt>Resultado Bruto</dt><dd>Receita Líquida menos o CMV. Indica a margem antes das despesas operacionais.</dd></dl>
+    <dl class="glossary-item"><dt>EBITDA</dt><dd>Lucro antes de juros, impostos, depreciação e amortização. Mede a geração de caixa operacional pura da empresa.</dd></dl>
+    <dl class="glossary-item"><dt>EBIT</dt><dd>Lucro operacional após depreciação e amortização, mas antes de juros e impostos sobre lucro. Indica a eficiência da operação.</dd></dl>
+    <dl class="glossary-item"><dt>Análise Vertical (AV)</dt><dd>Percentual que cada linha do DRE representa em relação à Receita Líquida. Mostra a composição do resultado.</dd></dl>
+    <dl class="glossary-item"><dt>Análise Horizontal (AH)</dt><dd>Variação percentual de cada linha em relação ao mês anterior. Mostra a tendência e evolução dos valores.</dd></dl>
+    <dl class="glossary-item"><dt>Margem Líquida</dt><dd>Percentual da receita que virou lucro líquido. Exemplo: margem de 12% = R$ 12 de lucro para cada R$ 100 faturados.</dd></dl>
+    <dl class="glossary-item"><dt>Depreciação e Amortização</dt><dd>Redução contábil do valor de ativos ao longo do tempo. Não representa saída de caixa real, mas é reconhecida como custo no resultado.</dd></dl>
+  </div>
+</div>
+
+<footer>
+  <strong>Meta+</strong> · Documentação de Métricas — BI Contábil<br>
+  Gerado a partir do modelo Power BI · Março 2026
+</footer>
+
+<script>
+  function toggleCard(header) {
+    header.closest('.metric-card').classList.toggle('open');
+  }
+  document.querySelectorAll('.all-open-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cards = btn.closest('.container').querySelectorAll('.metric-card');
+      const allOpen = [...cards].every(c => c.classList.contains('open'));
+      cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+      btn.textContent = allOpen ? 'Expandir todos' : 'Recolher todos';
+    });
+  });
+  document.querySelectorAll('.metric-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.03}s`;
+  });
+</script>
+</body>
+</html>
