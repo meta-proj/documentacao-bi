@@ -369,8 +369,8 @@
 </nav>
 
 <div class="hero">
-  <div class="hero-eyebrow">Guia do Usuário Final</div>
-  <h1>O que cada número<br><span>realmente significa</span></h1>
+  <div class="hero-eyebrow">Guia do Usuário</div>
+  <h1>Meta+<br><span>O que é e como funciona?</span></h1>
   <p>Este guia explica, em linguagem simples, como cada valor exibido no dashboard é calculado — quais informações são usadas e por quê.</p>
 </div>
 
@@ -435,7 +435,7 @@
     <div class="metric-body">
       <div class="block">
         <div class="block-label">O que é</div>
-        <div class="what-box">Nome da equipe à qual o colaborador pertence. Um colaborador pode estar em mais de um núcleo — nesse caso todos são listados separados por vírgula.</div>
+        <div class="what-box">Nome da equipe à qual o colaborador pertence. Um colaborador deve pertencer apenas a um núcleo.</div>
       </div>
       <div class="block">
         <div class="block-label">De onde vem</div>
@@ -517,10 +517,82 @@
   </div>
   <div class="section-divider"></div>
   <div class="info-box">
-    <strong>Contexto importante:</strong> A Meta+ presta serviços de diferentes áreas (DP, Fiscal, Contabilidade) para o mesmo cliente. Quando um cliente paga uma mensalidade, esse valor é dividido entre os setores que o atendem, de acordo com percentuais pré-definidos. A receita exibida no dashboard já considera essa divisão.
+    <strong>Contexto importante:</strong> A Meta+ presta serviços de diferentes áreas (DP, Fiscal, Contabilidade) para o mesmo cliente. O valor é dividido entre os setores que o atendem independentemente se o cliente efetua o pagamento do honorário, de acordo com percentuais pré-definidos. A receita exibida no dashboard já considera essa divisão.
   </div>
   <button class="all-open-btn">Expandir todos</button>
 
+<div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-revenue"></div>
+      <div class="metric-name">Obrigações<small>Quais obrigações compõem a receita</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+  <div class="block-label">Quais tarefas contabilizam?</div>
+
+  <div class="how-box">
+    <div class="formula-sub-label">Para cada cliente atendido no período:</div>
+
+    <!-- Departamento Pessoal -->
+    <div class="formula-step">
+      <span class="formula-op">×</span>
+      <div class="formula-line">
+        <em>Departamento Pessoal:</em>
+        <ul class="task-list">
+          <li>Envio Recibos Folha Mensal</li>
+          <li>Envio Recibos Folha Mensal - E-mail</li>
+          <li>E-Social (Sem Movimento)</li>
+          <li>Folha CEI - 5º Dia</li>
+          <li>Folha Doméstica - 1º Dia</li>
+          <li>Folha Doméstica - 5º Dia - E-mail</li>
+          <li>Folha Doméstica - 5º Dia</li>
+          <li>Folha Só Pró Labore - 1° Dia</li>
+          <li>Folha Só Pró Labore - 5° Dia - E-mail</li>
+          <li>Folha Só Pró Labore - 5° Dia</li>
+          <li>Folha Só Pró Labore - Último Dia</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Contábil -->
+    <div class="formula-step">
+      <span class="formula-op">×</span>
+      <div class="formula-line">
+        <em>Contábil:</em>
+        <ul class="task-list">
+          <li>Fechamento Envio Análise</li>
+          <li>Fechamento Contábil LR ou LP - FIL Sapiranga</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Fiscal -->
+    <div class="formula-step">
+      <span class="formula-op">×</span>
+      <div class="formula-line">
+        <em>Fiscal:</em>
+        <ul class="task-list">
+          <li>DAS SIMPLES</li>
+          <li>DAS SIMPLES - E-mail</li>
+          <li>Apuração ICMS - Filial Sapiranga</li>
+          <li>ICMS</li>
+          <li>ICMS - E-mail</li>
+          <li>ICMS - MG</li>
+          <li>DIME - SC</li>
+          <li>ICMS SP - Venc 21</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="formula-result">
+      <span class="formula-op">+</span>
+      <span>Soma de todos os clientes = Receita do Setor</span>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
   <div class="metric-card">
     <div class="metric-header" onclick="toggleCard(this)">
       <div class="metric-bar bar-revenue"></div>
@@ -566,6 +638,7 @@
         <div class="block-label">O que é</div>
         <div class="what-box">Soma total do faturamento que pertence ao setor do colaborador no período selecionado. O cálculo é feito cliente a cliente: o valor de cada mensalidade é multiplicado pelo percentual do setor e ponderado pelo volume de tarefas realizadas.</div>
       </div>
+
       <div class="block">
         <div class="block-label">Como é calculado</div>
         <div class="how-box">
