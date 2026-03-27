@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meta+ · Guia de Métricas — BI Departamento Pessoal</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine:        #6b2048;
+    --wine-deep:   #1c0913;
+    --wine-mid:    #9c6a84;
+    --wine-light:  #d1bac6;
+    --wine-pale:   #f3ecf0;
+    --white:       #ffffff;
+    --off-white:   #f4f4f4;
+    --text-dark:   #191919;
+    --text-body:   #3d1a2e;
+    --text-muted:  #7a5068;
+    --border:      #e2d0da;
+
+    --green:       #2a7a52;
+    --green-bg:    #edf6f1;
+    --green-bdr:   #b8dccb;
+    --red:         #8b2a2a;
+    --red-bg:      #f9eded;
+    --red-bdr:     #e8b8b8;
+    --amber:       #7a4a12;
+    --amber-bg:    #fdf3e7;
+    --amber-bdr:   #e8c98a;
+    --blue:        #1e4d7a;
+    --blue-bg:     #e8f0f8;
+    --blue-bdr:    #a8c4e0;
+    --slate:       #3a4a5a;
+    --slate-bg:    #eef1f4;
+    --slate-bdr:   #b0c0d0;
+    --purple:      #4a2a7a;
+    --purple-bg:   #f0ecf8;
+    --purple-bdr:  #c0a8e0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-body);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--wine-deep);
+    border-bottom: 3px solid var(--wine);
+    padding: 0 2rem;
+    display: flex; align-items: center;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: .9rem; font-weight: 700;
+    color: var(--wine-light);
+    white-space: nowrap;
+    padding: .85rem 1.5rem .85rem 0;
+    border-right: 1px solid rgba(255,255,255,.12);
+    margin-right: 1rem;
+    letter-spacing: .07em; text-transform: uppercase;
+  }
+  nav a {
+    color: rgba(255,255,255,.45);
+    text-decoration: none;
+    font-size: .67rem; font-weight: 600;
+    padding: .85rem .65rem;
+    white-space: nowrap; transition: color .2s;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  nav a:hover { color: var(--wine-light); }
+
+  .hero {
+    background: var(--wine-deep);
+    padding: 5rem 2rem 4.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--wine), var(--wine-mid), var(--wine-light));
+  }
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: .65rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--wine-light);
+    border: 1px solid rgba(209,186,198,.3);
+    padding: .3rem 1rem; border-radius: 2px;
+    margin-bottom: 1.8rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.2vw, 3rem);
+    font-weight: 700; color: var(--white);
+    line-height: 1.2; margin-bottom: 1.2rem; letter-spacing: -.02em;
+  }
+  .hero h1 span { color: var(--wine-light); }
+  .hero p {
+    max-width: 520px; margin: 0 auto;
+    color: rgba(255,255,255,.5);
+    font-size: .92rem; line-height: 1.85; font-weight: 400;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  .section-header { padding: 3.5rem 0 1.4rem; }
+  .section-label {
+    font-size: .65rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .12em;
+    color: var(--wine-mid); margin-bottom: .55rem;
+  }
+  .section-header h2 {
+    font-size: 1.45rem; font-weight: 700;
+    color: var(--wine-deep); line-height: 1.25; letter-spacing: -.01em;
+  }
+  .section-header p {
+    color: var(--text-muted); font-size: .88rem;
+    margin-top: .45rem; max-width: 600px;
+    font-weight: 400; line-height: 1.75;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--wine-light), transparent);
+    margin-bottom: 1.75rem;
+  }
+
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    margin-bottom: .9rem; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+    animation: fadeUp .35s ease both;
+  }
+  .metric-card:hover {
+    border-color: var(--wine-mid);
+    box-shadow: 0 2px 10px rgba(107,32,72,.07);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .metric-header {
+    padding: 1rem 1.3rem;
+    display: flex; align-items: center; gap: .9rem;
+    cursor: pointer; user-select: none;
+  }
+  .metric-bar { width: 3px; height: 34px; border-radius: 2px; flex-shrink: 0; }
+  .bar-headcount { background: var(--blue); }
+  .bar-turnover  { background: var(--red); }
+  .bar-payroll   { background: var(--green); }
+  .bar-encargos  { background: var(--amber); }
+  .bar-indicator { background: var(--wine); }
+  .bar-aux       { background: var(--slate); }
+
+  .metric-name { flex: 1; font-weight: 600; font-size: .93rem; color: var(--wine-deep); }
+  .metric-name small {
+    display: block; font-size: .73rem;
+    color: var(--text-muted); font-weight: 400; margin-top: .1rem;
+  }
+  .metric-toggle {
+    color: var(--wine-mid); font-size: .6rem; font-weight: 700;
+    width: 20px; height: 20px; border: 1px solid var(--border);
+    border-radius: 2px; background: var(--off-white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .3s;
+  }
+  .metric-card.open .metric-toggle { transform: rotate(180deg); }
+
+  .metric-body {
+    display: none; border-top: 1px solid var(--border);
+    padding: 1.4rem 1.3rem; background: var(--white);
+  }
+  .metric-card.open .metric-body { display: block; }
+
+  .block { margin-bottom: 1.2rem; }
+  .block:last-child { margin-bottom: 0; }
+  .block-label {
+    font-size: .63rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .1em;
+    color: var(--wine-mid); margin-bottom: .45rem;
+  }
+
+  .what-box {
+    background: var(--wine-pale);
+    border-left: 3px solid var(--wine-light);
+    border-radius: 0 4px 4px 0;
+    padding: .85rem 1.1rem;
+    color: var(--text-body); line-height: 1.8; font-size: .88rem;
+  }
+
+  .how-box {
+    background: var(--off-white);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--wine);
+    border-radius: 0 4px 4px 0;
+    padding: .95rem 1.1rem;
+    font-size: .87rem; color: var(--text-body); line-height: 1.8;
+  }
+  .formula-step { display: flex; align-items: baseline; gap: .7rem; padding: .18rem 0; }
+  .formula-op { font-weight: 700; color: var(--wine); width: 14px; flex-shrink: 0; text-align: center; }
+  .formula-line em { color: var(--wine); font-style: normal; font-weight: 600; }
+  .formula-result {
+    margin-top: .65rem; padding-top: .65rem;
+    border-top: 1px solid var(--border);
+    color: var(--green); font-weight: 600; font-size: .87rem;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  .formula-result .formula-op { color: var(--green); }
+  .formula-sub-label {
+    font-size: .72rem; color: var(--text-muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em;
+    margin: .55rem 0 .25rem;
+  }
+
+  .details-list { list-style: none; margin-top: .7rem; }
+  .details-list li {
+    padding: .32rem 0 .32rem 1.2rem;
+    position: relative; font-size: .86rem;
+    color: var(--text-muted); line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .details-list li:last-child { border-bottom: none; }
+  .details-list li::before { content: '–'; position: absolute; left: 0; color: var(--wine-mid); font-weight: 700; }
+  .details-list li strong { color: var(--text-dark); font-weight: 600; }
+
+  .alert-box {
+    background: var(--amber-bg); border: 1px solid var(--amber-bdr);
+    border-radius: 4px; padding: .8rem 1rem;
+    font-size: .84rem; color: var(--amber);
+    margin-top: .85rem; line-height: 1.6;
+  }
+  .info-box {
+    background: var(--blue-bg); border: 1px solid var(--blue-bdr);
+    border-radius: 4px; padding: .85rem 1rem;
+    font-size: .87rem; color: var(--blue);
+    margin-bottom: 1.4rem; line-height: 1.7;
+  }
+  .info-box strong { color: var(--blue); }
+
+  .all-open-btn {
+    font-size: .68rem; font-weight: 600;
+    color: var(--wine-mid); background: none;
+    border: 1px solid var(--border); border-radius: 3px;
+    padding: .32rem .85rem; cursor: pointer;
+    transition: all .2s; font-family: 'Sora', sans-serif;
+    margin-bottom: 1rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .all-open-btn:hover { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+
+  /* FLUXO FOLHA */
+  .flow-visual {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2rem; margin: 1.5rem 0;
+  }
+  .flow-title {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--wine-mid);
+    margin-bottom: 1.5rem; text-align: center;
+  }
+  .flow-item {
+    padding: .75rem 1.1rem; border-radius: 4px; margin-bottom: 3px;
+    font-size: .87rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem; border: 1px solid transparent;
+  }
+  .fi-label { font-weight: 600; }
+  .fi-note  { font-size: .76rem; color: var(--text-muted); margin-top: .08rem; }
+  .flow-arrow { text-align: center; color: var(--wine-light); font-size: .75rem; padding: .18rem 0; font-weight: 600; }
+  .d-green  { background: var(--green-bg);  border-color: var(--green-bdr);  color: var(--green); }
+  .d-red    { background: var(--red-bg);    border-color: var(--red-bdr);    color: var(--red); }
+  .d-amber  { background: var(--amber-bg);  border-color: var(--amber-bdr);  color: var(--amber); }
+  .d-blue   { background: var(--blue-bg);   border-color: var(--blue-bdr);   color: var(--blue); }
+  .d-wine   { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+  .d-final  { background: var(--wine-deep); border-color: var(--wine); color: var(--wine-light); font-weight: 700; }
+  .d-final .fi-note { color: rgba(209,186,198,.55); }
+  .d-purple { background: var(--purple-bg); border-color: var(--purple-bdr); color: var(--purple); }
+
+  .step-badge {
+    font-size: .65rem; font-weight: 700; padding: .18rem .5rem;
+    border-radius: 2px; flex-shrink: 0; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+  }
+  .badge-green  { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-bdr); }
+  .badge-red    { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-bdr); }
+  .badge-amber  { background: var(--amber-bg);  color: var(--amber);  border: 1px solid var(--amber-bdr); }
+  .badge-blue   { background: var(--blue-bg);   color: var(--blue);   border: 1px solid var(--blue-bdr); }
+  .badge-wine   { background: var(--wine-pale); color: var(--wine);   border: 1px solid var(--wine-light); }
+  .badge-final  { background: var(--wine);      color: var(--white);  border: 1px solid var(--wine); }
+  .badge-purple { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-bdr); }
+
+  .glossary-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; background: var(--border); margin-top: 1.25rem;
+  }
+  @media (max-width: 560px) { .glossary-grid { grid-template-columns: 1fr; } }
+  .glossary-item { background: var(--white); padding: .95rem 1.1rem; }
+  .glossary-item dt { font-weight: 700; color: var(--wine); font-size: .87rem; margin-bottom: .28rem; }
+  .glossary-item dd { color: var(--text-muted); font-size: .82rem; line-height: 1.65; font-weight: 400; }
+
+  footer {
+    background: var(--wine-deep); border-top: 3px solid var(--wine);
+    padding: 2.5rem 2rem; text-align: center;
+    color: rgba(255,255,255,.3); font-size: .78rem;
+    line-height: 1.9; margin-top: 5rem;
+  }
+  footer strong { color: var(--wine-light); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Meta+ · BI DP</div>
+  <a href="#headcount">Headcount</a>
+  <a href="#turnover">Turnover e Afastamentos</a>
+  <a href="#assiduidade">Assiduidade</a>
+  <a href="#folha">Folha de Pagamento</a>
+  <a href="#encargos">Encargos</a>
+  <a href="#indicadores">Indicadores</a>
+  <a href="#fluxo">Fluxo da folha</a>
+  <a href="#glossario">Glossário</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Guia do Usuário Final — BI Departamento Pessoal</div>
+  <h1>Como ler o painel<br><span>de Gestão de Pessoas</span></h1>
+  <p>Este guia explica, em linguagem simples, o que cada métrica do painel de RH representa, de onde vem o número e como ele é calculado.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     HEADCOUNT
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="headcount">
+    <div class="section-label">Grupo 1</div>
+    <h2>Headcount — Quadro de Pessoal</h2>
+    <p>Métricas que mostram quantas pessoas fazem parte do quadro de funcionários da empresa, em diferentes categorias de vínculo.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>Como funciona o filtro de empresa?</strong> O painel pode exibir dados de uma empresa específica ou consolidar todas as empresas do grupo. Quando uma empresa é selecionada, o campo "Empresa Selecionada" lista todas as filiais vinculadas à matriz escolhida, e todos os números refletem apenas aquele escopo.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Ativos <small>Funcionários com folha processada no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos funcionários distintos tiveram lançamentos na folha de pagamento no período selecionado, incluindo tanto a folha regular quanto a folha de trabalhadores intermitentes. Sócios com Pro-Labore são excluídos desta contagem.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line">Funcionários distintos com lançamento na <em>Folha Regular</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line">Funcionários distintos com lançamento na <em>Folha Intermitente</em></span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line">Funcionários com verba classificada como <em>Pro-Labore</em> (excluídos)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Um mesmo funcionário que aparece em dois meses dentro do período é contado <strong>apenas uma vez</strong></li>
+        <li>Trabalhadores <strong>intermitentes</strong> (chamados por demanda) são somados aos mensalistas</li>
+        <li>Sócios e proprietários que recebem <strong>Pro-Labore</strong> são contados separadamente na métrica própria</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Média de Ativos <small>Média do quadro ao longo dos meses do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Em vez de mostrar o total acumulado de funcionários do período, esta métrica calcula a média mensal — ou seja, quantos funcionários a empresa tinha em média a cada mês. É mais útil para análises comparativas entre empresas ou períodos de durações diferentes.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Para cada mês do período: calcula o total de <em>Ativos</em> naquele mês</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Considera apenas os meses em que houve <em>pelo menos 1 ativo</em></span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Média dos ativos mensais</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Meses sem nenhum funcionário ativo são <strong>ignorados</strong> no cálculo da média para não distorcer o resultado</li>
+        <li>É a métrica usada nos cálculos de <strong>Turnover</strong> e <strong>Faturamento por Funcionário</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Contratações <small>Novas admissões no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantas admissões foram registradas no período selecionado. Cada funcionário admitido é contado uma vez, independentemente de quantos documentos de admissão foram gerados para ele.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta registros distintos na tabela de <em>Admissões</em> dentro do período selecionado</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Demissões <small>Desligamentos efetivos no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos funcionários foram efetivamente desligados no período. Funcionários que foram transferidos de uma empresa para outra dentro do grupo são excluídos — eles não representam uma perda real de quadro.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta registros na tabela de <em>Rescisões</em> do período</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line">Exclui funcionários que constam na tabela de <em>Transferências</em> (mudança de CNPJ interno)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li><strong>Transferências internas</strong> (entre filiais do mesmo grupo) não contam como demissão</li>
+        <li>Apenas saídas que representam <strong>perda real</strong> de funcionário do grupo são contabilizadas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Afastados <small>Funcionários em licença ou afastamento no fim do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos funcionários estavam em afastamento (licença médica, INSS, acidente de trabalho, etc.) no último dia do período selecionado. Inclui tanto afastamentos sem data de retorno prevista quanto aqueles cuja data de retorno ainda não chegou.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line">Funcionários com afastamento iniciado antes do fim do período e <em>sem data de retorno</em> definida</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line">Funcionários com afastamento iniciado antes do fim do período e <em>data de retorno ainda no futuro</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Funcionário afastado que já retornou dentro do período <strong>não é contado</strong></li>
+        <li>Esta métrica é um <strong>snapshot</strong> (fotografia) do momento final do período</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Pro-Labore <small>Sócios e proprietários que recebem retirada</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos sócios ou proprietários receberam Pro-Labore no período. Pro-Labore é a remuneração de sócios pelo trabalho prestado à empresa — diferente do salário de funcionários CLT, tem um tratamento tributário específico.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta registros distintos na folha cuja verba contém a descrição <em>"Pro-Labore"</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Autônomos <small>Prestadores de serviço sem vínculo empregatício</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Conta quantos trabalhadores autônomos (RPA — Recibo de Pagamento a Autônomo) prestaram serviços à empresa no período. São pessoas físicas contratadas pontualmente, sem vínculo CLT, que emitem recibo pelos serviços prestados.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Conta prestadores distintos na tabela de <em>Autônomos</em>, filtrado pelo período e empresa selecionados</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-headcount"></div>
+      <div class="metric-name">Total de Ativos Geral e % por Filial <small>Distribuição do quadro entre filiais</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O Total de Ativos Geral soma todos os funcionários ativos em todas as filiais da empresa, independente de qual filial está selecionada no filtro. O % por Filial mostra qual parcela do total pertence a cada unidade.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line"><em>Total Geral</em>: soma de Ativos em todas as filiais, ignorando o filtro de filial</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line"><em>% por Filial</em>: Ativos da filial filtrada ÷ Total Geral</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Permite entender o <strong>peso de cada unidade</strong> no quadro total do grupo</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     TURNOVER E AFASTAMENTOS
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="turnover">
+    <div class="section-label">Grupo 2</div>
+    <h2>Turnover e Afastamentos</h2>
+    <p>Indicadores de movimentação e instabilidade do quadro de pessoal. Taxas elevadas de turnover ou afastamento sinalizam pontos de atenção na gestão de pessoas.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Turnover <small>Taxa de rotatividade do quadro no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mede a rotatividade da empresa: qual percentual do quadro foi renovado no período. Considera tanto as entradas (contratações) quanto as saídas (demissões), calculando a média entre elas em relação ao total de funcionários. Uma taxa de 5% ao mês, por exemplo, significa que a empresa renova 5% do quadro mensalmente.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Calcula a média entre <em>Contratações</em> e <em>Demissões</em> do período</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pela soma de <em>Ativos + Afastados</em> (total do quadro)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>(Contratações + Demissões) ÷ 2 ÷ (Ativos + Afastados)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Um Turnover de <strong>até 5% ao mês</strong> é considerado saudável na maioria dos setores</li>
+        <li>Taxas acima de <strong>10% ao mês</strong> merecem atenção imediata</li>
+        <li>Afastados são incluídos no denominador pois ainda fazem parte do quadro</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Turnover Médio <small>Média da taxa de rotatividade mês a mês</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Quando o painel exibe múltiplos meses, esta métrica calcula a média do Turnover de cada mês individualmente — evitando que um mês com alta movimentação pontual distorça a leitura do período inteiro.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Calcula o <em>Turnover</em> separadamente para cada mês do período</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide a soma dos turnover mensais pela <em>quantidade de meses</em> no período</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Média do Turnover mensal</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Média de Afastados <small>Quantidade média de funcionários afastados no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Média mensal de funcionários que estiveram em afastamento ao longo do período. Permite entender se os afastamentos são um fenômeno pontual (um mês específico) ou uma tendência contínua.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Para cada mês: conta o total de <em>Afastados</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Calcula a média entre todos os meses do período</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ASSIDUIDADE
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="assiduidade">
+    <div class="section-label">Grupo 3</div>
+    <h2>Assiduidade e Absenteísmo</h2>
+    <p>Indicadores que medem a presença e as ausências dos funcionários. Calculados com base nos valores financeiros das verbas de folha relacionadas a faltas, atestados e horas trabalhadas.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>Como as faltas são medidas financeiramente?</strong> O sistema calcula assiduidade e absenteísmo com base nos <em>valores em reais</em> das verbas de folha, não em horas brutas. O salário mensal representa o valor de referência de "presença plena", e os descontos por faltas e atestados representam as ausências em termos monetários.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Absenteísmo <small>Percentual de ausências sobre o total de horas esperadas</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mede qual percentual do tempo de trabalho esperado foi perdido por faltas injustificadas e atestados médicos. Quanto maior, maior o impacto das ausências na operação da empresa.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Soma o valor das <em>Horas Faltas</em> + valor dos <em>Atestados Abonados</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pela soma de: <em>Horas Faltas + Salário Mensalista + Atestados Abonados</em></span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>% do tempo perdido por ausências</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O denominador inclui o salário total para representar o <strong>tempo máximo possível</strong> de trabalho</li>
+        <li>Referência de mercado: absenteísmo abaixo de <strong>3%</strong> é considerado baixo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Assiduidade <small>Percentual do tempo efetivamente trabalhado</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O complementar do Absenteísmo — mede qual porcentagem do tempo de trabalho esperado foi efetivamente cumprida. Uma assiduidade de 97% significa que 3% do tempo foi perdido por ausências.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Calcula: <em>Salário Mensalista</em> − Atestados Abonados − Horas Faltas</span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Divide pelo <em>Salário Mensalista</em> total</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>% do tempo efetivamente trabalhado</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Horas Faltas <small>Valor financeiro das faltas injustificadas</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total em reais dos descontos realizados na folha por faltas injustificadas dos funcionários. Inclui faltas simples, faltas em DSR (Descanso Semanal Remunerado) e atrasos, convertidos para o valor proporcional de desconto.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das verbas de desconto por <em>falta simples</em>, <em>falta em DSR</em> e <em>atraso</em>, tanto na folha regular quanto intermitente</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-turnover"></div>
+      <div class="metric-name">Atestado Abonado <small>Valor das ausências justificadas por atestado médico</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor em reais referente aos dias em que o funcionário apresentou atestado médico válido. Diferente das horas faltas (injustificadas), o atestado é abonado — o funcionário não perde o salário, mas a ausência ainda impacta a produtividade.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das verbas de <em>abono por atestado médico</em> lançadas na folha</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FOLHA DE PAGAMENTO
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="folha">
+    <div class="section-label">Grupo 4</div>
+    <h2>Folha de Pagamento</h2>
+    <p>Todos os valores lançados na folha — proventos (o que a empresa paga ao funcionário) e descontos (o que é retido). A soma resulta no líquido pago.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Salário Mensalista <small>Remuneração base dos funcionários mensalistas</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Soma dos salários base dos funcionários mensalistas no período. É a principal verba de provento da folha e serve como referência de custo fixo com pessoal. Inclui salário normal, salário de horistas e variações para trabalhadores em regimes específicos.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma as verbas de <em>salário base</em> (mensalista, horista e variações) na folha regular</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Esta verba é o <strong>denominador base</strong> dos cálculos de Assiduidade e Absenteísmo</li>
+        <li>Funcionários intermitentes e autônomos têm suas remunerações em tabelas separadas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Horas Extras <small>Remuneração adicional por trabalho além da jornada</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total pago aos funcionários por horas trabalhadas além da jornada contratual. Inclui horas extras com diferentes percentuais de adicional (50%, 100% — noturnos e domingos) e é calculado tanto para a folha regular quanto para intermitentes.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma todas as verbas de <em>hora extra</em> com diferentes adicionais (50%, 100%) e situações (noturno, feriado, domingo), da folha regular e intermitente</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Um volume alto de horas extras pode indicar necessidade de <strong>novas contratações</strong> ou reorganização da jornada</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Adiantamento <small>Valores pagos antecipadamente no mês</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Soma dos adiantamentos salariais pagos aos funcionários — o chamado "primeiro pagamento" que ocorre normalmente na primeira quinzena do mês, antes do fechamento da folha completa.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma as verbas de <em>adiantamento salarial</em> da folha regular e intermitente</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Férias <small>Provisão e pagamento de férias no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das férias pagas aos funcionários no período. Inclui o salário do período de férias acrescido do terço constitucional (1/3 adicional obrigatório por lei).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma a verba de <em>pagamento de férias</em> lançada na folha</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Este valor pode variar bastante de mês a mês dependendo do <strong>calendário de férias</strong> da empresa</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Rescisão <small>Verbas pagas no desligamento de funcionários</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das verbas rescisórias pagas a funcionários desligados no período: saldo de salário, aviso prévio, férias proporcionais + 1/3 e 13º proporcional, conforme o tipo de demissão (sem justa causa, com justa causa, pedido de demissão, etc.).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma o valor líquido das rescisões registradas no período</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line">Subtrai o líquido de rescisões de <em>transferências internas</em> (mudança de CNPJ no grupo)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Transferências internas são excluídas pois <strong>não representam custo real</strong> de desligamento para o grupo</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Total de Proventos <small>Soma de tudo que a empresa pagou aos funcionários</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Soma de todos os itens que a empresa pagou ou creditou ao funcionário — salários, horas extras, adicionais, benefícios em folha e qualquer outra verba de provento. É o valor bruto antes dos descontos.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma todas as verbas classificadas como <em>proventos</em> (tipo 0) na folha regular e intermitente</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Líquido Folha Pago <small>O valor efetivamente depositado na conta do funcionário</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor que efetivamente cai na conta corrente do funcionário: todos os proventos menos todos os descontos (INSS do empregado, IRRF, adiantamento já pago, etc.). É diferente do custo total para a empresa, que inclui encargos patronais.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Total de Proventos</em></span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line">Total de <em>descontos</em> na folha (INSS do empregado, IRRF, outros)</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line"><em>Rescisões</em> (tratadas separadamente)</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Valor líquido depositado em conta</span></div>
+        </div>
+      </div>
+      <div class="alert-box">O Líquido Folha Pago é o que o funcionário recebe. O custo real para a empresa é maior — inclui os encargos patronais (INSS, FGTS) que não passam pela conta do funcionário.</div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-payroll"></div>
+      <div class="metric-name">Custo Total da Folha <small>Tudo que a empresa desembolsou com pessoal no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O desembolso total da empresa com pessoal no período: reúne todos os componentes da folha — salários, adiantamentos, férias, rescisões, horas extras, faltas, atestados e todos os encargos (INSS, IRRF, FGTS, GRRF, Sindicatos). É o indicador mais completo de custo com pessoas.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Salário Mensalista</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Adiantamento</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Férias</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Rescisão</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Horas Extras</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Horas Faltas</em> e <em>Atestados Abonados</em></span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>INSS + IRRF + FGTS + GRRF + Sindicatos</em></span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Custo Total da Folha</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     ENCARGOS
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="encargos">
+    <div class="section-label">Grupo 5</div>
+    <h2>Encargos e Obrigações Trabalhistas</h2>
+    <p>Valores pagos pela empresa ao governo e a entidades sindicais, calculados sobre a folha de pagamento. São obrigações legais que compõem o custo real de um funcionário.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-encargos"></div>
+      <div class="metric-name">INSS <small>Contribuição previdenciária patronal</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total da contribuição previdenciária (INSS) recolhida pela empresa ao INSS. Inclui tanto a parte do empregador (encargo patronal) quanto a parte do empregado que é retida na folha. Recolhido via GPS (Guia da Previdência Social).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das guias de INSS (GPS) correspondentes às competências do período selecionado</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Inclui GPS de diferentes categorias (empregados, autônomos, pró-labore)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-encargos"></div>
+      <div class="metric-name">IRRF <small>Imposto de renda retido na fonte sobre a folha</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Imposto de Renda Retido na Fonte: valor retido do salário dos funcionários e repassado ao governo pela empresa. É um desconto do funcionário (não um custo adicional da empresa), mas a empresa é responsável pelo recolhimento.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma as verbas de <em>IRRF</em> lançadas na folha (descontos de imposto de renda e complementos)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-encargos"></div>
+      <div class="metric-name">FGTS <small>Fundo de Garantia por Tempo de Serviço</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor depositado mensalmente pela empresa no FGTS de cada funcionário (8% do salário bruto). É uma obrigação exclusivamente patronal — o funcionário não tem desconto, mas a empresa é obrigada a depositar. O saldo fica disponível para o funcionário em situações específicas (demissão sem justa causa, compra de imóvel, etc.).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os depósitos de FGTS do período, descontando o FGTS antecipado relativo ao 13º salário</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-encargos"></div>
+      <div class="metric-name">GRRF <small>Guia de rescisão — multa do FGTS por demissão sem justa causa</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor pago pela empresa quando demite um funcionário sem justa causa — equivale a 40% do saldo do FGTS do funcionário. É uma multa paga diretamente ao funcionário via GRRF (Guia de Recolhimento Rescisório do FGTS). Aparece apenas nos meses em que há demissões.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores de <em>GRRF</em> recolhidos nas guias do período</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Só existe quando há <strong>demissão sem justa causa</strong> no período</li>
+        <li>É calculado sobre o saldo total acumulado de FGTS do funcionário, não apenas sobre o mês da demissão</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-encargos"></div>
+      <div class="metric-name">Sindicatos <small>Contribuições sindicais descontadas na folha</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valores de contribuições sindicais descontados dos funcionários e repassados aos sindicatos representantes da categoria. Pode incluir contribuição sindical, confederativa e assistencial, dependendo da convenção coletiva da categoria.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma as verbas de <em>contribuição sindical, confederativa e assistencial</em> descontadas na folha</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     INDICADORES
+════════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="indicadores">
+    <div class="section-label">Grupo 6</div>
+    <h2>Indicadores de Desempenho</h2>
+    <p>Métricas que relacionam a folha de pagamento com o faturamento da empresa, permitindo avaliar a eficiência e a sustentabilidade do custo com pessoal.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-indicator"></div>
+      <div class="metric-name">Faturamento <small>Receita bruta do período registrada no sistema fiscal</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor total faturado pela empresa no período: soma das notas fiscais de venda de mercadorias e prestação de serviços, mais outras receitas operacionais, descontando devoluções e notas de cancelamento. É a receita bruta do negócio.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Notas fiscais de venda</em> de mercadorias (operações estaduais e interestaduais)</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Notas fiscais de serviços</em> prestados</span></div>
+          <div class="formula-step"><span class="formula-op">+</span><span class="formula-line"><em>Outras receitas</em> operacionais</span></div>
+          <div class="formula-step"><span class="formula-op">−</span><span class="formula-line"><em>Devoluções e cancelamentos</em> de notas</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>Faturamento líquido de devoluções</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-indicator"></div>
+      <div class="metric-name">Faturamento por Funcionário <small>Receita gerada em média por cada ativo</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Indica quanto de faturamento cada funcionário ativo gerou em média no período. É um indicador de produtividade: quanto maior, mais cada funcionário está "contribuindo" para o faturamento da empresa. Muito usado para comparar eficiência entre filiais ou períodos.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Faturamento</em> ÷ <em>Média de Ativos</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-indicator"></div>
+      <div class="metric-name">Folha x Faturamento <small>Peso do custo com pessoal sobre a receita</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual do faturamento consumido pelo custo total com pessoal. Se este índice está em 35%, significa que para cada R$ 100 faturados, R$ 35 foram para pagar salários, encargos e todos os custos com funcionários. É um dos indicadores mais importantes para sustentabilidade financeira.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Custo Total da Folha</em> ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Para empresas de serviços, uma referência comum é manter este índice <strong>abaixo de 40-50%</strong></li>
+        <li>Valores crescentes mês a mês indicam que o custo com pessoal está crescendo <strong>mais rápido que o faturamento</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-indicator"></div>
+      <div class="metric-name">Horas Extras x Salário <small>Peso das horas extras sobre a massa salarial</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual que as horas extras representam em relação ao salário base dos mensalistas. Um índice elevado indica que a empresa está dependendo de horas extras para manter sua operação — o que é mais caro do que contratar e pode indicar subdimensionamento do quadro.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Horas Extras</em> ÷ <em>Salário Mensalista</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-indicator"></div>
+      <div class="metric-name">% Variação <small>Variação de qualquer métrica em relação ao mês anterior</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Compara o valor de qualquer métrica da tabela de folha com o valor do mês imediatamente anterior, mostrando o crescimento ou redução em percentual. Permite identificar rapidamente quais componentes da folha estão se alterando.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Busca o valor da métrica selecionada no <em>mês atual</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Busca o valor da mesma métrica no <em>mês anterior</em></span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>(Valor atual − Valor anterior) ÷ Valor anterior</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Quando não há valor no mês anterior (primeiro mês do histórico), a variação é exibida como <strong>100%</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     FLUXO
+════════════════════════════════════════════ -->
+<div class="container" id="fluxo">
+  <div class="section-header">
+    <div class="section-label">Visão Geral</div>
+    <h2>Como a folha se compõe</h2>
+    <p>Do salário bruto até o custo total para a empresa — o caminho completo dos componentes da folha de pagamento.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="flow-visual">
+    <div class="flow-title">Composição do Custo Total com Pessoal</div>
+
+    <div class="flow-item d-green">
+      <div><div class="fi-label">Salário Mensalista</div><div class="fi-note">Remuneração base — ponto de partida da folha</div></div>
+      <span class="step-badge badge-green">Base</span>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-item d-blue">
+      <div><div class="fi-label">Horas Extras</div><div class="fi-note">Adicional por trabalho além da jornada contratual</div></div>
+      <span class="step-badge badge-blue">Provento</span>
+    </div>
+    <div class="flow-item d-blue" style="margin-top:3px">
+      <div><div class="fi-label">Adiantamento</div><div class="fi-note">Primeiro pagamento do mês (quinzenal)</div></div>
+      <span class="step-badge badge-blue">Provento</span>
+    </div>
+    <div class="flow-item d-blue" style="margin-top:3px">
+      <div><div class="fi-label">Férias</div><div class="fi-note">Salário das férias + 1/3 constitucional</div></div>
+      <span class="step-badge badge-blue">Provento</span>
+    </div>
+    <div class="flow-item d-red" style="margin-top:3px">
+      <div><div class="fi-label">Horas Faltas e Atestados</div><div class="fi-note">Descontos e abonos por ausências</div></div>
+      <span class="step-badge badge-red">Ajuste</span>
+    </div>
+    <div class="flow-item d-red" style="margin-top:3px">
+      <div><div class="fi-label">Rescisão</div><div class="fi-note">Verbas rescisórias dos desligamentos efetivos</div></div>
+      <span class="step-badge badge-red">Rescisão</span>
+    </div>
+    <div class="flow-arrow">+</div>
+    <div class="flow-item d-amber">
+      <div><div class="fi-label">INSS Patronal</div><div class="fi-note">Contribuição previdenciária do empregador (~20% do salário)</div></div>
+      <span class="step-badge badge-amber">Encargo</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">IRRF</div><div class="fi-note">Imposto de renda retido do funcionário e repassado</div></div>
+      <span class="step-badge badge-amber">Encargo</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">FGTS</div><div class="fi-note">8% do salário depositado pela empresa para o trabalhador</div></div>
+      <span class="step-badge badge-amber">Encargo</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">GRRF</div><div class="fi-note">Multa rescisória de 40% sobre o saldo de FGTS (demissão sem justa causa)</div></div>
+      <span class="step-badge badge-amber">Encargo</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">Sindicatos</div><div class="fi-note">Contribuições sindicais, confederativas e assistenciais</div></div>
+      <span class="step-badge badge-amber">Encargo</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item d-final">
+      <div><div class="fi-label">Custo Total da Folha</div><div class="fi-note">Tudo que a empresa desembolsa com pessoal no período</div></div>
+      <span class="step-badge badge-final">Total</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     GLOSSÁRIO
+════════════════════════════════════════════ -->
+<div class="container" id="glossario">
+  <div class="section-header">
+    <div class="section-label">Referência</div>
+    <h2>Glossário</h2>
+    <p>Termos de folha de pagamento e RH usados no dashboard e neste guia.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="glossary-grid">
+    <dl class="glossary-item"><dt>Headcount</dt><dd>Termo em inglês para "contagem de cabeças" — o total de funcionários do quadro de pessoal de uma empresa.</dd></dl>
+    <dl class="glossary-item"><dt>Turnover</dt><dd>Taxa de rotatividade: percentual do quadro que foi substituído no período, calculado pela média de entradas e saídas em relação ao total de funcionários.</dd></dl>
+    <dl class="glossary-item"><dt>Absenteísmo</dt><dd>Percentual do tempo de trabalho perdido por faltas e ausências. Indica o impacto das ausências na operação.</dd></dl>
+    <dl class="glossary-item"><dt>Proventos</dt><dd>Tudo que a empresa paga ao funcionário: salário, horas extras, adicionais, benefícios em folha. É o lado positivo da folha.</dd></dl>
+    <dl class="glossary-item"><dt>Descontos</dt><dd>Valores retidos do salário do funcionário: INSS do empregado, IRRF, faltas, contribuições sindicais. Reduzem o valor líquido recebido.</dd></dl>
+    <dl class="glossary-item"><dt>Salário Líquido</dt><dd>O valor que efetivamente cai na conta do funcionário: Proventos − Descontos. Diferente do custo total para a empresa.</dd></dl>
+    <dl class="glossary-item"><dt>INSS Patronal</dt><dd>Contribuição previdenciária obrigatória da empresa, calculada sobre a folha (~20%). Não é descontada do funcionário — é um custo adicional da empresa.</dd></dl>
+    <dl class="glossary-item"><dt>FGTS</dt><dd>Fundo de Garantia por Tempo de Serviço — depósito mensal de 8% do salário feito pela empresa em conta vinculada do funcionário. Disponível em situações específicas.</dd></dl>
+    <dl class="glossary-item"><dt>GRRF</dt><dd>Guia de Recolhimento Rescisório do FGTS — multa de 40% sobre o saldo do FGTS paga pela empresa ao demitir sem justa causa.</dd></dl>
+    <dl class="glossary-item"><dt>Pro-Labore</dt><dd>Remuneração dos sócios pelo trabalho prestado à empresa. Diferente do salário CLT, tem tributação diferenciada e não gera FGTS.</dd></dl>
+    <dl class="glossary-item"><dt>Trabalhador Intermitente</dt><dd>Funcionário com contrato de trabalho por demanda — é convocado conforme necessidade e recebe proporcionalmente às horas/dias trabalhados.</dd></dl>
+    <dl class="glossary-item"><dt>Autônomo (RPA)</dt><dd>Prestador de serviço pessoa física sem vínculo empregatício, que emite Recibo de Pagamento a Autônomo. Não tem FGTS, mas pode ter INSS e IRRF retidos.</dd></dl>
+    <dl class="glossary-item"><dt>DSR</dt><dd>Descanso Semanal Remunerado — folga semanal obrigatória (geralmente domingo) que é paga mesmo sem trabalho. A falta em semana que inclui DSR gera desconto adicional.</dd></dl>
+    <dl class="glossary-item"><dt>GPS</dt><dd>Guia da Previdência Social — documento usado para recolher o INSS ao governo. Pode ser emitida para diferentes categorias (empregados, autônomos, pró-labore).</dd></dl>
+  </div>
+</div>
+
+<footer>
+  <strong>Meta+</strong> · Documentação de Métricas — BI Departamento Pessoal<br>
+  Gerado a partir do modelo Power BI · Março 2026
+</footer>
+
+<script>
+  function toggleCard(header) {
+    header.closest('.metric-card').classList.toggle('open');
+  }
+  document.querySelectorAll('.all-open-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cards = btn.closest('.container').querySelectorAll('.metric-card');
+      const allOpen = [...cards].every(c => c.classList.contains('open'));
+      cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+      btn.textContent = allOpen ? 'Expandir todos' : 'Recolher todos';
+    });
+  });
+  document.querySelectorAll('.metric-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.03}s`;
+  });
+</script>
+</body>
+</html>
