@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Fiscal</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine:        #6b2048;
+    --wine-deep:   #1c0913;
+    --wine-mid:    #9c6a84;
+    --wine-light:  #d1bac6;
+    --wine-pale:   #f3ecf0;
+    --white:       #ffffff;
+    --off-white:   #f4f4f4;
+    --text-dark:   #191919;
+    --text-body:   #3d1a2e;
+    --text-muted:  #7a5068;
+    --border:      #e2d0da;
+
+    --green:       #2a7a52;
+    --green-bg:    #edf6f1;
+    --green-bdr:   #b8dccb;
+    --red:         #8b2a2a;
+    --red-bg:      #f9eded;
+    --red-bdr:     #e8b8b8;
+    --amber:       #7a4a12;
+    --amber-bg:    #fdf3e7;
+    --amber-bdr:   #e8c98a;
+    --blue:        #1e4d7a;
+    --blue-bg:     #e8f0f8;
+    --blue-bdr:    #a8c4e0;
+    --slate:       #3a4a5a;
+    --slate-bg:    #eef1f4;
+    --slate-bdr:   #b0c0d0;
+    --teal:        #1a6060;
+    --teal-bg:     #e6f4f4;
+    --teal-bdr:    #8ecece;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--white);
+    color: var(--text-body);
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--wine-deep);
+    border-bottom: 3px solid var(--wine);
+    padding: 0 2rem;
+    display: flex; align-items: center;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .nav-brand {
+    font-size: .9rem; font-weight: 700;
+    color: var(--wine-light); white-space: nowrap;
+    padding: .85rem 1.5rem .85rem 0;
+    border-right: 1px solid rgba(255,255,255,.12);
+    margin-right: 1rem;
+    letter-spacing: .07em; text-transform: uppercase;
+  }
+  nav a {
+    color: rgba(255,255,255,.45);
+    text-decoration: none; font-size: .67rem; font-weight: 600;
+    padding: .85rem .65rem; white-space: nowrap;
+    transition: color .2s; letter-spacing: .06em; text-transform: uppercase;
+  }
+  nav a:hover { color: var(--wine-light); }
+
+  .hero {
+    background: var(--wine-deep);
+    padding: 5rem 2rem 4.5rem;
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--wine), var(--wine-mid), var(--wine-light));
+  }
+  .hero-eyebrow {
+    display: inline-block; font-size: .65rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--wine-light);
+    border: 1px solid rgba(209,186,198,.3); padding: .3rem 1rem;
+    border-radius: 2px; margin-bottom: 1.8rem;
+  }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.2vw, 3rem); font-weight: 700; color: var(--white);
+    line-height: 1.2; margin-bottom: 1.2rem; letter-spacing: -.02em;
+  }
+  .hero h1 span { color: var(--wine-light); }
+  .hero p {
+    max-width: 520px; margin: 0 auto; color: rgba(255,255,255,.5);
+    font-size: .92rem; line-height: 1.85; font-weight: 400;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 0 2rem; }
+
+  .section-header { padding: 3.5rem 0 1.4rem; }
+  .section-label {
+    font-size: .65rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--wine-mid); margin-bottom: .55rem;
+  }
+  .section-header h2 {
+    font-size: 1.45rem; font-weight: 700; color: var(--wine-deep);
+    line-height: 1.25; letter-spacing: -.01em;
+  }
+  .section-header p {
+    color: var(--text-muted); font-size: .88rem; margin-top: .45rem;
+    max-width: 600px; font-weight: 400; line-height: 1.75;
+  }
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--wine-light), transparent);
+    margin-bottom: 1.75rem;
+  }
+
+  .metric-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 5px; margin-bottom: .9rem; overflow: hidden;
+    transition: border-color .2s, box-shadow .2s;
+    animation: fadeUp .35s ease both;
+  }
+  .metric-card:hover { border-color: var(--wine-mid); box-shadow: 0 2px 10px rgba(107,32,72,.07); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .metric-header {
+    padding: 1rem 1.3rem; display: flex; align-items: center; gap: .9rem;
+    cursor: pointer; user-select: none;
+  }
+  .metric-bar { width: 3px; height: 34px; border-radius: 2px; flex-shrink: 0; }
+  .bar-fat      { background: var(--green); }
+  .bar-compra   { background: var(--blue); }
+  .bar-imposto  { background: var(--amber); }
+  .bar-comp     { background: var(--slate); }
+  .bar-ratio    { background: var(--wine); }
+  .bar-trib     { background: var(--teal); }
+
+  .metric-name { flex: 1; font-weight: 600; font-size: .93rem; color: var(--wine-deep); }
+  .metric-name small {
+    display: block; font-size: .73rem;
+    color: var(--text-muted); font-weight: 400; margin-top: .1rem;
+  }
+  .metric-toggle {
+    color: var(--wine-mid); font-size: .6rem; font-weight: 700;
+    width: 20px; height: 20px; border: 1px solid var(--border);
+    border-radius: 2px; background: var(--off-white);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: transform .3s;
+  }
+  .metric-card.open .metric-toggle { transform: rotate(180deg); }
+
+  .metric-body {
+    display: none; border-top: 1px solid var(--border);
+    padding: 1.4rem 1.3rem; background: var(--white);
+  }
+  .metric-card.open .metric-body { display: block; }
+
+  .block { margin-bottom: 1.2rem; }
+  .block:last-child { margin-bottom: 0; }
+  .block-label {
+    font-size: .63rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--wine-mid); margin-bottom: .45rem;
+  }
+
+  .what-box {
+    background: var(--wine-pale); border-left: 3px solid var(--wine-light);
+    border-radius: 0 4px 4px 0; padding: .85rem 1.1rem;
+    color: var(--text-body); line-height: 1.8; font-size: .88rem;
+  }
+  .how-box {
+    background: var(--off-white); border: 1px solid var(--border);
+    border-left: 3px solid var(--wine); border-radius: 0 4px 4px 0;
+    padding: .95rem 1.1rem; font-size: .87rem; color: var(--text-body); line-height: 1.8;
+  }
+  .formula-step { display: flex; align-items: baseline; gap: .7rem; padding: .18rem 0; }
+  .formula-op { font-weight: 700; color: var(--wine); width: 14px; flex-shrink: 0; text-align: center; }
+  .formula-line em { color: var(--wine); font-style: normal; font-weight: 600; }
+  .formula-result {
+    margin-top: .65rem; padding-top: .65rem; border-top: 1px solid var(--border);
+    color: var(--green); font-weight: 600; font-size: .87rem;
+    display: flex; align-items: baseline; gap: .7rem;
+  }
+  .formula-result .formula-op { color: var(--green); }
+  .formula-sub-label {
+    font-size: .72rem; color: var(--text-muted); font-weight: 600;
+    text-transform: uppercase; letter-spacing: .05em; margin: .55rem 0 .25rem;
+  }
+
+  .details-list { list-style: none; margin-top: .7rem; }
+  .details-list li {
+    padding: .32rem 0 .32rem 1.2rem; position: relative;
+    font-size: .86rem; color: var(--text-muted); line-height: 1.65;
+    border-bottom: 1px solid var(--border);
+  }
+  .details-list li:last-child { border-bottom: none; }
+  .details-list li::before { content: '–'; position: absolute; left: 0; color: var(--wine-mid); font-weight: 700; }
+  .details-list li strong { color: var(--text-dark); font-weight: 600; }
+
+  .alert-box {
+    background: var(--amber-bg); border: 1px solid var(--amber-bdr);
+    border-radius: 4px; padding: .8rem 1rem; font-size: .84rem;
+    color: var(--amber); margin-top: .85rem; line-height: 1.6;
+  }
+  .info-box {
+    background: var(--blue-bg); border: 1px solid var(--blue-bdr);
+    border-radius: 4px; padding: .85rem 1rem; font-size: .87rem;
+    color: var(--blue); margin-bottom: 1.4rem; line-height: 1.7;
+  }
+  .info-box strong { color: var(--blue); }
+
+  .all-open-btn {
+    font-size: .68rem; font-weight: 600; color: var(--wine-mid); background: none;
+    border: 1px solid var(--border); border-radius: 3px; padding: .32rem .85rem;
+    cursor: pointer; transition: all .2s; font-family: 'Sora', sans-serif;
+    margin-bottom: 1rem; letter-spacing: .05em; text-transform: uppercase;
+  }
+  .all-open-btn:hover { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+
+  /* FLUXO */
+  .flow-visual {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 6px; padding: 2rem; margin: 1.5rem 0;
+  }
+  .flow-title {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--wine-mid); margin-bottom: 1.5rem; text-align: center;
+  }
+  .flow-item {
+    padding: .75rem 1.1rem; border-radius: 4px; margin-bottom: 3px;
+    font-size: .87rem; display: flex; align-items: center;
+    justify-content: space-between; gap: 1rem; border: 1px solid transparent;
+  }
+  .fi-label { font-weight: 600; }
+  .fi-note  { font-size: .76rem; color: var(--text-muted); margin-top: .08rem; }
+  .flow-arrow { text-align: center; color: var(--wine-light); font-size: .75rem; padding: .18rem 0; font-weight: 600; }
+  .d-green  { background: var(--green-bg); border-color: var(--green-bdr); color: var(--green); }
+  .d-red    { background: var(--red-bg);   border-color: var(--red-bdr);   color: var(--red); }
+  .d-amber  { background: var(--amber-bg); border-color: var(--amber-bdr); color: var(--amber); }
+  .d-blue   { background: var(--blue-bg);  border-color: var(--blue-bdr);  color: var(--blue); }
+  .d-teal   { background: var(--teal-bg);  border-color: var(--teal-bdr);  color: var(--teal); }
+  .d-wine   { background: var(--wine-pale); border-color: var(--wine-light); color: var(--wine); }
+  .d-final  { background: var(--wine-deep); border-color: var(--wine); color: var(--wine-light); font-weight: 700; }
+  .d-final .fi-note { color: rgba(209,186,198,.55); }
+
+  .step-badge {
+    font-size: .65rem; font-weight: 700; padding: .18rem .5rem;
+    border-radius: 2px; flex-shrink: 0; letter-spacing: .04em;
+    text-transform: uppercase; white-space: nowrap;
+  }
+  .badge-green  { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-bdr); }
+  .badge-red    { background: var(--red-bg);   color: var(--red);   border: 1px solid var(--red-bdr); }
+  .badge-amber  { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-bdr); }
+  .badge-blue   { background: var(--blue-bg);  color: var(--blue);  border: 1px solid var(--blue-bdr); }
+  .badge-teal   { background: var(--teal-bg);  color: var(--teal);  border: 1px solid var(--teal-bdr); }
+  .badge-wine   { background: var(--wine-pale); color: var(--wine); border: 1px solid var(--wine-light); }
+  .badge-final  { background: var(--wine);      color: var(--white); border: 1px solid var(--wine); }
+
+  .glossary-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+    border: 1px solid var(--border); border-radius: 4px;
+    overflow: hidden; background: var(--border); margin-top: 1.25rem;
+  }
+  @media (max-width: 560px) { .glossary-grid { grid-template-columns: 1fr; } }
+  .glossary-item { background: var(--white); padding: .95rem 1.1rem; }
+  .glossary-item dt { font-weight: 700; color: var(--wine); font-size: .87rem; margin-bottom: .28rem; }
+  .glossary-item dd { color: var(--text-muted); font-size: .82rem; line-height: 1.65; font-weight: 400; }
+
+  footer {
+    background: var(--wine-deep); border-top: 3px solid var(--wine);
+    padding: 2.5rem 2rem; text-align: center;
+    color: rgba(255,255,255,.3); font-size: .78rem; line-height: 1.9; margin-top: 5rem;
+  }
+  footer strong { color: var(--wine-light); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">Meta+ · Painel Fiscal</div>
+  <a href="#faturamento">Faturamento</a>
+  <a href="#compras">Compras</a>
+  <a href="#impostos">Impostos</a>
+  <a href="#indicadores">Indicadores</a>
+  <a href="#comparativos">Comparativos</a>
+  <a href="#fluxo">Fluxo fiscal</a>
+  <a href="#glossario">Glossário</a>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Guia do Usuário Final — Painel Fiscal</div>
+  <h1>BI Fiscal<br><span>O que é e como utilizar?</span></h1>
+  <p>Este guia explica, em linguagem simples, o que cada métrica do painel fiscal representa, de onde vem o número e como ele é calculado.</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     FATURAMENTO
+═══════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="faturamento">
+    <div class="section-label">Grupo 1</div>
+    <h2>Faturamento</h2>
+    <p>Tudo que a empresa vendeu ou prestou de serviço no período, registrado pelas notas fiscais emitidas. Apresentado em três versões: bruto, líquido de devoluções e tributado.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>Empresas ativas vs. inativas:</strong> O painel considera apenas empresas marcadas como <em>não ativas</em> na configuração interna — que corresponde ao grupo de empresas clientes efetivamente monitoradas. Empresas ainda em processo de ativação ou encerramento são excluídas automaticamente de todos os cálculos.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-fat"></div>
+      <div class="metric-name">Faturamento <small>Receita bruta total de vendas e serviços do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das notas fiscais de venda emitidas pelas empresas no período selecionado. Inclui vendas de mercadorias e prestações de serviço, tanto dentro do estado quanto interestaduais. Notas de quebra de estoque são excluídas deste total.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das <em>notas fiscais de saída</em> (vendas e serviços)</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui automaticamente notas de <em>quebra de estoque</em> — tratadas em métrica separada</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Inclui operações <strong>internas</strong> (dentro do estado) e <strong>interestaduais</strong></li>
+        <li>Este é o valor <strong>bruto</strong> — ainda não desconta devoluções nem impostos</li>
+        <li>É a base de divisão de todos os <strong>indicadores percentuais</strong> do painel</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-fat"></div>
+      <div class="metric-name">Devoluções de Faturamento <small>Notas de devolução recebidas de clientes no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das notas fiscais de entrada referentes a devoluções de mercadorias pelos clientes. Representam uma redução do faturamento e são usadas para calcular o Faturamento Líquido.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das <em>notas fiscais de devolução</em> recebidas de clientes no período</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-fat"></div>
+      <div class="metric-name">Faturamento Líquido <small>Faturamento após descontar as devoluções de clientes</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Receita efetiva de vendas após subtrair o que foi devolvido pelos clientes. É o valor mais próximo da receita real gerada, sem considerar os impostos sobre vendas.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Faturamento</em> − <em>Devoluções de Faturamento</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-trib"></div>
+      <div class="metric-name">Faturamento Tributado <small>Base de cálculo usada pela Receita Federal para os impostos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor do faturamento sobre o qual os impostos são efetivamente calculados. Pode diferir do faturamento total porque algumas operações têm base de cálculo reduzida, isenções parciais ou substituição tributária — nesses casos, a base tributada é menor que o valor da nota.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma o campo <em>valor tributado</em> das notas fiscais de saída</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui as mesmas notas de <em>quebra</em> excluídas do faturamento bruto</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Quando há <strong>redução de base de cálculo</strong>, este valor é menor que o Faturamento</li>
+        <li>Quando há <strong>pauta fiscal</strong> ou <strong>MVA</strong> (substituição tributária), este valor pode ser maior</li>
+        <li>É a base usada para calcular <strong>ICMS, PIS e COFINS</strong> sobre vendas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-fat"></div>
+      <div class="metric-name">Quebra <small>Perdas de estoque registradas como saída fiscal</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor das notas fiscais emitidas especificamente para registrar perdas ou quebras de estoque — produtos vencidos, danificados, furtos ou deteriorados. São separadas do faturamento comercial porque não representam uma venda real ao cliente.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma apenas as notas fiscais com <em>CFOP de quebra/perda</em> (5927 e 6927)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>CFOPs 5927 e 6927 são os códigos fiscais específicos para <strong>lançamento de quebra</strong> (operações internas e interestaduais)</li>
+        <li>Este valor é separado para que a quebra <strong>não distorça</strong> o faturamento comercial real</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     COMPRAS
+═══════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="compras">
+    <div class="section-label">Grupo 2</div>
+    <h2>Compras</h2>
+    <p>Tudo que a empresa adquiriu de fornecedores no período — mercadorias para revenda, insumos para produção e materiais de uso e consumo interno. Cada categoria tem tratamento fiscal diferente.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-compra"></div>
+      <div class="metric-name">Compra <small>Total de mercadorias e insumos adquiridos para revenda ou produção</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor total das notas fiscais de entrada de mercadorias e insumos destinados à revenda ou à produção. Materiais de uso e consumo interno (como material de escritório e de limpeza) são excluídos — eles entram em uma categoria separada.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das <em>notas fiscais de entrada</em> de mercadorias para revenda e insumos</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui CFOPs de <em>uso e consumo</em> (materiais que não entram no produto final)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Inclui compras de <strong>fornecedores locais</strong> e de <strong>outros estados</strong></li>
+        <li>Não inclui <strong>imobilizado</strong> (máquinas, equipamentos, móveis)</li>
+        <li>Este é o valor <strong>bruto</strong> — ainda não desconta devoluções ao fornecedor</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-compra"></div>
+      <div class="metric-name">Devoluções de Compra <small>Mercadorias devolvidas aos fornecedores no período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor das notas fiscais emitidas pela empresa para devolver mercadorias aos fornecedores — por defeito, divergência de pedido, prazo de validade ou qualquer outro motivo. Reduzem o valor efetivo de compra.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores das <em>notas fiscais de devolução ao fornecedor</em> (saídas de devolução de compra)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-compra"></div>
+      <div class="metric-name">Compra Líquida <small>Compras após descontar devoluções ao fornecedor</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">O valor real de mercadorias que a empresa efetivamente reteve no período: compras brutas menos tudo que foi devolvido ao fornecedor. É o melhor indicador do volume de estoque efetivamente incorporado.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Compra</em> − <em>Devoluções de Compra</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-trib"></div>
+      <div class="metric-name">Compra Tributada <small>Base de cálculo das compras usada para crédito de impostos</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor das compras sobre o qual os impostos foram calculados pelo fornecedor — e sobre o qual a empresa pode ter direito a crédito fiscal (especialmente ICMS). Pode diferir do valor total da nota quando há isenções, substituição tributária ou reduções de base.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma o campo <em>valor tributado</em> das notas fiscais de entrada de compra</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Exclui as mesmas operações de <em>uso e consumo</em> excluídas da compra bruta</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Base para calcular o <strong>crédito de ICMS</strong> sobre compras (regime não-cumulativo)</li>
+        <li>Usado no indicador <strong>Compras Tributadas / Faturamento Tributado</strong> para comparação consistente entre empresas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-compra"></div>
+      <div class="metric-name">Uso e Consumo <small>Materiais adquiridos para uso interno da empresa</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor dos materiais comprados para uso interno na empresa, sem destinação à revenda ou ao produto final: material de escritório, produtos de limpeza, embalagens para uso próprio, entre outros. Têm tratamento fiscal diferente das compras para revenda e, em geral, não geram crédito de ICMS.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma apenas notas com <em>CFOPs de uso e consumo</em> (compras que não entram no produto vendido)</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Em geral, <strong>não gera crédito de ICMS</strong> para a empresa compradora</li>
+        <li>É monitorado separadamente para entender o <strong>custo de estrutura</strong> versus o custo de mercadoria</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     IMPOSTOS
+═══════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="impostos">
+    <div class="section-label">Grupo 3</div>
+    <h2>Impostos</h2>
+    <p>Os três principais tributos sobre a operação comercial das empresas: ICMS (estadual), PIS e COFINS (federais). Todos calculados sobre o faturamento do período.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>Com Dedução vs. Sem Dedução:</strong> O painel permite alternar entre dois modos de visualização dos impostos. O modo <em>Com Dedução</em> mostra o imposto após aplicar as deduções legais permitidas (créditos, benefícios fiscais). O modo <em>Sem Dedução</em> mostra o valor apurado antes dessas deduções — útil para entender a carga tributária bruta.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-imposto"></div>
+      <div class="metric-name">ICMS <small>Imposto sobre Circulação de Mercadorias e Serviços — tributo estadual</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor do ICMS apurado no período — imposto estadual incidente sobre a venda de mercadorias e alguns serviços. É calculado de forma não-cumulativa: a empresa paga o imposto sobre suas vendas e desconta o crédito do imposto pago nas compras. O valor exibido é o ICMS a recolher, já líquido de créditos.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os valores de ICMS apurados na <em>guia de recolhimento</em> do período</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">O sistema já considera os créditos de compras — o que é exibido é o <em>saldo a pagar</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>A alíquota padrão interna no RS é <strong>12%</strong>, mas varia por produto e operação</li>
+        <li>Em alguns setores o ICMS é apurado por <strong>Substituição Tributária</strong> — nesses casos o imposto já foi recolhido pelo fornecedor</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-imposto"></div>
+      <div class="metric-name">PIS <small>Programa de Integração Social — contribuição federal sobre receita</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor do PIS recolhido no período — contribuição federal calculada sobre o faturamento da empresa. Dependendo do regime tributário da empresa, pode ser calculado de forma cumulativa (sobre o faturamento bruto, sem créditos) ou não-cumulativa (com direito a descontar créditos das compras).</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os registros de <em>PIS a recolher</em> nas guias de pagamento do período</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Filtrado pelo código de receita específico do <em>PIS</em> nas obrigações fiscais</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Regime <strong>Lucro Presumido/Simples</strong>: alíquota de 0,65% sobre o faturamento bruto, sem créditos</li>
+        <li>Regime <strong>Lucro Real</strong>: alíquota de 1,65%, mas com direito a créditos sobre compras e despesas</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-imposto"></div>
+      <div class="metric-name">COFINS <small>Contribuição para o Financiamento da Seguridade Social — federal</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Valor do COFINS recolhido no período — contribuição federal calculada sobre o faturamento, destinada ao financiamento da Previdência Social. Segue a mesma lógica do PIS: cumulativo (sem créditos) ou não-cumulativo (com créditos), dependendo do regime tributário da empresa.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Soma os registros de <em>COFINS a recolher</em> nas guias do período</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Filtrado pelo código de receita específico do <em>COFINS</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Regime <strong>Lucro Presumido/Simples</strong>: alíquota de 3% sobre o faturamento bruto</li>
+        <li>Regime <strong>Lucro Real</strong>: alíquota de 7,6%, com créditos sobre compras e despesas</li>
+        <li>PIS e COFINS são sempre apurados e pagos <strong>juntos</strong> — o painel os exibe separados para facilitar a análise</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-imposto"></div>
+      <div class="metric-name">Total de Impostos <small>Soma de ICMS + PIS + COFINS do período</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">A carga tributária total sobre operações do período: soma dos três principais impostos fiscais monitorados pelo painel. Permite visualizar rapidamente quanto da receita está sendo consumido por obrigações fiscais.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>ICMS</em> + <em>PIS</em> + <em>COFINS</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     INDICADORES
+═══════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="indicadores">
+    <div class="section-label">Grupo 4</div>
+    <h2>Indicadores Fiscais</h2>
+    <p>Percentuais que relacionam compras, impostos e faturamento para avaliar eficiência tributária e a proporcionalidade dos gastos fiscais em relação ao que foi vendido.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="info-box">
+    <strong>Meta do setor (referência Comércio):</strong> Alguns indicadores exibem uma linha de referência calculada como a média das empresas do segmento <em>Comércio</em> da carteira. Essa média serve como parâmetro de comparação — permite identificar se uma empresa específica está acima ou abaixo do comportamento típico do grupo.
+  </div>
+
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">Compras / Faturamento <small>Proporção do faturamento consumida pelas compras</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Indica quanto do faturamento bruto foi utilizado para pagar as compras de mercadorias. Um percentual de 60% significa que, para cada R$ 100 faturados, R$ 60 foram gastos em compras. É um dos principais indicadores de margem bruta do negócio.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Compra</em> ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Percentual <strong>menor</strong>: a empresa vende com mais margem (compra barato, vende caro)</li>
+        <li>Percentual <strong>maior</strong>: margens menores — mais pressão no resultado operacional</li>
+        <li>A <strong>Meta do setor</strong> é calculada como a média deste indicador entre todas as empresas do Comércio da carteira</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">Compras Tributadas / Faturamento Tributado <small>Comparativo usando apenas as bases tributáveis</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Versão do indicador Compras/Faturamento calculada exclusivamente sobre os valores que efetivamente servem de base para tributação. Elimina o efeito de operações com isenção ou suspensão, tornando a comparação entre empresas de regimes diferentes mais precisa.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Compra Tributada</em> ÷ <em>Faturamento Tributado</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Mais relevante para análise de <strong>crédito e débito de ICMS</strong> do que o indicador simples</li>
+        <li>Em empresas com muitas operações isentas, este indicador pode diferir bastante do simples</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">Impostos / Faturamento <small>Carga tributária fiscal como percentual do faturamento</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Mostra qual percentual do faturamento foi destinado ao pagamento de ICMS, PIS e COFINS. É o indicador-síntese da carga tributária fiscal da empresa. Permite comparar o esforço tributário entre meses e entre empresas da mesma carteira.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Total de Impostos</em> (ICMS + PIS + COFINS) ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O painel oferece o modo <strong>Com Dedução</strong> (valor após benefícios fiscais) e <strong>Sem Dedução</strong> (carga bruta)</li>
+        <li>A <strong>Meta do setor</strong> é a média deste indicador para as empresas do Comércio da carteira</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">PIS / Faturamento e COFINS / Faturamento <small>Peso individual de cada contribuição federal sobre o faturamento</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual do faturamento destinado ao PIS e ao COFINS separadamente. Permite verificar se a alíquota efetiva está dentro do esperado para o regime tributário da empresa e identificar variações que possam indicar erro de apuração.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>PIS</em> ÷ <em>Faturamento</em></span></div>
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>COFINS</em> ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Referência Lucro Presumido: PIS ≈ <strong>0,65%</strong> e COFINS ≈ <strong>3%</strong></li>
+        <li>Desvios relevantes podem indicar divergência entre o <strong>regime declarado e o apurado</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">ICMS / Faturamento <small>Peso do ICMS sobre o faturamento</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual do faturamento destinado ao ICMS. Como o ICMS é não-cumulativo, este percentual é influenciado pelo volume de créditos de compras: empresas que compram mais dentro do estado tendem a ter menor ICMS líquido a pagar em relação ao faturamento.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>ICMS</em> ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Percentual muito baixo pode indicar <strong>acúmulo de crédito</strong> — empresa compra mais do que vende dentro do estado</li>
+        <li>Percentual muito alto pode indicar <strong>compras interestaduais</strong> onde o crédito é menor (alíquota interestadual de 7% ou 12%)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-ratio"></div>
+      <div class="metric-name">Quebra / Faturamento e Uso-Consumo / Faturamento <small>Peso das perdas e gastos internos sobre a receita</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Percentual do faturamento representado pelas quebras de estoque e pelos materiais de uso e consumo interno. Permite monitorar se as perdas operacionais e os gastos internos estão em níveis aceitáveis em relação ao volume de negócios.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Quebra</em> ÷ <em>Faturamento</em></span></div>
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Uso e Consumo</em> ÷ <em>Faturamento</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Quebras elevadas podem indicar problemas de <strong>armazenagem, vencimento ou furto</strong></li>
+        <li>Uso e Consumo elevado pode indicar <strong>gastos administrativos crescentes</strong> em relação ao negócio</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     COMPARATIVOS
+═══════════════════════════════════════════ -->
+<div class="container">
+  <div class="section-header" id="comparativos">
+    <div class="section-label">Grupo 5</div>
+    <h2>Análise Comparativa</h2>
+    <p>Ferramentas para comparar o período atual com outro período de referência — seja o mês anterior, o mesmo período do ano passado ou qualquer intervalo definido pelo usuário.</p>
+  </div>
+  <div class="section-divider"></div>
+  <button class="all-open-btn">Expandir todos</button>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-comp"></div>
+      <div class="metric-name">Valores Comparativos <small>Reexibe qualquer métrica para o período de referência selecionado</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Para cada métrica principal (Faturamento, Compras, Impostos etc.) existe uma versão "Comparativo" que recalcula o mesmo valor para o período de referência definido no filtro de comparação do painel. Permite ver lado a lado o período atual e o período de referência.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Usa o <em>calendário comparativo</em> — um segundo filtro de período independente do principal</span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Busca os mesmos dados das tabelas de origem, mas <em>filtrado pelo período de referência</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>O período comparativo é <strong>independente</strong> do período principal — pode ser qualquer mês ou intervalo</li>
+        <li>Permite comparar, por exemplo, Janeiro 2025 com Janeiro 2024, ou Março com Fevereiro</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-comp"></div>
+      <div class="metric-name">Diferença (R$) <small>Variação em valores absolutos entre o período atual e o comparativo</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Diferença em reais entre a métrica no período atual e no período de referência. Um valor positivo indica crescimento; negativo indica queda. Disponível para Faturamento, Faturamento Tributado, Compras, Compras Tributadas, Impostos e cada tributo individualmente.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line"><em>Valor atual</em> − <em>Valor do período comparativo</em></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-comp"></div>
+      <div class="metric-name">% Diferença <small>Variação percentual entre o período atual e o comparativo</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">A variação em percentual entre o período atual e o período de referência. Complementa a diferença em reais — um crescimento de R$ 10.000 é muito diferente dependendo se a base era R$ 50.000 ou R$ 500.000.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">=</span><span class="formula-line">(Valor atual − Valor comparativo) ÷ <em>Valor comparativo</em></span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Se o valor comparativo for <strong>zero</strong>, a variação é exibida como zero para evitar erros de divisão</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-comp"></div>
+      <div class="metric-name">AH — Análise Horizontal <small>Variação em relação ao mês imediatamente anterior</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Variação percentual da métrica selecionada no painel em relação ao mês imediatamente anterior ao período filtrado. Diferente do comparativo livre, a Análise Horizontal sempre compara com o mês anterior — útil para identificar tendências de curto prazo.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Como é calculado</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">1</span><span class="formula-line">Busca o valor da métrica selecionada no <em>período atual</em></span></div>
+          <div class="formula-step"><span class="formula-op">2</span><span class="formula-line">Busca o mesmo valor no <em>mês anterior</em> ao período atual</span></div>
+          <div class="formula-result"><span class="formula-op">=</span><span>(Atual − Anterior) ÷ Anterior</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Aplicada sobre a métrica selecionada no seletor principal do painel</li>
+        <li>Complementa o comparativo livre: enquanto o comparativo é <strong>flexível</strong>, o AH é <strong>automático</strong></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-header" onclick="toggleCard(this)">
+      <div class="metric-bar bar-comp"></div>
+      <div class="metric-name">Mesmo período do ano anterior <small>Comparação com o mesmo intervalo do ano passado</small></div>
+      <div class="metric-toggle">▾</div>
+    </div>
+    <div class="metric-body">
+      <div class="block">
+        <div class="block-label">O que é</div>
+        <div class="what-box">Recalcula qualquer métrica para o mesmo período do ano anterior — por exemplo, se o filtro está em Março 2025, este valor traz Março 2024. Elimina o efeito da sazonalidade: permite comparar meses equivalentes em vez de meses consecutivos que podem ter comportamentos muito diferentes.</div>
+      </div>
+      <div class="block">
+        <div class="block-label">De onde vem</div>
+        <div class="how-box">
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Recalcula a métrica selecionada deslocando o calendário <em>12 meses para trás</em></span></div>
+          <div class="formula-step"><span class="formula-op">→</span><span class="formula-line">Disponível para todas as métricas principais do painel</span></div>
+        </div>
+      </div>
+      <ul class="details-list">
+        <li>Ideal para negócios com <strong>sazonalidade forte</strong> (ex: comércio que vende muito em dezembro)</li>
+        <li>A diferença percentual em relação ao mesmo período anterior é o <strong>crescimento real ano a ano</strong></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     FLUXO FISCAL
+═══════════════════════════════════════════ -->
+<div class="container" id="fluxo">
+  <div class="section-header">
+    <div class="section-label">Visão Geral</div>
+    <h2>Como as métricas se relacionam</h2>
+    <p>O fluxo fiscal da empresa — das notas emitidas e recebidas até os impostos recolhidos e os indicadores de gestão.</p>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="flow-visual">
+    <div class="flow-title">Fluxo das Métricas do Painel Fiscal</div>
+
+    <div class="flow-item d-green">
+      <div><div class="fi-label">Faturamento Bruto</div><div class="fi-note">Total das notas fiscais de saída emitidas no período</div></div>
+      <span class="step-badge badge-green">Receita</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item d-red">
+      <div><div class="fi-label">Menos — Devoluções de Faturamento</div><div class="fi-note">Notas de devolução recebidas de clientes</div></div>
+      <span class="step-badge badge-red">Redução</span>
+    </div>
+    <div class="flow-item d-red" style="margin-top:3px">
+      <div><div class="fi-label">Separado — Quebra de Estoque</div><div class="fi-note">Notas de perda/quebra (CFOPs 5927/6927) — excluídas do faturamento comercial</div></div>
+      <span class="step-badge badge-red">Perda</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item d-green" style="border-width:2px">
+      <div><div class="fi-label">= Faturamento Líquido</div><div class="fi-note">Receita real de vendas após devoluções</div></div>
+      <span class="step-badge badge-green">Subtotal</span>
+    </div>
+    <div class="flow-arrow" style="padding: .5rem 0">—</div>
+    <div class="flow-item d-blue">
+      <div><div class="fi-label">Compra Bruta</div><div class="fi-note">Notas fiscais de entrada de mercadorias e insumos</div></div>
+      <span class="step-badge badge-blue">Compra</span>
+    </div>
+    <div class="flow-item d-red" style="margin-top:3px">
+      <div><div class="fi-label">Menos — Devoluções de Compra</div><div class="fi-note">Mercadorias devolvidas aos fornecedores</div></div>
+      <span class="step-badge badge-red">Redução</span>
+    </div>
+    <div class="flow-item d-blue" style="margin-top:3px;border-width:2px">
+      <div><div class="fi-label">= Compra Líquida</div><div class="fi-note">Volume real de estoque incorporado</div></div>
+      <span class="step-badge badge-blue">Subtotal</span>
+    </div>
+    <div class="flow-item d-blue" style="margin-top:3px">
+      <div><div class="fi-label">Uso e Consumo</div><div class="fi-note">Materiais de uso interno — sem crédito de ICMS</div></div>
+      <span class="step-badge badge-blue">Interno</span>
+    </div>
+    <div class="flow-arrow" style="padding: .5rem 0">—</div>
+    <div class="flow-item d-amber">
+      <div><div class="fi-label">ICMS a Recolher</div><div class="fi-note">Débito sobre vendas menos crédito sobre compras</div></div>
+      <span class="step-badge badge-amber">Estadual</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">PIS a Recolher</div><div class="fi-note">0,65% ou 1,65% sobre faturamento, conforme regime</div></div>
+      <span class="step-badge badge-amber">Federal</span>
+    </div>
+    <div class="flow-item d-amber" style="margin-top:3px">
+      <div><div class="fi-label">COFINS a Recolher</div><div class="fi-note">3% ou 7,6% sobre faturamento, conforme regime</div></div>
+      <span class="step-badge badge-amber">Federal</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item d-wine" style="border-width:2px">
+      <div><div class="fi-label">Total de Impostos</div><div class="fi-note">ICMS + PIS + COFINS — carga tributária fiscal total</div></div>
+      <span class="step-badge badge-wine">Impostos</span>
+    </div>
+    <div class="flow-arrow">↓</div>
+    <div class="flow-item d-final">
+      <div><div class="fi-label">Impostos / Faturamento</div><div class="fi-note">% do faturamento comprometido com tributos fiscais — indicador-síntese do painel</div></div>
+      <span class="step-badge badge-final">Indicador</span>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     GLOSSÁRIO
+═══════════════════════════════════════════ -->
+<div class="container" id="glossario">
+  <div class="section-header">
+    <div class="section-label">Referência</div>
+    <h2>Glossário</h2>
+    <p>Termos fiscais e tributários usados no dashboard e neste guia.</p>
+  </div>
+  <div class="section-divider"></div>
+  <div class="glossary-grid">
+    <dl class="glossary-item"><dt>ICMS</dt><dd>Imposto sobre Circulação de Mercadorias e Serviços — tributo estadual sobre vendas. É não-cumulativo: débito sobre vendas menos crédito sobre compras.</dd></dl>
+    <dl class="glossary-item"><dt>PIS / COFINS</dt><dd>Contribuições federais sobre o faturamento, destinadas à Previdência Social e ao financiamento social. Calculadas de forma cumulativa ou não-cumulativa conforme o regime tributário.</dd></dl>
+    <dl class="glossary-item"><dt>CFOP</dt><dd>Código Fiscal de Operações e Prestações — número que identifica a natureza de cada operação nas notas fiscais (ex: venda, devolução, remessa, quebra).</dd></dl>
+    <dl class="glossary-item"><dt>Base de Cálculo Tributada</dt><dd>Valor da nota fiscal sobre o qual o imposto é efetivamente calculado. Pode ser menor que o valor total quando há reduções, isenções ou substituição tributária.</dd></dl>
+    <dl class="glossary-item"><dt>Substituição Tributária (ST)</dt><dd>Regime em que o imposto de toda a cadeia é recolhido antecipadamente pelo fabricante ou importador. Nesse caso, o comerciante não tem débito de ICMS nas vendas.</dd></dl>
+    <dl class="glossary-item"><dt>Crédito de ICMS</dt><dd>Valor de ICMS pago nas compras que pode ser descontado do ICMS devido nas vendas. Reduz o imposto a pagar.</dd></dl>
+    <dl class="glossary-item"><dt>Não-Cumulatividade</dt><dd>Princípio do ICMS, PIS e COFINS no regime Lucro Real: o imposto pago na etapa anterior pode ser descontado na etapa seguinte, evitando tributação em cascata.</dd></dl>
+    <dl class="glossary-item"><dt>Quebra de Estoque</dt><dd>Perda física de mercadoria (vencimento, avaria, furto) registrada por nota fiscal com CFOP específico (5927/6927). Não representa venda real.</dd></dl>
+    <dl class="glossary-item"><dt>Uso e Consumo</dt><dd>Materiais adquiridos para uso interno da empresa, sem destinação à revenda. Em geral não geram crédito de ICMS.</dd></dl>
+    <dl class="glossary-item"><dt>Lucro Presumido</dt><dd>Regime tributário simplificado em que o lucro e a base dos tributos são presumidos por percentual fixo sobre o faturamento, sem apuração real do resultado.</dd></dl>
+    <dl class="glossary-item"><dt>Lucro Real</dt><dd>Regime tributário em que os impostos são calculados sobre o lucro efetivo apurado pela contabilidade. Permite deduzir créditos de PIS e COFINS sobre compras.</dd></dl>
+    <dl class="glossary-item"><dt>Análise Horizontal (AH)</dt><dd>Variação percentual de uma métrica em relação ao mês imediatamente anterior. Mostra tendência de curto prazo.</dd></dl>
+  </div>
+</div>
+
+<footer>
+  <strong>Meta+</strong> · Documentação de Métricas — Painel Fiscal<br>
+  Gerado a partir do modelo Power BI · Março 2026
+</footer>
+
+<script>
+  function toggleCard(header) {
+    header.closest('.metric-card').classList.toggle('open');
+  }
+  document.querySelectorAll('.all-open-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cards = btn.closest('.container').querySelectorAll('.metric-card');
+      const allOpen = [...cards].every(c => c.classList.contains('open'));
+      cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+      btn.textContent = allOpen ? 'Expandir todos' : 'Recolher todos';
+    });
+  });
+  document.querySelectorAll('.metric-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.03}s`;
+  });
+</script>
+</body>
+</html>
