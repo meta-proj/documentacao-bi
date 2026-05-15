@@ -16,18 +16,20 @@
     }
 
     :root {
-      --bg-gradient-1: #0f172a;
-      --bg-gradient-2: #1e293b;
-      --accent: #3b82f6;
-      --accent-light: #60a5fa;
-      --card-bg: rgba(255, 255, 255, 0.95);
-      --card-border: rgba(59, 130, 246, 0.2);
-      --text-primary: #1e293b;
-      --text-secondary: #64748b;
+      --bg-gradient-1: #f5f5f5;
+      --bg-gradient-2: #e8e8e8;
+      --accent: #000000;
+      --accent-light: #333333;
+      --card-bg: rgba(255, 255, 255, 0.98);
+      --card-border: rgba(0, 0, 0, 0.1);
+      --text-primary: #0a0a0a;
+      --text-secondary: #666666;
+      --btn-gradient-1: #2a2a2a;
+      --btn-gradient-2: #1a1a1a;
     }
 
     body {
-        background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+        background: linear-gradient(135deg, #f0f0f0 0%, #d9d9d9 100%);
         min-height: 100vh;
         display: flex;
         justify-content: center;
@@ -43,19 +45,19 @@
         height: 100%;
         top: 0;
         left: 0;
-        z-index: 1;
+        z-index: 1; /* Partículas ao fundo */
     }
 
     .login-card {
         background: var(--card-bg);
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 1px rgba(59, 130, 246, 0.5);
+        padding: 50px;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 20px rgba(0, 0, 0, 0.08);
         width: 100%;
-        max-width: 480px;
-        max-height: 90vh;
+        max-width: 900px;
+        max-height: 95vh;
         text-align: center;
-        z-index: 2;
+        z-index: 10; /* Card acima das partículas */
         position: relative;
         display: flex;
         flex-direction: column;
@@ -80,11 +82,12 @@
     }
 
     .nav-menu {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
         overflow-y: auto;
-        padding-right: 8px;
+        padding: 10px 8px; /* Adicionado padding para não cortar o efeito de hover */
+        flex: 1;
     }
 
     .nav-menu::-webkit-scrollbar {
@@ -99,18 +102,24 @@
     }
 
     .nav-item {
-        display: block;
-        padding: 14px 18px;
+        display: flex; /* Mudado para flex para alinhar o texto no centro */
+        align-items: center;
+        justify-content: center;
+        padding: 20px 16px;
         text-decoration: none;
         color: white;
-        background: linear-gradient(135deg, var(--accent) 0%, #2563eb 100%);
-        border-radius: 12px;
+        background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        border-radius: 16px;
         font-weight: 600;
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        font-size: 0.95rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 0.9rem;
         position: relative;
         overflow: hidden;
+        min-height: 80px;
+        text-align: center;
+        cursor: pointer;
+        z-index: 20; /* Garante que o link receba o clique */
     }
 
     .nav-item::before {
@@ -120,7 +129,7 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
         transition: left 0.3s ease;
         z-index: -1;
     }
@@ -130,35 +139,23 @@
     }
 
     .nav-item:hover {
-        background: linear-gradient(135deg, var(--accent-light) 0%, #60a5fa 100%);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
-        border-color: rgba(255, 255, 255, 0.3);
+        background: linear-gradient(135deg, #404040 0%, #2a2a2a 100%);
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        border-color: rgba(255, 255, 255, 0.2);
     }
 
     .nav-item:active {
         transform: translateY(-1px);
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
         .login-card {
-            padding: 24px;
+            padding: 30px;
             border-radius: 16px;
         }
-
-        h2 {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            margin-bottom: 24px;
-            font-size: 0.9rem;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            font-size: 0.9rem;
+        .nav-menu {
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         }
     }
 </style>
@@ -168,7 +165,6 @@
     <div id="particles-js"></div>
 
     <div class="login-card">
-        
         <h2>📚 Documentações</h2>
         <p class="subtitle">Acesse a documentação completa dos projetos</p>
 
@@ -182,27 +178,26 @@
             <a href="./Clientes/CTB/CTB_user/CTB_Clientes_user.html" class="nav-item">Clientes CTB - Usuário</a>
             <a href="./Clientes/DP/DP_user/DP_Clientes_user.html" class="nav-item">Clientes DP - Usuário</a>
             <a href="./Clientes/DP/FIS_User/FIS_Clientes_user.html" class="nav-item">Clientes FIS - Usuário</a>
-            <a href="./Clientes/documentacao_bi_clientes.pdf" class="nav-item">PDF - BI Clientes</a>
+            <a href="./Clientes/documentacao_bi_clientes.pdf" class="nav-item" target="_blank">PDF - BI Clientes</a>
             <a href="./meta+/" class="nav-item">Meta+ - Usuário</a>
         </div>
     </div>
 
     <script>
-        /* Configuração do Particles.js com cores modernizadas */
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#60a5fa" },
+                "color": { "value": "#a0a0a0" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.6, "random": true },
-                "size": { "value": 2.5, "random": true },
-                "line_linked": { "enable": true, "distance": 180, "color": "#3b82f6", "opacity": 0.3, "width": 1.2 },
+                "opacity": { "value": 0.4, "random": true },
+                "size": { "value": 2, "random": true },
+                "line_linked": { "enable": true, "distance": 180, "color": "#808080", "opacity": 0.2, "width": 1 },
                 "move": { "enable": true, "speed": 1.5, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": { "onhover": { "enable": true, "mode": "repulse" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-                "modes": { "repulse": { "distance": 200, "duration": 0.4 }, "push": { "particles_nb": 4 } }
+                "modes": { "repulse": { "distance": 150, "duration": 0.3 }, "push": { "particles_nb": 3 } }
             },
             "retina_detect": true
         });
