@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plano de Contas Novo — Mapeamento de Códigos</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #ffffff;
+    --fg: #0a0a0a;
+    --accent: #000000;
+    --accent-dim: #0000001a;
+    --grid-color: rgba(0, 0, 0, 0.04);
+    --grid-accent: rgba(0, 0, 0, 0.05);
+    --card-bg: rgba(255, 255, 255, 1);
+    --card-border: rgba(0, 0, 0, 0.1);
+    --tag-bg: rgba(0, 0, 0, 0.05);
+    --code-bg: rgba(0, 0, 0, 0.06);
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+
+  html {
+    overflow-y: auto;
+    height: auto;
+  }
+
+  body {
+    font-family: var(--font-display);
+    background: var(--bg);
+    color: var(--fg);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    padding: 2rem 1.5rem;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridShift 20s linear infinite;
+    display: none;
+  }
+
+  .grid-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-accent) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-accent) 1px, transparent 1px);
+    background-size: 300px 300px;
+    z-index: 0;
+  }
+
+  @keyframes gridShift {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 60px 60px;
+    }
+  }
+
+  .grid-glow {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 1;
+    display: none;
+  }
+
+  .grid-glow::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background: radial-gradient(ellipse 800px 600px at 30% 30%, rgba(100, 150, 255, 0.15), transparent 70%),
+                radial-gradient(ellipse 600px 700px at 70% 60%, rgba(150, 100, 255, 0.1), transparent 70%),
+                radial-gradient(ellipse 700px 500px at 50% 80%, rgba(100, 200, 255, 0.12), transparent 70%);
+    animation: 
+      glowFloat1 15s ease-in-out infinite,
+      glowFloat2 18s ease-in-out infinite -3s;
+  }
+
+  .grid-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 400px 300px at 40% 40%, rgba(100, 150, 255, 0.08), transparent 60%);
+    animation: glowPulse 8s ease-in-out infinite;
+  }
+
+  @keyframes glowFloat1 {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(100px, -80px);
+    }
+    50% {
+      transform: translate(-80px, 100px);
+    }
+    75% {
+      transform: translate(80px, -100px);
+    }
+  }
+
+  @keyframes glowFloat2 {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    25% {
+      transform: translate(-120px, 80px);
+    }
+    50% {
+      transform: translate(100px, -120px);
+    }
+    75% {
+      transform: translate(-100px, 100px);
+    }
+  }
+
+  @keyframes glowPulse {
+    0%, 100% {
+      opacity: 0.6;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  .floating-icons-container {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    display: none;
+  }
+
+  .floating-icon {
+    position: absolute;
+    opacity: 0.25;
+    pointer-events: none;
+    animation: float linear infinite;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.1));
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+    }
+    100% {
+      transform: translateY(-10vh) rotate(360deg);
+    }
+  }
+
+  .floating-icon.speed-1 { animation-duration: 45s; }
+  .floating-icon.speed-2 { animation-duration: 55s; }
+  .floating-icon.speed-3 { animation-duration: 65s; }
+  .floating-icon.speed-4 { animation-duration: 75s; }
+  .floating-icon.speed-5 { animation-duration: 85s; }
+
+  .nav-dots {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .nav-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(0, 0, 0, 0.2);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.6s ease;
+    position: relative;
+  }
+
+  .nav-dot:hover {
+    border-color: var(--accent);
+  }
+
+  .nav-dot.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-dim);
+  }
+
+  .nav-dot .dot-label {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    color: var(--fg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    background: var(--bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--card-border);
+  }
+
+  .nav-dot:hover .dot-label {
+    opacity: 1;
+  }
+
+  .section-counter {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 100;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.05em;
+    display: none;
+  }
+
+  .counter-sep {
+    margin: 0 4px;
+  }
+
+  #currentNum {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .sections-wrapper {
+    position: relative;
+    inset: auto;
+    z-index: 10;
+  }
+
+  .section {
+    position: relative;
+    inset: auto;
+    display: block;
+    align-items: auto;
+    justify-content: auto;
+    padding: 0;
+    opacity: 1;
+    transform: none;
+    filter: none;
+    pointer-events: auto;
+    transition: none;
+  }
+
+  .section.active {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    pointer-events: auto;
+  }
+
+  .section.exit-up {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .section.exit-down {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .section-inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .landing {
+    text-align: center;
+  }
+
+  .landing-badge {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    border: 1px solid var(--accent-dim);
+    background: var(--tag-bg);
+    padding: 6px 16px;
+    border-radius: 100px;
+    margin-bottom: 2rem;
+  }
+
+  .landing h1 {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-accent {
+    color: var(--accent);
+  }
+
+  .landing-sub {
+    font-size: 1.1rem;
+    color: rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+
+  .scroll-hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(0, 0, 0, 0.3);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .scroll-arrow {
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    transform: rotate(45deg);
+    animation: bounce-down 2s infinite;
+  }
+
+  @keyframes bounce-down {
+    0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.5; }
+    50% { transform: rotate(45deg) translateY(6px); opacity: 1; }
+  }
+
+  .section-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .section-inner h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2.5rem;
+    color: #c36
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .info-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+  }
+
+  .info-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-icon {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .info-card h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .info-card p {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.6;
+  }
+
+  .info-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .info-card li {
+    font-size: 0.82rem;
+    color: rgba(0, 0, 0, 0.6);
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.5;
+  }
+
+  .info-card li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      padding: 1rem 1rem;
+    }
+
+    .search-bar input {
+      font-size: 14px;
+      padding: 10px 12px 10px 36px;
+    }
+
+    header h1 {
+      font-size: 18px;
+    }
+
+    .group-title {
+      font-size: 11px;
+    }
+
+    .badge {
+      font-size: 9px;
+      padding: 0px 6px;
+    }
+  }
+
+  .map-container {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    background: var(--tag-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 2rem;
+  }
+
+  .map-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    z-index: 2;
+    position: relative;
+  }
+
+  .map-node {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 1rem;
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-align: center;
+    width: 150px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .map-node:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-dim);
+    transform: scale(1.05);
+  }
+
+  .map-connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .connection-line {
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 5;
+    opacity: 0.3;
+    fill: none;
+  }
+
+  .orchestration-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .orch-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .orch-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px var(--accent-dim);
+  }
+
+  .orch-status {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+    padding: 4px 10px;
+    border-radius: 100px;
+  }
+
+  .orch-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .orch-card h3 {
+    font-family: var(--font-display);
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+
+  .orch-card p {
+    font-size: 0.9rem;
+    color: rgba(0,0,0,0.5);
+    margin-bottom: 1.5rem;
+  }
+
+  .orch-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid var(--card-border);
+    padding-top: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  header {
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 20px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--fg);
+    letter-spacing: -0.5px;
+  }
+  header p { color: rgba(0, 0, 0, 0.5); margin-top: 4px; font-size: 12px; }
+
+  /* search */
+  .search-bar {
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 8px 12px 8px 36px;
+    color: var(--fg);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .search-bar input:focus { border-color: var(--accent); }
+  .search-bar svg {
+    position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%); opacity: .4;
+    pointer-events: none;
+  }
+
+  /* stats */
+  .stats {
+    display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 10px 16px;
+    min-width: 120px;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat-label { font-size: 11px; color: rgba(0, 0, 0, 0.5); margin-top: 2px; }
+
+  /* groups */
+  .group {
+    margin-bottom: 12px;
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .group-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--card-bg);
+    transition: background .12s;
+  }
+  .group-header:hover { background: rgba(0, 0, 0, 0.03); }
+
+  .color-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .group-title {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 12.5px;
+    flex: 1;
+  }
+
+  .group-meta { display: flex; align-items: center; gap: 8px; }
+  .badge {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1px 8px;
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    font-family: var(--font-mono);
+  }
+
+  .chevron {
+    width: 16px; height: 16px;
+    color: rgba(0, 0, 0, 0.3);
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+  .group.open .chevron { transform: rotate(90deg); }
+
+  /* subtotal row */
+  .subtotal-group .group-header {
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid var(--card-border);
+  }
+  .subtotal-group .group-title { color: var(--accent); }
+
+  /* body */
+  .group-body {
+    display: none;
+    padding: 0;
+  }
+  .group.open .group-body { display: block; }
+
+  /* sub-group */
+  .subgroup { border-top: 1px solid var(--card-border); }
+  .subgroup-title {
+    padding: 7px 14px 7px 36px;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.02);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-bottom: 1px solid var(--card-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .subgroup-title span {
+    font-family: var(--font-mono);
+    background: rgba(0, 0, 0, 0.05);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--fg);
+  }
+
+  /* account rows */
+  .account {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 5px 14px 5px 36px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    transition: background .1s;
+  }
+  .account:last-child { border-bottom: none; }
+  .account:hover { background: rgba(0, 0, 0, 0.03); }
+
+  .acc-code {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--accent);
+    min-width: 160px;
+    flex-shrink: 0;
+  }
+  .acc-alias {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.4);
+    min-width: 120px;
+    flex-shrink: 0;
+    padding-right: 8px;
+  }
+  .acc-name {
+    color: var(--fg);
+    font-size: 12px;
+    opacity: .85;
+  }
+
+  /* highlight on search */
+  .highlight { background: rgba(0, 0, 0, 0.1); border-radius: 2px; }
+
+  .hidden { display: none !important; }
+
+  footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--card-border);
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  #container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1><center>Mapeamento de Códigos BI Contábil</center></h1>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num" id="totalAccounts">0</div><div class="stat-label">Contas mapeadas</div></div>
+  <div class="stat"><div class="stat-num" id="totalGroups">0</div><div class="stat-label">Grupos DRE</div></div>
+  <div class="stat"><div class="stat-num" id="totalSubgroups">0</div><div class="stat-label">Sub-grupos</div></div>
+</div>
+
+<div class="search-bar">
+  <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zm-5.242 1.656a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z"/></svg>
+  <input type="text" id="searchInput" placeholder="Buscar por código ou nome de conta..." oninput="filterAccounts(this.value)" />
+</div>
+
+<div id="container"></div>
+
+<footer>
+  Fonte: Power BI Desktop &mdash; Tabela <code>Plano de Contas</code> cruzada com <code>Plano de Contas Novo</code>
+</footer>
+
+<script>
+const DATA = {
+  "(+) RECEITA": {
+    color: "var(--receita)",
+    order: 1,
+    subtotal: false,
+    subgroups: {
+      "03.1.1.01 — Receita Com Vendas": [
+        { code: "03.1.1.01.001", alias: "VENDAS IND",       name: "Vendas de Produtos" },
+        { code: "03.1.1.01.002", alias: "VENDAS IND PRAZ",  name: "Vendas Produtos Fabricação Própria a Prazo" },
+        { code: "03.1.1.01.003", alias: "VENDA MERC",       name: "Vendas de Mercadorias" },
+        { code: "03.1.1.01.004", alias: "VENDA IMOV",       name: "Vendas de Imóveis Próprios" },
+        { code: "03.1.1.01.005", alias: "",                  name: "Vendas de Mercadorias para Exportação" },
+        { code: "03.1.1.01.006", alias: "",                  name: "Venda de Energia Elétrica" },
+        { code: "03.1.1.01.007", alias: "",                  name: "Vendas de Sucatas/Resíduos" },
+        { code: "03.1.1.01.008", alias: "",                  name: "Venda de Mercadorias e Produtos Intercompany" },
+        { code: "03.1.1.01.009", alias: "",                  name: "Vendas de Produtos de Fabricação Própria para Exportação" },
+      ],
+      "03.1.1.03 — Receitas Com Serviços": [
+        { code: "03.1.1.03.001", alias: "SERVIÇOS",          name: "Serviços Prestados" },
+        { code: "03.1.1.03.002", alias: "SERV IND",          name: "Serviços de Industrialização" },
+        { code: "03.1.1.03.003", alias: "",                  name: "Serviços de Faturização" },
+        { code: "03.1.1.03.004", alias: "",                  name: "Serviços de Fretes" },
+        { code: "03.1.1.03.005", alias: "",                  name: "Convênios" },
+        { code: "03.1.1.03.006", alias: "",                  name: "Receita Serv. Carga e Descarga" },
+        { code: "03.1.1.03.007", alias: "",                  name: "Receita Serv. Corresp. Banc." },
+        { code: "03.1.1.03.008", alias: "",                  name: "Receita - Vale Gás" },
+        { code: "03.1.1.03.009", alias: "",                  name: "Receita Serv. Aluguel Outdoor" },
+      ],
+      "03.1.1.04 — Receita Com Aluguel": [
+        { code: "03.1.1.04.001", alias: "",                  name: "Receita com Aluguel" },
+      ],
+      "03.1.1.05 — Receita Com Mensalidades": [
+        { code: "03.1.1.05.001", alias: "RECMENSALIDADE",    name: "Receita com Mensalidades" },
+      ],
+    }
+  },
+
+  "(-) DEDUÇÕES DA RECEITA": {
+    color: "var(--deducao)",
+    order: 2,
+    subtotal: false,
+    subgroups: {
+      "03.1.2.01 — Devoluções e Abatimentos": [
+        { code: "03.1.2.01.001", alias: "DEVOL",             name: "Devoluções de Vendas" },
+        { code: "03.1.2.01.002", alias: "ABAT",              name: "Abatimentos Concedidos" },
+      ],
+      "03.1.2.02 — Impostos s/ Vendas e Serviços": [
+        { code: "03.1.2.02.001", alias: "ICMS S/VENDAS",     name: "(-) ICMS S/Vendas" },
+        { code: "03.1.2.02.002", alias: "PIS S/VENDAS",      name: "(-) PIS S/Vendas e Serviços" },
+        { code: "03.1.2.02.003", alias: "COFINS S/VENDAS",   name: "(-) COFINS S/Vendas e Serviços" },
+        { code: "03.1.2.02.004", alias: "CONTRSOC S/VENDAS", name: "(-) Contribuição Social Sobre Vendas e Serviços" },
+        { code: "03.1.2.02.005", alias: "IPI S/VENDAS",      name: "(-) IPI S/Vendas e Serviços" },
+        { code: "03.1.2.02.006", alias: "SIMPLES",           name: "(-) Simples sobre Vendas e Serviços" },
+        { code: "03.1.2.02.007", alias: "ISSQN S/SERVS",     name: "(-) ISSQN S/Serviços" },
+        { code: "03.1.2.02.008", alias: "SIMPLESNACIONAL",   name: "(-) Simples Nacional S/Vendas e Serviços" },
+        { code: "03.1.2.02.009", alias: "IRPJ S/VENDAS",     name: "(-) IRPJ S/Vendas e Serviços" },
+        { code: "03.1.2.02.010", alias: "",                  name: "(-) INSS S/Vendas e Serviços" },
+        { code: "03.1.2.02.011", alias: "FSV",               name: "(-) Fretes S/Vendas" },
+        { code: "03.1.2.02.012", alias: "",                  name: "ICMS Substituição Tributária" },
+        { code: "03.1.2.02.013", alias: "",                  name: "(-)DNPM" },
+      ],
+    }
+  },
+
+  "(=) RECEITA LÍQUIDA": {
+    color: "var(--subtotal)",
+    order: 3,
+    subtotal: true,
+    subgroups: {}
+  },
+
+  "(-) CMV": {
+    color: "var(--cmv)",
+    order: 4,
+    subtotal: false,
+    subgroups: {
+      "04.1.1.01 — Estoque Inicial": [
+        { code: "04.1.1.01.001", alias: "",                  name: "Estoque Inicial de Mercadorias" },
+      ],
+      "04.1.1.02 — Compras": [
+        { code: "04.1.1.02.001", alias: "CMV",               name: "Custo das Mercadorias Vendidas" },
+        { code: "04.1.1.02.002", alias: "COMPRAMERCREV",     name: "Compra de Mercadoria para Revenda" },
+        { code: "04.1.1.02.003", alias: "",                  name: "(-) Descontos S/Compras" },
+        { code: "04.1.1.02.004", alias: "",                  name: "(-) Mercadorias em Trânsito" },
+        { code: "04.1.1.02.005", alias: "COMPRAMATUSOCONS",  name: "Material para Uso e Consumo" },
+        { code: "04.1.1.02.006", alias: "FRETECOMPRAS",      name: "Fretes S/Compras" },
+        { code: "04.1.1.02.007", alias: "ICMSCOMPRAS",       name: "(-) ICMS S/Compras" },
+        { code: "04.1.1.02.008", alias: "IPICOMPRAS",        name: "(-) IPI S/Compras" },
+        { code: "04.1.1.02.009", alias: "DEVOLCOMPRAS",      name: "(-) Devolução de Compras" },
+        { code: "04.1.1.02.010", alias: "",                  name: "Compra com Entrega Futura" },
+        { code: "04.1.1.02.011", alias: "QARD",              name: "Quebras/Avarias/Roubos/Deterioração" },
+        { code: "04.1.1.02.012", alias: "",                  name: "(-) PIS S/Compras" },
+        { code: "04.1.1.02.013", alias: "",                  name: "(-) COFINS S/Compras" },
+        { code: "04.1.1.02.014", alias: "CEMB",              name: "Compra de Embalagens" },
+        { code: "04.1.1.02.015", alias: "",                  name: "(-) Funrural S/Compras" },
+        { code: "04.1.1.02.016", alias: "",                  name: "ICMS ST S/Compras" },
+        { code: "04.1.1.02.017", alias: "",                  name: "ICMS Diferencial de Alíquota" },
+        { code: "04.1.1.02.018", alias: "",                  name: "(-) Bonificações" },
+        { code: "04.1.1.02.019", alias: "",                  name: "(-) Devolução ICMS ST" },
+        { code: "04.1.1.02.020", alias: "",                  name: "Transferência de Mercadoria - Entrada" },
+        { code: "04.1.1.02.021", alias: "",                  name: "(-) Transferência de Mercadoria - Saída" },
+        { code: "04.1.1.02.022", alias: "",                  name: "Repasse de Bonificações" },
+        { code: "04.1.1.02.023", alias: "",                  name: "(-)Bonificações em Mercadoria" },
+        { code: "04.1.1.02.024", alias: "Quebrasdesc",       name: "Quebras Desconhecidas" },
+        { code: "04.1.1.02.025", alias: "",                  name: "Despesas com Importação" },
+        { code: "04.1.1.02.026", alias: "",                  name: "Repasse Materiais de Expediente" },
+        { code: "04.1.1.02.027", alias: "",                  name: "Repasse Sacolas" },
+        { code: "04.1.1.02.028", alias: "",                  name: "Repasse Materiais de Limpeza" },
+        { code: "04.1.1.02.029", alias: "",                  name: "Repasse Potes e Embalagens" },
+        { code: "04.1.1.02.030", alias: "",                  name: "(-) Acordos - SELL IN" },
+        { code: "04.1.1.02.031", alias: "",                  name: "(-) Acordos - SELL OFERTA" },
+        { code: "04.1.1.02.032", alias: "",                  name: "(-) Acordos - Trocas" },
+        { code: "04.1.1.02.033", alias: "",                  name: "Mercadorias em Trânsito" },
+        { code: "04.1.1.02.034", alias: "",                  name: "(-) Bonificações - Aniversário" },
+        { code: "04.1.1.02.035", alias: "",                  name: "(-)ICMS S/ Quebras" },
+        { code: "04.1.1.02.036", alias: "",                  name: "Compra de Mercadorias Intercompany" },
+        { code: "04.1.1.02.037", alias: "",                  name: "Variação de Custo Médio" },
+        { code: "04.1.1.02.038", alias: "",                  name: "Ajuste de Inventário" },
+        { code: "04.1.1.02.039", alias: "",                  name: "Remessa Resíduo" },
+        { code: "04.1.1.02.040", alias: "",                  name: "Complemento Imposto/Valor" },
+        { code: "04.1.1.02.041", alias: "",                  name: "Remessa de Armazenagem" },
+        { code: "04.1.1.02.042", alias: "",                  name: "Remessa Bonificação" },
+        { code: "04.1.1.02.043", alias: "",                  name: "Remessa de Vasilhame" },
+        { code: "04.1.1.02.044", alias: "",                  name: "Compra de Mercadoria para Exportação" },
+        { code: "04.1.1.02.045", alias: "",                  name: "(-)Devolução de Compra de Mercadoria para Exportação" },
+        { code: "04.1.1.02.046", alias: "",                  name: "Material para Uso e Consumo - Exportação" },
+        { code: "04.1.1.02.047", alias: "",                  name: "Transferência de Produtos - Entrada" },
+        { code: "04.1.1.02.048", alias: "",                  name: "(-)Transferência de Produtos - Saída" },
+        { code: "04.1.1.02.049", alias: "",                  name: "(-)ICMS s/ Outras Entradas" },
+        { code: "04.1.1.02.050", alias: "",                  name: "(-)Contratos Comerciais" },
+        { code: "04.1.1.02.051", alias: "",                  name: "(-)Contratos Aniversário" },
+      ],
+      "04.1.1.03 — (-) Estoque Final": [
+        { code: "04.1.1.03.001", alias: "",                  name: "(-) Estoque Final de Mercadorias" },
+      ],
+    }
+  },
+
+  "(-) CPV": {
+    color: "var(--cpv)",
+    order: 5,
+    subtotal: false,
+    subgroups: {
+      "04.1.2.01 — Estoque Inicial de Produtos": [
+        { code: "04.1.2.01.001", alias: "EIPELAB",           name: "Estoque Inicial de Produtos Em Elaboração" },
+        { code: "04.1.2.01.002", alias: "EIPRODACAB",        name: "Estoque Inicial de Produtos Acabados" },
+        { code: "04.1.2.01.003", alias: "",                  name: "Estoque Inicial de Material de Consumo" },
+        { code: "04.1.2.01.004", alias: "",                  name: "Estoque Inicial de Matéria Prima" },
+        { code: "04.1.2.01.005", alias: "",                  name: "Estoque Inicial de Embalagens" },
+      ],
+      "04.1.2.03 — Custos das Matérias-Primas": [
+        { code: "04.1.2.03.001", alias: "CTOMP",             name: "Custo das Matérias-Primas" },
+        { code: "04.1.2.03.002", alias: "",                  name: "(-) Bonificações" },
+        { code: "04.1.2.03.003", alias: "",                  name: "(-) Devoluções de Compra de Matéria-Prima" },
+        { code: "04.1.2.03.004", alias: "",                  name: "Compra de Matéria-Prima" },
+        { code: "04.1.2.03.005", alias: "",                  name: "Compra de Material de Consumo" },
+        { code: "04.1.2.03.006", alias: "COMPRAMATPRIM",     name: "Compra de Matéria Prima e Insumos" },
+        { code: "04.1.2.03.007", alias: "",                  name: "Compra de Materia-Prima com Entrega Futura" },
+        { code: "04.1.2.03.008", alias: "COMPRAMATALX",      name: "Compra de Material de Almoxarifado" },
+        { code: "04.1.2.03.009", alias: "",                  name: "Fretes s/ Compras" },
+        { code: "04.1.2.03.012", alias: "",                  name: "Compra com Entrega Futura" },
+        { code: "04.1.2.03.013", alias: "",                  name: "Compra de Embalagens" },
+        { code: "04.1.2.03.014", alias: "",                  name: "(-) Descontos S/Compras de Matéria Prima" },
+        { code: "04.1.2.03.015", alias: "",                  name: "(-) ICMS S/Compras de Materia-Prima" },
+        { code: "04.1.2.03.016", alias: "",                  name: "(-) IPI S/Compras de Materia-Prima" },
+        { code: "04.1.2.03.017", alias: "",                  name: "Serviço de Terceiros - Custo" },
+        { code: "04.1.2.03.018", alias: "",                  name: "ICMS ST S/Compras" },
+        { code: "04.1.2.03.019", alias: "",                  name: "(-) Pis S/Compras de Matéria Prima" },
+        { code: "04.1.2.03.020", alias: "",                  name: "(-) Cofins S/Compras de Matéria Prima" },
+        { code: "04.1.2.03.021", alias: "",                  name: "Compra de Matéria-Prima Intercompany" },
+        { code: "04.1.2.03.022", alias: "",                  name: "Quebras/Avarias/Roubos/Deterioração" },
+        { code: "04.1.2.03.023", alias: "",                  name: "(-)Transferência de Materia Prima - Saída" },
+        { code: "04.1.2.03.024", alias: "",                  name: "Transferência de Materia Prima - Entrada" },
+        { code: "04.1.2.03.025", alias: "",                  name: "Compra de Matéria-Prima Importação" },
+        { code: "04.1.2.03.026", alias: "",                  name: "Compra de Matéria-Prima - Regime Drawback" },
+        { code: "04.1.2.03.027", alias: "",                  name: "Industrialização Efetuada por Outra Empresa" },
+      ],
+      "04.1.2.06 — (-) Estoque Final": [
+        { code: "04.1.2.06.001", alias: "EFPRODELAB",        name: "Estoque Final de Produtos Em Elaboração" },
+        { code: "04.1.2.06.002", alias: "EFPRODACAB",        name: "Estoque Final de Produtos Acabados" },
+        { code: "04.1.2.06.003", alias: "",                  name: "Estoque Final de Material de Consumo" },
+        { code: "04.1.2.06.004", alias: "",                  name: "Estoque Final de Matéria Prima" },
+        { code: "04.1.2.06.005", alias: "",                  name: "Estoque Final de Embalagens" },
+      ],
+      "04.1.2.08 — Gastos com Pessoal (CPV)": [
+        { code: "04.1.2.08.015", alias: "",                  name: "Provisão 13º Salário" },
+        { code: "04.1.2.08.016", alias: "",                  name: "Assistência Médica, Odontológica e Farmacêutica" },
+        { code: "04.1.2.08.017", alias: "",                  name: "Outros Gastos com Pessoal" },
+        { code: "04.1.2.08.018", alias: "",                  name: "Alimentação do Trabalhador" },
+        { code: "04.1.2.08.019", alias: "",                  name: "Cursos e Treinamentos para Formação Profissional" },
+        { code: "04.1.2.08.020", alias: "",                  name: "Uniformes e Vestuários" },
+        { code: "04.1.2.08.004", alias: "",                  name: "Contribuições Sindicais" },
+      ],
+      "04.1.2.09 — Gastos Gerais de Fabricação": [
+        { code: "04.1.2.09.006", alias: "",                  name: "Energia Elétrica" },
+        { code: "04.1.2.09.008", alias: "",                  name: "Manutenção e Conservação" },
+        { code: "04.1.2.09.009", alias: "Uso e Consumo",     name: "Material de Consumo" },
+        { code: "04.1.2.09.012", alias: "TERCCPFIND",        name: "Serviços de Terceiros - Pessoa Física" },
+        { code: "04.1.2.09.019", alias: "",                  name: "Adicional Noturno Rendimentos Variáveis" },
+        { code: "04.1.2.09.020", alias: "",                  name: "Auxílio Creche" },
+        { code: "04.1.2.09.021", alias: "",                  name: "Parcelamento Desconto" },
+        { code: "04.1.2.09.022", alias: "",                  name: "Aluguéis" },
+        { code: "04.1.2.09.023", alias: "",                  name: "Medicina Ocupacional" },
+      ],
+    }
+  },
+
+  "(=) LUCRO BRUTO": {
+    color: "var(--subtotal)",
+    order: 6,
+    subtotal: true,
+    subgroups: {}
+  },
+
+  "(-) DESPESAS FOLHA DE PAGAMENTO": {
+    color: "var(--folha)",
+    order: 7,
+    subtotal: false,
+    subgroups: {
+      "04.2.1.01 — Despesas Trabalhistas": [
+        { code: "04.2.1.01.001", alias: "DCSAL",     name: "Salários" },
+        { code: "04.2.1.01.002", alias: "DCPROLAB",  name: "Pró-Labore" },
+        { code: "04.2.1.01.003", alias: "DCHE",      name: "Horas Extras" },
+        { code: "04.2.1.01.004", alias: "DCFERIAS",  name: "Férias" },
+        { code: "04.2.1.01.005", alias: "DC13.SAL",  name: "13.Salário" },
+        { code: "04.2.1.01.006", alias: "DCAVISO",   name: "Aviso Prévio / Indenizações Trabalhistas" },
+        { code: "04.2.1.01.007", alias: "DCGRATIFIC",name: "Gratificações" },
+        { code: "04.2.1.01.008", alias: "DADICNOT",  name: "Adicional Noturno" },
+        { code: "04.2.1.01.009", alias: "DCSINDPAT", name: "Sindicato Patronal / Associação de Classe" },
+        { code: "04.2.1.01.010", alias: "DCVT",      name: "Vale-Transporte" },
+        { code: "04.2.1.01.011", alias: "ADINS",     name: "Adicional Insalubridade" },
+        { code: "04.2.1.01.012", alias: "",           name: "(-) Recuperação de Despesas Folha" },
+        { code: "04.2.1.01.013", alias: "DCCOMISS",  name: "Comissões sobre Vendas" },
+        { code: "04.2.1.01.014", alias: "DCMEDICO",  name: "Assistência Médica" },
+        { code: "04.2.1.01.015", alias: "DEPAT",     name: "PAT - Programa Alimentação ao Trabalhador" },
+        { code: "04.2.1.01.016", alias: "",           name: "Alimentação" },
+        { code: "04.2.1.01.017", alias: "CAUTRAB",   name: "Causas Trabalhistas" },
+        { code: "04.2.1.01.018", alias: "PREMIOS",   name: "Prêmios" },
+        { code: "04.2.1.01.019", alias: "",           name: "Outras Despesas com Pessoal" },
+        { code: "04.2.1.01.020", alias: "",           name: "Vale Farmácia" },
+        { code: "04.2.1.01.021", alias: "",           name: "Provisão Passivo Trabalhista" },
+        { code: "04.2.1.01.022", alias: "",           name: "Jovem Aprendiz" },
+        { code: "04.2.1.01.023", alias: "",           name: "Auxílio Creche" },
+        { code: "04.2.1.01.024", alias: "",           name: "Auxílio Educação" },
+        { code: "04.2.1.01.025", alias: "",           name: "Adicional Responsabilidade Técnica" },
+        { code: "04.2.1.01.026", alias: "",           name: "Auxílio Combustível" },
+        { code: "04.2.1.01.027", alias: "",           name: "Serviços de Terceiros PJ - Folha" },
+        { code: "04.2.1.01.028", alias: "",           name: "(-) Reversão Passivo Trabalhista" },
+        { code: "04.2.1.01.029", alias: "",           name: "Periculosidade" },
+        { code: "04.2.1.01.030", alias: "",           name: "Prêmio Feriados" },
+        { code: "04.2.1.01.031", alias: "",           name: "(-) Recuperação de Despesas Folha" },
+        { code: "04.2.1.01.032", alias: "",           name: "Uniformes" },
+        { code: "04.2.1.01.033", alias: "",           name: "Ajuda de Custos" },
+        { code: "04.2.1.01.034", alias: "",           name: "Adicional Cargo de Confiança" },
+        { code: "04.2.1.01.035", alias: "",           name: "Falta Dia Serviço Prestado Sindicato" },
+        { code: "04.2.1.01.036", alias: "",           name: "Auxílio Transporte" },
+        { code: "04.2.1.01.037", alias: "",           name: "Brindes" },
+        { code: "04.2.1.01.038", alias: "",           name: "Serviços de Limpeza - Uniformes" },
+        { code: "04.2.1.01.039", alias: "",           name: "FAPI - Fundo de Aposentadoria Programada Individual" },
+        { code: "04.2.1.01.040", alias: "",           name: "Cesta Básica" },
+        { code: "04.2.1.01.041", alias: "",           name: "Participações de Lucros aos Empregados" },
+        { code: "04.2.1.01.042", alias: "",           name: "Serviços de Folha Terceirizada" },
+        { code: "04.2.1.01.043", alias: "",           name: "Quebra de Caixa" },
+        { code: "04.2.1.01.044", alias: "",           name: "Segurança do Trabalho" },
+        { code: "04.2.1.01.534", alias: "DCMEDICO",  name: "Despesas Médicas" },
+      ],
+      "04.2.1.02 — Encargos Sociais": [
+        { code: "04.2.1.02.001", alias: "DCINSS",    name: "INSS" },
+        { code: "04.2.1.02.002", alias: "DCFGTS",    name: "FGTS" },
+        { code: "04.2.1.02.003", alias: "MULTARESC", name: "Multa Rescisória FGTS" },
+        { code: "04.2.1.02.004", alias: "DCPIS",     name: "PIS sobre Folha" },
+        { code: "04.2.1.02.005", alias: "GRCS",      name: "Contribuições Sindicais" },
+      ],
+    }
+  },
+
+  "(-) DESPESAS GERAIS": {
+    color: "var(--gerais)",
+    order: 8,
+    subtotal: false,
+    subgroups: {
+      "04.2.1.03 — Despesas Gerais": [
+        { code: "04.2.1.03.001", alias: "DCALUG",    name: "Aluguel" },
+        { code: "04.2.1.03.002", alias: "DCAGUA",    name: "Água e Esgoto" },
+        { code: "04.2.1.03.003", alias: "DCEE",      name: "Energia Elétrica" },
+        { code: "04.2.1.03.004", alias: "DCI",       name: "Internet" },
+        { code: "04.2.1.03.012", alias: "DCECT",     name: "Correios e Malotes" },
+        { code: "04.2.1.03.013", alias: "DCDEPRE",   name: "Depreciações e Amortizações" },
+        { code: "04.2.1.03.015", alias: "DCFRETES",  name: "Fretes e Carretos" },
+        { code: "04.2.1.03.018", alias: "DCLESING",  name: "Leasing" },
+        { code: "04.2.1.03.022", alias: "DCFEIRAS",  name: "Feiras / Congressos / Simpósios / Cursos" },
+        { code: "04.2.1.03.026", alias: "DCBENS",    name: "Bens de Pequeno Valor" },
+        { code: "04.2.1.03.028", alias: "DCJORN",    name: "Assinaturas de Periódicos" },
+        { code: "04.2.1.03.036", alias: "DCESTAD",   name: "Estadias" },
+        { code: "04.2.1.03.037", alias: "DCALIMENT", name: "Dispêndios com Alimentação" },
+        { code: "04.2.1.03.038", alias: "DCCOMBUST", name: "Combustíveis" },
+        { code: "04.2.1.03.040", alias: "",           name: "Material de Uso e Consumo" },
+        { code: "04.2.1.03.041", alias: "",           name: "Uniformes" },
+        { code: "04.2.1.03.042", alias: "",           name: "Manutenção Veículo" },
+        { code: "04.2.1.03.044", alias: "",           name: "Material de Copa e Cozinha" },
+        { code: "04.2.1.03.045", alias: "",           name: "Locação de espaços/salas" },
+        { code: "04.2.1.03.046", alias: "",           name: "Gás" },
+        { code: "04.2.1.03.047", alias: "",           name: "Locação de Máquinas e Equipamentos" },
+        { code: "04.2.1.03.048", alias: "",           name: "Taxas e Emolumentos" },
+        { code: "04.2.1.03.049", alias: "",           name: "Mensalidades" },
+        { code: "04.2.1.03.050", alias: "",           name: "Taxa de Interveniência" },
+        { code: "04.2.1.03.051", alias: "",           name: "(-) Doação Salário Diretoria" },
+        { code: "04.2.1.03.052", alias: "",           name: "Informática" },
+        { code: "04.2.1.03.053", alias: "",           name: "Clientes Incobráveis" },
+        { code: "04.2.1.03.054", alias: "",           name: "Despesas Legais/Judiciais" },
+        { code: "04.2.1.03.055", alias: "",           name: "(-) Crédito PIS/COFINS - Imobilizados" },
+        { code: "04.2.1.03.056", alias: "",           name: "(-) Crédito PIS/COFINS - Energia Elétrica" },
+        { code: "04.2.1.03.057", alias: "",           name: "(-) Crédito PIS/COFINS - Insumos/Serviços" },
+        { code: "04.2.1.03.058", alias: "",           name: "(-) Crédito PIS/COFINS - Aluguel" },
+        { code: "04.2.1.03.059", alias: "",           name: "(-) Crédito PIS/COFINS - Fretes" },
+        { code: "04.2.1.03.060", alias: "",           name: "(-) Crédito PIS/COFINS - Taxa de Cartão" },
+        { code: "04.2.1.03.061", alias: "",           name: "Bolsa Auxílio" },
+        { code: "04.2.1.03.062", alias: "",           name: "Medicamentos" },
+        { code: "04.2.1.03.063", alias: "",           name: "Manutenção de Equipamentos" },
+        { code: "04.2.1.03.064", alias: "",           name: "Manutenção de Prédios" },
+        { code: "04.2.1.03.065", alias: "",           name: "Doações" },
+        { code: "04.2.1.03.066", alias: "",           name: "Doações" },
+        { code: "04.2.1.03.067", alias: "",           name: "Publicações Atas/Balanços" },
+        { code: "04.2.1.03.068", alias: "",           name: "Despesas Indedutíveis" },
+        { code: "04.2.1.03.071", alias: "COMISSAO",  name: "Comissões" },
+        { code: "04.2.1.03.072", alias: "",           name: "Brindes" },
+        { code: "04.2.1.03.073", alias: "DESPCARTAOCRED", name: "Despesa C/Cartão de Crédito" },
+        { code: "04.2.1.03.075", alias: "",           name: "Condomínio" },
+        { code: "04.2.1.03.076", alias: "DESPIMPORT", name: "Despesas de Importação" },
+        { code: "04.2.1.03.077", alias: "DESPPREMIOS",name: "Despesa C/Premiações e Sorteios" },
+        { code: "04.2.1.03.078", alias: "",           name: "Anuidades" },
+        { code: "04.2.1.03.079", alias: "",           name: "Serviços de Terceiros PJ - Fixos" },
+        { code: "04.2.1.03.080", alias: "",           name: "Combustíveis Geradores" },
+        { code: "04.2.1.03.081", alias: "",           name: "Patrocínio" },
+        { code: "04.2.1.03.082", alias: "",           name: "Cursos e Treinamentos" },
+        { code: "04.2.1.03.083", alias: "",           name: "(-) Crédito PIS/COFINS - Estoque Abertura" },
+        { code: "04.2.1.03.084", alias: "",           name: "Despesas Funerárias" },
+        { code: "04.2.1.03.086", alias: "",           name: "Bonificações" },
+        { code: "04.2.1.03.087", alias: "",           name: "Locações Saque e Pague" },
+        { code: "04.2.1.03.088", alias: "",           name: "Amortização Direito de Uso" },
+        { code: "04.2.1.03.089", alias: "",           name: "Materiais de Operação" },
+        { code: "04.2.1.03.090", alias: "",           name: "Provisão de Contingências" },
+        { code: "04.2.1.03.091", alias: "CONSUL",    name: "Consultoria" },
+        { code: "04.2.1.03.092", alias: "",           name: "Serviço de Transporte de Valores" },
+        { code: "04.2.1.03.093", alias: "",           name: "Campanha 25 Anos" },
+        { code: "04.2.1.03.094", alias: "",           name: "Indenizações" },
+        { code: "04.2.1.03.095", alias: "",           name: "Eventos" },
+        { code: "04.2.1.03.096", alias: "",           name: "Comemorações" },
+        { code: "04.2.1.03.097", alias: "",           name: "Serviços de Guincho, Guindaste e Içamento" },
+        { code: "04.2.1.03.098", alias: "",           name: "Despesa Geral com Franquia" },
+        { code: "04.2.1.03.099", alias: "",           name: "Serviços de Limpeza" },
+        { code: "04.2.1.03.102", alias: "",           name: "Serviços de Inventário" },
+        { code: "04.2.1.03.103", alias: "",           name: "(-)Crédito PIS/COFINS - Outras Operações" },
+        { code: "04.2.1.03.104", alias: "",           name: "Motoboy - Entregas" },
+        { code: "04.2.1.03.105", alias: "",           name: "(-) Descontos S/Compras Uso e Consumo" },
+        { code: "04.2.1.03.106", alias: "",           name: "Entregas" },
+        { code: "04.2.1.03.107", alias: "",           name: "Bens de Natureza Permanente Deduzidos como Despesa" },
+        { code: "04.2.1.03.108", alias: "",           name: "Análises Técnicas" },
+        { code: "04.2.1.03.109", alias: "",           name: "Honorários Advocatícios" },
+        { code: "04.2.1.03.110", alias: "",           name: "Despesas Aduaneiras" },
+        { code: "04.2.1.03.111", alias: "",           name: "Custas Processuais" },
+        { code: "04.2.1.03.112", alias: "",           name: "Registro e Renovação de Domínios e Marcas" },
+        { code: "04.2.1.03.113", alias: "",           name: "Cestas Básicas" },
+        { code: "04.2.1.03.114", alias: "",           name: "Despesas com Coletas de Resíduos e Descartes" },
+        { code: "04.2.1.03.115", alias: "",           name: "Despesas Ambientais" },
+        { code: "04.2.1.03.116", alias: "",           name: "Despesa com Armazenagem em Terceiros" },
+        { code: "04.2.1.03.117", alias: "",           name: "Jornais, Revista e Livros" },
+        { code: "04.2.1.03.118", alias: "",           name: "Lazer e Esporte" },
+        { code: "04.2.1.03.119", alias: "",           name: "Promoção Campanha Ano" },
+        { code: "04.2.1.03.120", alias: "",           name: "Quebras de Caixa" },
+        { code: "04.2.1.03.121", alias: "",           name: "Brindes, Doações e Promoções - Kern" },
+        { code: "04.2.1.03.122", alias: "",           name: "Sindicato Patronal, Associação de Classe - Kern" },
+        { code: "04.2.1.03.123", alias: "",           name: "Vale Transporte - Kern" },
+        { code: "04.2.1.03.124", alias: "",           name: "Assistência Médica - Kern" },
+        { code: "04.2.1.03.125", alias: "",           name: "Cessão Onerosa de Uso de Espaço" },
+        { code: "04.2.1.03.126", alias: "",           name: "Fretes e Carretos - Entregas" },
+        { code: "04.2.1.03.127", alias: "",           name: "Despesas Vale Promocional" },
+      ],
+    }
+  },
+
+  "(-) DESPESAS COMERCIAIS": {
+    color: "var(--comercial)",
+    order: 9,
+    subtotal: false,
+    subgroups: {
+      "04.2.2.01 — Despesas com Vendas": [
+        { code: "04.2.2.01.001", alias: "",           name: "Comissões" },
+        { code: "04.2.2.01.002", alias: "",           name: "Fretes e Carretos" },
+        { code: "04.2.2.01.003", alias: "",           name: "Feiras / Congressos / Simpósios / Cursos" },
+        { code: "04.2.2.01.004", alias: "",           name: "Propaganda e Publicidade" },
+        { code: "04.2.2.01.005", alias: "",           name: "Brindes" },
+        { code: "04.2.2.01.007", alias: "",           name: "Provisões Representantes" },
+        { code: "04.2.2.01.009", alias: "",           name: "Perdas com Contas Incobráveis" },
+        { code: "04.2.2.01.010", alias: "",           name: "Indenização Representante" },
+      ],
+      "04.2.2.02 — Despesas de Marketing": [
+        { code: "04.2.2.02.001", alias: "",           name: "Brindes" },
+        { code: "04.2.2.02.002", alias: "",           name: "Feiras / Congressos / Simpósios / Cursos" },
+        { code: "04.2.2.02.003", alias: "",           name: "Propaganda e Publicidade" },
+        { code: "04.2.2.02.06",  alias: "",           name: "(-) Bonificações" },
+        { code: "04.2.2.02.07",  alias: "",           name: "(-) Verbas Aniversário" },
+        { code: "04.2.2.02.08",  alias: "",           name: "(-) Verbas Encartes" },
+        { code: "04.2.2.02.09",  alias: "",           name: "(-) Campanha Selos" },
+      ],
+      "04.2.2.03 — Despesas Gerais com Vendas": [
+        { code: "04.2.2.03.033", alias: "",           name: "Telefone - NÃO USAR" },
+        { code: "04.2.2.03.035", alias: "",           name: "Material de Limpeza - NÃO USAR" },
+        { code: "04.2.2.03.036", alias: "",           name: "Verbas Promocionais" },
+      ],
+    }
+  },
+
+  "(=) RESULTADO OPERACIONAL": {
+    color: "var(--subtotal)",
+    order: 10,
+    subtotal: true,
+    subgroups: {}
+  },
+
+  "(-) DESPESAS FINANCEIRAS": {
+    color: "var(--financeiro)",
+    order: 11,
+    subtotal: false,
+    subgroups: {
+      "04.2.3.02 — Despesas Financeiras": [
+        { code: "04.2.3.02.003", alias: "",           name: "Despesas Bancárias" },
+        { code: "04.2.3.02.004", alias: "",           name: "Despesas c/ Factoring" },
+        { code: "04.2.3.02.005", alias: "",           name: "Juros s/ Saldo Devedor C/C" },
+        { code: "04.2.3.02.006", alias: "",           name: "Comissões s/ Financiamentos" },
+        { code: "04.2.3.02.012", alias: "",           name: "Juros s/ Duplicatas Descontadas" },
+        { code: "04.2.3.02.013", alias: "",           name: "Remuneração do Capital" },
+        { code: "04.2.3.02.014", alias: "",           name: "Juros s/ Duplicatas Pagas" },
+        { code: "04.2.3.02.017", alias: "",           name: "Juros Direito de Uso" },
+        { code: "04.2.3.02.018", alias: "",           name: "Outras Despesas Financeiras" },
+        { code: "04.2.3.02.019", alias: "",           name: "Juros s/ Parcelamentos" },
+        { code: "04.2.3.02.020", alias: "",           name: "Multas s/Saldo Devedor" },
+        { code: "04.2.3.02.021", alias: "",           name: "Taxas de Antecipação de Recebíveis" },
+      ],
+    }
+  },
+
+  "(-) OUTRAS DESPESAS": {
+    color: "var(--outras)",
+    order: 12,
+    subtotal: false,
+    subgroups: {
+      "04.2.4.01 — Impostos": [
+        { code: "04.2.4.01.006", alias: "",           name: "Custas Leilão" },
+        { code: "04.2.4.01.007", alias: "",           name: "Alvará de Localização" },
+        { code: "04.2.4.01.008", alias: "",           name: "ICMS" },
+        { code: "04.2.4.01.009", alias: "",           name: "ICMS Diferencial de Alíquota" },
+        { code: "04.2.4.01.011", alias: "",           name: "ITR" },
+        { code: "04.2.4.01.012", alias: "",           name: "ITBI" },
+        { code: "04.2.4.01.013", alias: "",           name: "IOF s/ Duplicatas Descontadas" },
+        { code: "04.2.4.01.014", alias: "",           name: "ICMS Estorno Crédito Ativo Permanente" },
+        { code: "04.2.4.01.015", alias: "",           name: "ITCD" },
+        { code: "04.2.4.01.016", alias: "",           name: "Alvará de Bombeiros" },
+        { code: "04.2.4.01.017", alias: "",           name: "Alvará Sanitário" },
+        { code: "04.2.4.01.018", alias: "",           name: "Auto de Regularização Federal" },
+        { code: "04.2.4.01.019", alias: "",           name: "IRRF S/Aplicação Financeira" },
+        { code: "04.2.4.01.020", alias: "",           name: "Parcelamentos Federais" },
+        { code: "04.2.4.01.021", alias: "",           name: "Impostos e Taxas S/Exportação" },
+        { code: "04.2.4.01.022", alias: "",           name: "ICMS Fundo Pró-Segurança" },
+      ],
+      "04.2.4.02 — Multas": [
+        { code: "04.2.4.02.004", alias: "",           name: "Indenizações" },
+        { code: "04.2.4.02.005", alias: "",           name: "Multas de Trânsito" },
+      ],
+      "04.2.7.01 — Perdas": [
+        { code: "04.2.7.01.004", alias: "",           name: "Perdas PDD c/Inadimplência" },
+        { code: "04.2.7.01.005", alias: "",           name: "Perdas com Estoques" },
+      ],
+      "04.2.7.02 — Outras Despesas": [
+        { code: "04.2.7.02.01",  alias: "",           name: "Outras Despesas - Subvenção s/ICMS" },
+        { code: "04.2.7.02.02",  alias: "",           name: "Outras Despesas" },
+        { code: "04.2.7.02.04",  alias: "",           name: "Outras Despesas Operacionais" },
+      ],
+      "04.2.7.03 — Reversão de Provisão de Impostos": [
+        { code: "04.2.7.03.0",   alias: "",           name: "Reversão de CSLL" },
+        { code: "04.2.7.03.01",  alias: "",           name: "Reversão de IRPJ" },
+      ],
+    }
+  },
+
+  "(+) RECEITAS FINANCEIRAS": {
+    color: "var(--receita)",
+    order: 13,
+    subtotal: false,
+    subgroups: {
+      "03.1.3.01 — Receitas com Atualizações": [
+        { code: "03.1.3.01.001", alias: "VMA",        name: "Variação Monetária Ativa" },
+        { code: "03.1.3.01.002", alias: "VMP",        name: "Variação Cambial Ativa" },
+        { code: "03.1.3.01.003", alias: "",            name: "Rendimentos Auferidos sobre Tributos Recup. Via Judicial" },
+      ],
+      "03.1.3.02 — Ganhos com Aplicações Financeiras": [
+        { code: "03.1.3.02.001", alias: "JRSFAF",     name: "Rendimentos de Aplicação" },
+        { code: "03.1.3.02.002", alias: "JRSRFIXA",   name: "Ganho Real de Aplicações de Renda Fixa" },
+        { code: "03.1.3.02.003", alias: "JRSRVAR",    name: "Ganho Real de Aplicações de Renda Variável" },
+        { code: "03.1.3.02.004", alias: "JRSPOUP",    name: "Rendimentos de Caderneta de Poupança" },
+      ],
+      "03.1.3.03 — Juros e Descontos Obtidos": [
+        { code: "03.1.3.03.001", alias: "JUROSOBT",   name: "Juros Ativos" },
+        { code: "03.1.3.03.002", alias: "DESCOBT",    name: "Descontos Obtidos" },
+        { code: "03.1.3.03.003", alias: "DESCALUG",   name: "Desconto S/Aluguel" },
+        { code: "03.1.3.03.004", alias: "DESCBOLETO", name: "Desconto S/Boleto" },
+      ],
+      "03.1.3.04 — (-) Impostos s/ Receita Financeira": [
+        { code: "03.1.3.04.001", alias: "PIS S/Receita Financ", name: "(-) PIS S/Receita Financeira" },
+        { code: "03.1.3.04.002", alias: "COFINS S/Receita Fin", name: "(-) COFINS S/Receita Financeira" },
+      ],
+      "03.1.3.05 — Outras Receitas Financeiras": [
+        { code: "03.1.3.05.001", alias: "",            name: "Outras Receitas Financeiras" },
+        { code: "03.1.3.05.002", alias: "",            name: "Distribuição de Sobras" },
+      ],
+    }
+  },
+
+  "(+) OUTRAS RECEITAS": {
+    color: "var(--outras)",
+    order: 14,
+    subtotal: false,
+    subgroups: {
+      "03.2.1.01 — Outras Receitas": [
+        { code: "03.2.1.01.001", alias: "",               name: "Bonificações" },
+        { code: "03.2.1.01.002", alias: "",               name: "Doações" },
+        { code: "03.2.1.01.003", alias: "",               name: "Benefício Fiscal" },
+        { code: "03.2.1.01.004", alias: "",               name: "Despesas Recuperadas" },
+        { code: "03.2.1.01.005", alias: "INDTRAB",        name: "Indenizações Trabalhistas" },
+        { code: "03.2.1.01.006", alias: "",               name: "Outras Receitas - Subvenção S/ICMS" },
+        { code: "03.2.1.01.007", alias: "",               name: "Indenizações c/Sinistro" },
+        { code: "03.2.1.01.008", alias: "RECUPRETFINANC", name: "Recuperação Retorno Financeiro" },
+        { code: "03.2.1.01.009", alias: "COMISSOESREC",  name: "Comissões Recebidas" },
+        { code: "03.2.1.01.012", alias: "",               name: "Atualização Selic" },
+        { code: "03.2.1.01.013", alias: "Crédito impostos",name: "Levantamento de Crédito de Impostos" },
+        { code: "03.2.1.01.014", alias: "",               name: "Verbas Ponta Gond/P Extra" },
+        { code: "03.2.1.01.15",  alias: "",               name: "Acordos - Introdução Mix" },
+        { code: "03.2.1.01.16",  alias: "",               name: "Receita Caixa Hortifruti" },
+        { code: "03.2.1.01.17",  alias: "",               name: "Receita Grua" },
+        { code: "03.2.1.01.18",  alias: "",               name: "Débitos/Créditos Tributários Extemporâneos" },
+        { code: "03.2.1.01.19",  alias: "",               name: "Verbas Natal" },
+        { code: "03.2.1.01.20",  alias: "",               name: "Verba Campanha" },
+        { code: "03.2.1.01.21",  alias: "",               name: "Remuneração Cofre" },
+        { code: "03.2.1.01.22",  alias: "",               name: "Verbas Retorno Financeiro - em conta" },
+        { code: "03.2.1.01.23",  alias: "",               name: "Acordos Comerciais" },
+        { code: "03.2.1.01.24",  alias: "",               name: "Contrato de Retorno Financeiro" },
+        { code: "03.2.1.01.25",  alias: "",               name: "Encartes/Promoções" },
+        { code: "03.2.1.01.26",  alias: "",               name: "Indenizações Recebidas" },
+        { code: "03.2.1.01.27",  alias: "",               name: "Diferença de Preço" },
+        { code: "03.2.1.01.28",  alias: "",               name: "Comissões de Recarga" },
+        { code: "03.2.1.01.29",  alias: "",               name: "Outras Receitas Comerciais" },
+      ],
+      "03.2.1.02 — Alienação de Investimentos": [
+        { code: "03.2.1.02.001", alias: "ALIENCUST",     name: "Alienação Participação Societária pelo Método Custeio" },
+        { code: "03.2.1.02.002", alias: "ALIENEQPATR",   name: "Alienação Participação Societária pela Equivalência Patrimonial" },
+      ],
+      "03.2.1.03 — Alienação de Imobilizado": [
+        { code: "03.2.1.03.001", alias: "AMAQUEQUI",     name: "Alienação de Máquinas e Equipamentos" },
+        { code: "03.2.1.03.002", alias: "AMOVUTENC",     name: "Alienação de Móveis e Utensílios" },
+        { code: "03.2.1.03.003", alias: "AFERRAMENTAS",  name: "Alienação de Ferramentas" },
+        { code: "03.2.1.03.004", alias: "AIMOVEIS",      name: "Alienação de Imóveis" },
+        { code: "03.2.1.03.005", alias: "AVEICULOS",     name: "Alienação de Veículos" },
+        { code: "03.2.1.03.006", alias: "ACOMPPERIF",    name: "Alienação de Computadores e Periféricos" },
+        { code: "03.2.1.03.007", alias: "ADIREITO",      name: "Alienação de Direito de Uso de Telefones" },
+        { code: "03.2.1.03.008", alias: "",               name: "Alienação de Imobilizado" },
+      ],
+      "03.2.1.04 — Receita com Ágio e Ações": [
+        { code: "03.2.1.04.001", alias: "",               name: "Receita com Ágio e Ações" },
+      ],
+      "03.2.1.05 — Reversão de Perdas": [
+        { code: "03.2.1.05.001", alias: "",               name: "Reversão de Perdas" },
+      ],
+      "03.2.2.02 — Custo da Alienação de Bens": [
+        { code: "03.2.2.02.001", alias: "CAMAQUEUI",     name: "Custo da Alienação Máquinas e Equipamentos" },
+        { code: "03.2.2.02.004", alias: "CAIMOVEIS",     name: "Custo da Alienação Imóveis" },
+        { code: "03.2.2.02.005", alias: "CAVEICULOS",    name: "Custo da Alienação Veículos" },
+        { code: "03.2.2.02.006", alias: "CACOMPPERIF",   name: "Custo da Alienação Computadores e Periféricos" },
+        { code: "03.2.2.02.008", alias: "CAIMOB",        name: "Custo da Alienação de Imobilizado" },
+      ],
+    }
+  },
+
+  "(=) RESULTADO BRUTO": {
+    color: "var(--subtotal)",
+    order: 15,
+    subtotal: true,
+    subgroups: {}
+  },
+
+  "(-) IRPJ / CSLL": {
+    color: "var(--irpj)",
+    order: 16,
+    subtotal: false,
+    subgroups: {
+      "04.3.2.01 — Provisões p/ Impostos s/ Lucros": [
+        { code: "04.3.2.01.001", alias: "",           name: "Provisão para IRPJ" },
+        { code: "04.3.2.02.002", alias: "",           name: "Provisão P/ IRPJ Diferido" },
+      ],
+      "04.3.2.02 — Provisões p/ Contribuições s/ Lucros": [
+        { code: "04.3.2.02.001", alias: "",           name: "Provisão para Contribuição Social" },
+        { code: "04.3.2.02.002", alias: "",           name: "Provisão P/ Contribuição Social Diferido" },
+      ],
+    }
+  },
+
+  "(=) RESULTADO LÍQUIDO": {
+    color: "var(--resultado)",
+    order: 17,
+    subtotal: true,
+    subgroups: {
+      "05.1.1.01 — Resultado Líquido do Exercício": [
+        { code: "05.1.1.01", alias: "", name: "Resultado Líquido do Exercício" },
+      ]
+    }
+  },
+
+  "(=) EBITDA": {
+    color: "var(--subtotal)",
+    order: 18,
+    subtotal: true,
+    subgroups: {}
+  },
+};
+
+// Build UI
+const container = document.getElementById('container');
+let totalAccounts = 0, totalSubgroups = 0;
+const groups = Object.entries(DATA).sort((a,b)=>a[1].order-b[1].order);
+
+groups.forEach(([groupName, group]) => {
+  const subgroupEntries = Object.entries(group.subgroups);
+  const accCount = subgroupEntries.reduce((s,[,a])=>s+a.length,0);
+  totalAccounts += accCount;
+  totalSubgroups += subgroupEntries.length;
+
+  const el = document.createElement('div');
+  el.className = 'group' + (group.subtotal ? ' subtotal-group' : '');
+  el.dataset.group = groupName.toLowerCase();
+
+  const chevronSVG = `<svg class="chevron" viewBox="0 0 16 16" fill="currentColor"><path d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06z"/></svg>`;
+
+  let bodyHTML = '';
+  subgroupEntries.forEach(([sgName, accounts]) => {
+    const [sgCode, sgDesc] = sgName.split(' — ');
+    bodyHTML += `<div class="subgroup">
+      <div class="subgroup-title"><span>${sgCode}</span>${sgDesc||''}</div>`;
+    accounts.forEach(acc => {
+      bodyHTML += `<div class="account" data-search="${(acc.code+' '+acc.alias+' '+acc.name).toLowerCase()}">
+        <span class="acc-code">${acc.code}</span>
+        <span class="acc-alias">${acc.alias || ''}</span>
+        <span class="acc-name">${acc.name}</span>
+      </div>`;
+    });
+    bodyHTML += '</div>';
+  });
+
+  if (group.subtotal && subgroupEntries.length === 0) {
+    bodyHTML = '';
+  }
+
+  el.innerHTML = `
+    <div class="group-header" onclick="toggleGroup(this)">
+      <span class="color-dot" style="background:${group.color}"></span>
+      <span class="group-title" style="color:${group.color}">${groupName}</span>
+      <div class="group-meta">
+        ${accCount > 0 ? `<span class="badge">${accCount} contas</span>` : ''}
+        ${group.subtotal ? '<span class="badge" style="color:var(--subtotal)">calculado</span>' : ''}
+      </div>
+      ${bodyHTML ? chevronSVG : ''}
+    </div>
+    ${bodyHTML ? `<div class="group-body">${bodyHTML}</div>` : ''}
+  `;
+  container.appendChild(el);
+});
+
+document.getElementById('totalAccounts').textContent = totalAccounts;
+document.getElementById('totalGroups').textContent = groups.length;
+document.getElementById('totalSubgroups').textContent = totalSubgroups;
+
+function toggleGroup(header) {
+  const group = header.closest('.group');
+  group.classList.toggle('open');
+}
+
+function filterAccounts(query) {
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.group').forEach(group => {
+    if (!q) {
+      group.classList.remove('open', 'hidden');
+      group.querySelectorAll('.account').forEach(a => a.classList.remove('hidden'));
+      group.querySelectorAll('.subgroup').forEach(s => s.classList.remove('hidden'));
+      return;
+    }
+    let groupHasMatch = false;
+    group.querySelectorAll('.subgroup').forEach(sg => {
+      let sgHasMatch = false;
+      sg.querySelectorAll('.account').forEach(acc => {
+        const match = acc.dataset.search.includes(q) || group.dataset.group.includes(q);
+        acc.classList.toggle('hidden', !match);
+        if (match) sgHasMatch = true;
+      });
+      sg.classList.toggle('hidden', !sgHasMatch);
+      if (sgHasMatch) groupHasMatch = true;
+    });
+    if (group.dataset.group.includes(q)) groupHasMatch = true;
+    group.classList.toggle('hidden', !groupHasMatch);
+    group.classList.toggle('open', groupHasMatch && !!q);
+  });
+}
+</script>
+</body>
+</html>
